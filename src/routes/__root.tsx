@@ -77,7 +77,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Buy Africa Build Africa (BABA) | Institutional Portal" },
+      { title: "Buy Africa Build Africa (BABA)" },
       {
         name: "description",
         content:
@@ -91,6 +91,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
+      { name: "twitter:title", content: "Buy Africa Build Africa (BABA)" },
+      { name: "description", content: "Connecting Africa’s workforce, professionals, institutions, and industry into one integrated ecosystem for skills development, employment, manufacturing, sustai" },
+      { property: "og:description", content: "Connecting Africa’s workforce, professionals, institutions, and industry into one integrated ecosystem for skills development, employment, manufacturing, sustai" },
+      { name: "twitter:description", content: "Connecting Africa’s workforce, professionals, institutions, and industry into one integrated ecosystem for skills development, employment, manufacturing, sustai" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/cnSUIEtJ7wUkpmtI1OlzTnY67gk1/social-images/social-1780435793299-WhatsApp_Image_2026-05-30_at_11.07.37_PM.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/cnSUIEtJ7wUkpmtI1OlzTnY67gk1/social-images/social-1780435793299-WhatsApp_Image_2026-05-30_at_11.07.37_PM.webp" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
