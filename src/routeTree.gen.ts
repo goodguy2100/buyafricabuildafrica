@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as PillarsRouteImport } from './routes/pillars'
+import { Route as PartnersRouteImport } from './routes/partners'
 import { Route as DirectoryRouteImport } from './routes/directory'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
@@ -23,6 +24,11 @@ const RegisterRoute = RegisterRouteImport.update({
 const PillarsRoute = PillarsRouteImport.update({
   id: '/pillars',
   path: '/pillars',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PartnersRoute = PartnersRouteImport.update({
+  id: '/partners',
+  path: '/partners',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DirectoryRoute = DirectoryRouteImport.update({
@@ -45,6 +51,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/directory': typeof DirectoryRoute
+  '/partners': typeof PartnersRoute
   '/pillars': typeof PillarsRoute
   '/register': typeof RegisterRoute
 }
@@ -52,6 +59,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/directory': typeof DirectoryRoute
+  '/partners': typeof PartnersRoute
   '/pillars': typeof PillarsRoute
   '/register': typeof RegisterRoute
 }
@@ -60,21 +68,36 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/directory': typeof DirectoryRoute
+  '/partners': typeof PartnersRoute
   '/pillars': typeof PillarsRoute
   '/register': typeof RegisterRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/directory' | '/pillars' | '/register'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/directory'
+    | '/partners'
+    | '/pillars'
+    | '/register'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/directory' | '/pillars' | '/register'
-  id: '__root__' | '/' | '/about' | '/directory' | '/pillars' | '/register'
+  to: '/' | '/about' | '/directory' | '/partners' | '/pillars' | '/register'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/directory'
+    | '/partners'
+    | '/pillars'
+    | '/register'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   DirectoryRoute: typeof DirectoryRoute
+  PartnersRoute: typeof PartnersRoute
   PillarsRoute: typeof PillarsRoute
   RegisterRoute: typeof RegisterRoute
 }
@@ -93,6 +116,13 @@ declare module '@tanstack/react-router' {
       path: '/pillars'
       fullPath: '/pillars'
       preLoaderRoute: typeof PillarsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/partners': {
+      id: '/partners'
+      path: '/partners'
+      fullPath: '/partners'
+      preLoaderRoute: typeof PartnersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/directory': {
@@ -123,6 +153,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   DirectoryRoute: DirectoryRoute,
+  PartnersRoute: PartnersRoute,
   PillarsRoute: PillarsRoute,
   RegisterRoute: RegisterRoute,
 }
