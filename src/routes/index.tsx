@@ -83,13 +83,16 @@ function Home() {
   return (
     <PageShell>
       {/* Hero */}
-      <section className="relative overflow-hidden">
+      <section className="relative overflow-hidden baba-wash">
         <div className="mx-auto grid max-w-7xl items-center gap-12 px-5 py-16 lg:grid-cols-2 lg:px-8 lg:py-24">
           <div>
-            <h1 className="font-display text-5xl font-extrabold leading-[1.02] tracking-tight text-baba-slate sm:text-6xl lg:text-7xl">
+            <span className="inline-flex items-center gap-2 rounded-full border border-baba-teal/20 bg-baba-alabaster px-4 py-1.5 text-sm font-semibold text-baba-teal shadow-sm">
+              ✨ Building Africa, by Africans 💪
+            </span>
+            <h1 className="mt-5 font-display text-5xl font-extrabold leading-[1.02] tracking-tight text-baba-slate sm:text-6xl lg:text-7xl">
               Buy Africa
               <br />
-              Build Africa
+              <span className="baba-rainbow">Build Africa</span>
             </h1>
             <p className="mt-6 font-display text-xl font-semibold text-baba-teal sm:text-2xl">
               An African Initiative Building Skills, Jobs, Cities, and Futures.
@@ -101,26 +104,26 @@ function Home() {
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 to="/register"
-                className="rounded-lg bg-baba-teal px-6 py-3 text-sm font-semibold text-baba-alabaster transition-colors hover:bg-baba-teal-dark"
+                className="rounded-full bg-baba-teal px-6 py-3 text-sm font-semibold text-baba-alabaster shadow-lg shadow-baba-teal/25 transition-colors hover:bg-baba-teal-dark"
               >
                 Join as Worker
               </Link>
               <Link
                 to="/register"
-                className="rounded-lg border-2 border-baba-teal px-6 py-3 text-sm font-semibold text-baba-teal transition-colors hover:bg-baba-teal hover:text-baba-alabaster"
+                className="rounded-full border-2 border-baba-teal px-6 py-3 text-sm font-semibold text-baba-teal transition-colors hover:bg-baba-teal hover:text-baba-alabaster"
               >
                 Join as Professional
               </Link>
               <Link
                 to="/partners"
-                className="rounded-lg border-2 border-baba-copper px-6 py-3 text-sm font-semibold text-baba-copper-dark transition-colors hover:bg-baba-copper hover:text-baba-slate"
+                className="rounded-full border-2 border-baba-copper px-6 py-3 text-sm font-semibold text-baba-copper-dark transition-colors hover:bg-baba-copper hover:text-baba-slate"
               >
                 Register as Partner
               </Link>
             </div>
           </div>
           <div className="relative">
-            <div className="overflow-hidden rounded-2xl border border-baba-teal/10 shadow-2xl shadow-baba-slate/10">
+            <div className="overflow-hidden rounded-[2rem] border border-baba-teal/10 shadow-2xl shadow-baba-slate/10">
               <img
                 src={heroCollage}
                 alt="African artisans, engineers and professionals building modern industry"
@@ -129,10 +132,12 @@ function Home() {
                 className="h-full w-full object-cover"
               />
             </div>
-            <div className="absolute -bottom-4 -left-4 hidden h-24 w-24 rounded-2xl border-4 border-baba-copper/40 sm:block" />
+            <div className="absolute -bottom-4 -left-4 hidden h-24 w-24 rounded-[1.5rem] border-4 border-baba-copper/50 sm:block" />
+            <div className="absolute -top-4 -right-4 hidden h-16 w-16 rounded-full border-4 border-baba-teal/40 sm:block" />
           </div>
         </div>
       </section>
+
 
       {/* Impact Dashboard */}
       <section className="mx-auto max-w-7xl px-5 lg:px-8">
