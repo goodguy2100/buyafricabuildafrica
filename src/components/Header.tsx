@@ -6,9 +6,11 @@ import { BabaLogo } from "./BabaLogo";
 const navLinks = [
   { to: "/pillars", label: "Pillars" },
   { to: "/directory", label: "Directory" },
-  { to: "/partners", label: "Partners" },
   { to: "/opportunities", label: "Opportunities" },
-  { to: "/about", label: "Impact" },
+  { to: "/events", label: "Events" },
+  { to: "/impact", label: "Impact" },
+  { to: "/partners", label: "Partners" },
+  { to: "/about", label: "About" },
   { to: "/contact", label: "Contact" },
 ] as const;
 
