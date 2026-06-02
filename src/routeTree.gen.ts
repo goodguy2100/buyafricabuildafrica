@@ -10,12 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as PillarsRouteImport } from './routes/pillars'
 import { Route as DirectoryRouteImport } from './routes/directory'
 import { Route as IndexRouteImport } from './routes/index'
 
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PillarsRoute = PillarsRouteImport.update({
+  id: '/pillars',
+  path: '/pillars',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DirectoryRoute = DirectoryRouteImport.update({
@@ -32,30 +38,34 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/directory': typeof DirectoryRoute
+  '/pillars': typeof PillarsRoute
   '/register': typeof RegisterRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/directory': typeof DirectoryRoute
+  '/pillars': typeof PillarsRoute
   '/register': typeof RegisterRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/directory': typeof DirectoryRoute
+  '/pillars': typeof PillarsRoute
   '/register': typeof RegisterRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/directory' | '/register'
+  fullPaths: '/' | '/directory' | '/pillars' | '/register'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/directory' | '/register'
-  id: '__root__' | '/' | '/directory' | '/register'
+  to: '/' | '/directory' | '/pillars' | '/register'
+  id: '__root__' | '/' | '/directory' | '/pillars' | '/register'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DirectoryRoute: typeof DirectoryRoute
+  PillarsRoute: typeof PillarsRoute
   RegisterRoute: typeof RegisterRoute
 }
 
@@ -66,6 +76,13 @@ declare module '@tanstack/react-router' {
       path: '/register'
       fullPath: '/register'
       preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pillars': {
+      id: '/pillars'
+      path: '/pillars'
+      fullPath: '/pillars'
+      preLoaderRoute: typeof PillarsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/directory': {
@@ -88,6 +105,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DirectoryRoute: DirectoryRoute,
+  PillarsRoute: PillarsRoute,
   RegisterRoute: RegisterRoute,
 }
 export const routeTree = rootRouteImport
