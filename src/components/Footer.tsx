@@ -42,7 +42,22 @@ export function Footer() {
           </p>
           <div className="mt-5 space-y-2 text-sm text-baba-alabaster/80">
             <p className="flex items-center gap-2">
-              <MapPin className="h-4 w-4 text-baba-copper" /> Nairobi, Kenya
+              <MapPin className="h-4 w-4 text-baba-copper" /> Head Office — Nairobi, Kenya
+            </p>
+            <p className="flex items-center gap-2">
+              <MapPin className="h-4 w-4 text-baba-copper" /> Regional Office — Lagos, Nigeria
+            </p>
+            <p className="flex items-center gap-2">
+              <MapPin className="h-4 w-4 text-baba-copper" /> Regional Office — Casablanca, Morocco
+            </p>
+            <p className="flex items-center gap-2">
+              <MapPin className="h-4 w-4 text-baba-copper" /> Regional Office — Johannesburg, South Africa
+            </p>
+            <p className="flex items-center gap-2">
+              <MapPin className="h-4 w-4 text-baba-copper" /> Regional Office — Cairo, Egypt
+            </p>
+            <p className="mt-3 text-xs text-baba-alabaster/70">
+              We will expand to other developing countries as well.
             </p>
             <p className="flex items-center gap-2">
               <Phone className="h-4 w-4 text-baba-copper" /> +254 712 345 678
