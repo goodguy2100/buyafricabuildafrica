@@ -114,15 +114,21 @@ function Home() {
               >
                 Join as Professional
               </Link>
-              <Link
-                to="/partners"
-                className="rounded-full border-2 border-baba-copper px-6 py-3 text-sm font-semibold text-baba-copper-dark transition-colors hover:bg-baba-copper hover:text-baba-slate"
-              >
-                Register as Partner
-              </Link>
-            </div>
+            <Link
+              to="/partners"
+              className="rounded-full border-2 border-baba-copper px-6 py-3 text-sm font-semibold text-baba-copper-dark transition-colors hover:bg-baba-copper hover:text-baba-slate"
+            >
+              Register as Partner
+            </Link>
+            <Link
+              to="/events"
+              className="rounded-full bg-accent px-6 py-3 text-sm font-semibold text-baba-alabaster shadow-lg shadow-accent/25 transition-colors hover:opacity-90"
+            >
+              BABA Training Institute
+            </Link>
           </div>
-          <div className="relative">
+        </div>
+        <div className="relative">
             <div className="overflow-hidden rounded-[2rem] border border-baba-teal/10 shadow-2xl shadow-baba-slate/10">
               <img
                 src={heroCollage}
