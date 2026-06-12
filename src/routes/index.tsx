@@ -187,7 +187,46 @@ function Home() {
         </div>
       </section>
 
-      {/* Challenge vs Solution */}
+      {/* Countries & Regions */}
+      <section className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
+        <div className="text-center">
+          <span className="text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">
+            Where We Operate
+          </span>
+          <h2 className="mt-2 font-display text-3xl font-extrabold text-baba-slate sm:text-4xl">
+            Countries &amp; Regions
+          </h2>
+          <p className="mx-auto mt-3 max-w-xl text-baba-slate/70">
+            Since it's Africa, we start with countries — and within each country, we reach
+            local regions where skills, jobs, and industry grow.
+          </p>
+        </div>
+        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {countries.map((c) => (
+            <div
+              key={c.name}
+              className="rounded-3xl border border-baba-teal/10 bg-baba-alabaster p-6 shadow-lg shadow-baba-slate/5 transition-transform hover:-translate-y-1"
+            >
+              <div className="flex items-center gap-3">
+                <span className="text-3xl">{c.flag}</span>
+                <h3 className="font-display text-xl font-bold text-baba-slate">{c.name}</h3>
+              </div>
+              <ul className="mt-5 space-y-2">
+                {c.regions.map((r) => (
+                  <li
+                    key={r}
+                    className="flex items-center gap-2 text-sm text-baba-slate/70"
+                  >
+                    <span className="h-1.5 w-1.5 rounded-full bg-baba-copper" />
+                    {r}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </section>
+
       <section className="mx-auto grid max-w-7xl gap-10 px-5 py-20 lg:grid-cols-2 lg:px-8">
         <div>
           <span className="text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">
