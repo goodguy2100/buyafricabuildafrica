@@ -48,7 +48,7 @@ export function Footer() {
               <Phone className="h-4 w-4 text-baba-copper" /> +254 712 345 678
             </p>
             <p className="flex items-center gap-2">
-              <Mail className="h-4 w-4 text-baba-copper" /> hello@buildafrica.org
+              <Mail className="h-4 w-4 text-baba-copper" /> Info@buyafricabuildsfrica.org
             </p>
           </div>
         </div>
