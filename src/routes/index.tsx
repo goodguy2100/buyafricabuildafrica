@@ -154,7 +154,7 @@ function Home() {
 
       {/* Impact Dashboard */}
       <section className="mx-auto max-w-7xl px-5 lg:px-8">
-        <div className="rounded-3xl bg-baba-teal px-6 py-12 text-baba-alabaster lg:px-12">
+        <div className="rounded-3xl bg-gradient-to-r from-baba-teal/90 via-baba-teal/75 to-baba-teal/60 px-6 py-12 text-white lg:px-12">
           <p className="text-center text-xs font-bold uppercase tracking-[0.3em] text-baba-copper">
             Real-Time Impact Tracker
           </p>
@@ -169,15 +169,15 @@ function Home() {
             <Counter target={960} label="Suppliers" />
             <Counter target={80} label="Partners" />
           </div>
-          <div className="mt-10 grid gap-6 border-t border-white/10 pt-8 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-10 grid gap-6 border-t border-white/20 pt-8 sm:grid-cols-2 lg:grid-cols-4">
             {impactStats.map((s) => (
               <div key={s.label} className="flex items-center gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10">
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/20">
                   <s.icon className="h-5 w-5 text-baba-copper" />
                 </div>
                 <div>
                   <p className="font-display text-lg font-bold">{s.value}</p>
-                  <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-baba-alabaster/60">
+                  <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-white/80">
                     {s.label}
                   </p>
                 </div>
