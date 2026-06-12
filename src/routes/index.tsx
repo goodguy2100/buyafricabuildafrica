@@ -75,8 +75,15 @@ const solutions = [
 const impactStats = [
   { icon: Briefcase, value: "12,500+", label: "Jobs Created" },
   { icon: Users, value: "350+", label: "Trainings" },
-  { icon: MapPin, value: "47", label: "Counties" },
+  { icon: MapPin, value: "4", label: "Countries" },
   { icon: Building, value: "120+", label: "Projects" },
+];
+
+const countries = [
+  { name: "Kenya", flag: "🇰🇪", regions: ["Nairobi", "Coast", "Rift Valley", "Western", "Central"] },
+  { name: "Nigeria", flag: "🇳🇬", regions: ["Lagos", "North-Central", "South-East", "South-West", "North-West"] },
+  { name: "South Africa", flag: "🇿🇦", regions: ["Gauteng", "Western Cape", "KwaZulu-Natal", "Eastern Cape", "Limpopo"] },
+  { name: "Egypt", flag: "🇪🇬", regions: ["Cairo", "Alexandria", "Giza", "Delta", "Upper Egypt"] },
 ];
 
 function Home() {
