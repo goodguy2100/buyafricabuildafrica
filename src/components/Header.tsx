@@ -4,14 +4,13 @@ import { Menu, X } from "lucide-react";
 import { BabaLogo } from "./BabaLogo";
 
 const navLinks = [
+  { to: "/", label: "Home" },
+  { to: "/about", label: "About Us" },
   { to: "/pillars", label: "Pillars" },
   { to: "/directory", label: "Directory" },
   { to: "/opportunities", label: "Opportunities" },
-  { to: "/events", label: "Events" },
   { to: "/impact", label: "Impact" },
-  { to: "/partners", label: "Partners" },
-  { to: "/about", label: "About" },
-  { to: "/contact", label: "Contact" },
+  { to: "/events", label: "Events" },
 ] as const;
 
 export function Header() {
