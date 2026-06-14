@@ -349,7 +349,7 @@ function Directory() {
                     </button>
                     <button
                       onClick={() => setActive(p)}
-                      className="baba-gradient rounded-lg px-4 py-2 text-xs font-semibold"
+                      className="rounded-lg bg-baba-teal px-4 py-2 text-xs font-semibold text-baba-alabaster transition-colors hover:bg-baba-teal-dark"
                     >
                       Request Contact
                     </button>
@@ -380,7 +380,7 @@ function Directory() {
           <div className="flex flex-wrap gap-3">
             <a
               href="/register"
-              className="baba-gradient rounded-lg px-6 py-3 text-sm font-semibold"
+              className="rounded-lg bg-baba-teal px-6 py-3 text-sm font-semibold text-baba-alabaster transition-colors hover:bg-baba-teal-light"
             >
               Join Database
             </a>

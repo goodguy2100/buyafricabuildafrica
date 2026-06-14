@@ -48,7 +48,7 @@ function Partners() {
           </p>
           <Link
             to="/contact"
-            className="baba-gradient mt-7 inline-block rounded-lg px-6 py-3 text-sm font-semibold"
+            className="mt-7 inline-block rounded-lg bg-baba-copper px-6 py-3 text-sm font-semibold text-baba-slate transition-colors hover:bg-baba-copper-dark"
           >
             Become a Partner
           </Link>

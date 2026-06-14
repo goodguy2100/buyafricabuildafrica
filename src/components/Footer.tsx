@@ -29,8 +29,7 @@ export function Footer() {
   const [done, setDone] = useState(false);
 
   return (
-    <footer className="bg-gradient-to-br from-brand-blue via-baba-teal to-baba-copper-dark text-baba-alabaster">
-      <div className="h-1 w-full bg-gradient-to-r from-brand-blue via-baba-teal to-brand-yellow" />
+    <footer className="bg-baba-teal text-baba-alabaster">
       <div className="mx-auto grid max-w-7xl gap-10 px-5 py-14 lg:grid-cols-12 lg:px-8">
         <div className="lg:col-span-4">
           <div className="[&_span]:text-baba-alabaster">
@@ -118,7 +117,7 @@ export function Footer() {
               />
               <button
                 type="submit"
-                className="shrink-0 rounded-lg bg-brand-yellow px-4 py-2.5 text-sm font-semibold text-baba-slate transition-colors hover:bg-baba-copper"
+                className="shrink-0 rounded-lg bg-baba-copper px-4 py-2.5 text-sm font-semibold text-baba-slate transition-colors hover:bg-baba-copper-dark"
               >
                 Subscribe
               </button>

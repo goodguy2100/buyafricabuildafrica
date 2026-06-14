@@ -222,7 +222,7 @@ function Register() {
               {step < 2 && (
                 <button
                   onClick={() => setStep((s) => Math.min(2, s + 1))}
-                  className="baba-gradient rounded-lg px-6 py-2.5 text-sm font-semibold"
+                  className="rounded-lg bg-baba-teal px-6 py-2.5 text-sm font-semibold text-baba-alabaster transition-colors hover:bg-baba-teal-dark"
                 >
                   Continue
                 </button>
