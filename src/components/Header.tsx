@@ -85,21 +85,21 @@ export function Header() {
             <Link
               to="/register"
               onClick={() => setOpen(false)}
-              className="rounded-full bg-baba-teal px-4 py-2.5 text-center text-sm font-semibold text-baba-alabaster"
+              className="baba-gradient rounded-full px-4 py-2.5 text-center text-sm font-semibold"
             >
               Join as Worker
             </Link>
             <Link
               to="/register"
               onClick={() => setOpen(false)}
-              className="rounded-full border-2 border-baba-teal px-4 py-2.5 text-center text-sm font-semibold text-baba-teal"
+              className="baba-gradient-outline rounded-full px-4 py-2.5 text-center text-sm font-semibold text-baba-teal"
             >
               Join as Professional
             </Link>
             <Link
               to="/partners"
               onClick={() => setOpen(false)}
-              className="rounded-full border-2 border-baba-copper px-4 py-2.5 text-center text-sm font-semibold text-baba-copper-dark"
+              className="baba-gradient-outline rounded-full px-4 py-2.5 text-center text-sm font-semibold text-baba-copper-dark"
             >
               Register as Partner
             </Link>
