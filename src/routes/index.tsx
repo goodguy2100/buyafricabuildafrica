@@ -154,7 +154,7 @@ function Home() {
 
       {/* Impact Dashboard */}
       <section className="mx-auto max-w-7xl px-5 lg:px-8">
-        <div className="rounded-3xl bg-gradient-to-r from-baba-teal/90 via-baba-teal/75 to-baba-teal/60 px-6 py-12 text-white lg:px-12">
+        <div className="rounded-3xl bg-gradient-to-br from-brand-blue via-baba-teal to-baba-copper-dark px-6 py-12 text-white lg:px-12">
           <p className="text-center text-xs font-bold uppercase tracking-[0.3em] text-baba-copper">
             Real-Time Impact Tracker
           </p>
