@@ -127,7 +127,7 @@ function Events() {
               </div>
               <Link
                 to="/register"
-                className="mt-5 inline-flex w-fit rounded-full bg-baba-teal px-4 py-2 text-sm font-semibold text-baba-alabaster transition-colors hover:bg-baba-teal-dark"
+                className="baba-gradient mt-5 inline-flex w-fit rounded-full px-4 py-2 text-sm font-semibold"
               >
                 Register
               </Link>
