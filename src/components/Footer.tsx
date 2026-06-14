@@ -118,7 +118,7 @@ export function Footer() {
               />
               <button
                 type="submit"
-                className="shrink-0 rounded-lg bg-baba-copper px-4 py-2.5 text-sm font-semibold text-baba-slate transition-colors hover:bg-baba-copper-dark"
+                className="shrink-0 rounded-lg bg-brand-yellow px-4 py-2.5 text-sm font-semibold text-baba-slate transition-colors hover:bg-baba-copper"
               >
                 Subscribe
               </button>
