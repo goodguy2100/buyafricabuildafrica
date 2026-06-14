@@ -380,7 +380,7 @@ function Directory() {
           <div className="flex flex-wrap gap-3">
             <a
               href="/register"
-              className="rounded-lg bg-baba-teal px-6 py-3 text-sm font-semibold text-baba-alabaster transition-colors hover:bg-baba-teal-light"
+              className="baba-gradient rounded-lg px-6 py-3 text-sm font-semibold"
             >
               Join Database
             </a>
