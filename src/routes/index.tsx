@@ -111,25 +111,25 @@ function Home() {
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 to="/register"
-                className="rounded-full bg-baba-teal px-6 py-3 text-sm font-semibold text-baba-alabaster shadow-lg shadow-baba-teal/25 transition-colors hover:bg-baba-teal-dark"
+                className="baba-gradient rounded-full px-6 py-3 text-sm font-semibold shadow-lg shadow-baba-teal/25"
               >
                 Join as Worker
               </Link>
               <Link
                 to="/register"
-                className="rounded-full border-2 border-baba-teal px-6 py-3 text-sm font-semibold text-baba-teal transition-colors hover:bg-baba-teal hover:text-baba-alabaster"
+                className="baba-gradient-outline rounded-full px-6 py-3 text-sm font-semibold text-baba-teal"
               >
                 Join as Professional
               </Link>
             <Link
               to="/partners"
-              className="rounded-full border-2 border-baba-copper px-6 py-3 text-sm font-semibold text-baba-copper-dark transition-colors hover:bg-baba-copper hover:text-baba-slate"
+              className="baba-gradient-outline rounded-full px-6 py-3 text-sm font-semibold text-baba-copper-dark"
             >
               Register as Partner
             </Link>
             <Link
               to="/events"
-              className="rounded-full bg-accent px-6 py-3 text-sm font-semibold text-baba-alabaster shadow-lg shadow-accent/25 transition-colors hover:opacity-90"
+              className="baba-gradient rounded-full px-6 py-3 text-sm font-semibold shadow-lg shadow-accent/25"
             >
               BABA Training Institute
             </Link>
@@ -154,7 +154,7 @@ function Home() {
 
       {/* Impact Dashboard */}
       <section className="mx-auto max-w-7xl px-5 lg:px-8">
-        <div className="rounded-3xl bg-gradient-to-r from-baba-teal/90 via-baba-teal/75 to-baba-teal/60 px-6 py-12 text-white lg:px-12">
+        <div className="rounded-3xl bg-gradient-to-br from-brand-blue via-baba-teal to-baba-copper-dark px-6 py-12 text-white lg:px-12">
           <p className="text-center text-xs font-bold uppercase tracking-[0.3em] text-baba-copper">
             Real-Time Impact Tracker
           </p>
@@ -246,7 +246,7 @@ function Home() {
           </div>
         </div>
 
-        <div className="rounded-2xl bg-baba-teal p-8 text-baba-alabaster lg:p-10">
+        <div className="rounded-2xl bg-gradient-to-br from-brand-blue via-baba-teal to-baba-copper-dark p-8 text-baba-alabaster lg:p-10">
           <span className="inline-block rounded-full bg-baba-copper px-3 py-1 text-xs font-bold uppercase tracking-wide text-baba-slate">
             Our Mandate
           </span>

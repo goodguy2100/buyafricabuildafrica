@@ -101,7 +101,7 @@ function Contact() {
               </div>
               <button
                 type="submit"
-                className="mt-6 rounded-lg bg-baba-teal px-6 py-3 text-sm font-semibold text-baba-alabaster transition-colors hover:bg-baba-teal-dark"
+                className="baba-gradient mt-6 rounded-lg px-6 py-3 text-sm font-semibold"
               >
                 Send Message
               </button>
