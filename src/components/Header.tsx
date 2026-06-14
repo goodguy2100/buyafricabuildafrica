@@ -39,19 +39,19 @@ export function Header() {
         <div className="hidden items-center gap-2.5 xl:flex">
           <Link
             to="/register"
-            className="rounded-full bg-baba-teal px-4 py-2 text-sm font-semibold text-baba-alabaster transition-colors hover:bg-baba-teal-dark"
+            className="baba-gradient rounded-full px-4 py-2 text-sm font-semibold shadow-sm"
           >
             Join as Worker
           </Link>
           <Link
             to="/register"
-            className="rounded-full border-2 border-baba-teal px-4 py-2 text-sm font-semibold text-baba-teal transition-colors hover:bg-baba-teal hover:text-baba-alabaster"
+            className="baba-gradient-outline rounded-full px-4 py-2 text-sm font-semibold text-baba-teal"
           >
             Join as Professional
           </Link>
           <Link
             to="/partners"
-            className="rounded-full border-2 border-baba-copper px-4 py-2 text-sm font-semibold text-baba-copper-dark transition-colors hover:bg-baba-copper hover:text-baba-slate"
+            className="baba-gradient-outline rounded-full px-4 py-2 text-sm font-semibold text-baba-copper-dark"
           >
             Register as Partner
           </Link>
