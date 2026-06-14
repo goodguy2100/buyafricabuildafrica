@@ -111,25 +111,25 @@ function Home() {
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 to="/register"
-                className="rounded-full bg-baba-teal px-6 py-3 text-sm font-semibold text-baba-alabaster shadow-lg shadow-baba-teal/25 transition-colors hover:bg-baba-teal-dark"
+                className="baba-gradient rounded-full px-6 py-3 text-sm font-semibold shadow-lg shadow-baba-teal/25"
               >
                 Join as Worker
               </Link>
               <Link
                 to="/register"
-                className="rounded-full border-2 border-baba-teal px-6 py-3 text-sm font-semibold text-baba-teal transition-colors hover:bg-baba-teal hover:text-baba-alabaster"
+                className="baba-gradient-outline rounded-full px-6 py-3 text-sm font-semibold text-baba-teal"
               >
                 Join as Professional
               </Link>
             <Link
               to="/partners"
-              className="rounded-full border-2 border-baba-copper px-6 py-3 text-sm font-semibold text-baba-copper-dark transition-colors hover:bg-baba-copper hover:text-baba-slate"
+              className="baba-gradient-outline rounded-full px-6 py-3 text-sm font-semibold text-baba-copper-dark"
             >
               Register as Partner
             </Link>
             <Link
               to="/events"
-              className="rounded-full bg-accent px-6 py-3 text-sm font-semibold text-baba-alabaster shadow-lg shadow-accent/25 transition-colors hover:opacity-90"
+              className="baba-gradient rounded-full px-6 py-3 text-sm font-semibold shadow-lg shadow-accent/25"
             >
               BABA Training Institute
             </Link>
