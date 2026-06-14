@@ -349,7 +349,7 @@ function Directory() {
                     </button>
                     <button
                       onClick={() => setActive(p)}
-                      className="rounded-lg bg-baba-teal px-4 py-2 text-xs font-semibold text-baba-alabaster transition-colors hover:bg-baba-teal-dark"
+                      className="baba-gradient rounded-lg px-4 py-2 text-xs font-semibold"
                     >
                       Request Contact
                     </button>
