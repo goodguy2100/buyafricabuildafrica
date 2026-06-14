@@ -246,7 +246,7 @@ function Home() {
           </div>
         </div>
 
-        <div className="rounded-2xl bg-baba-teal p-8 text-baba-alabaster lg:p-10">
+        <div className="rounded-2xl bg-gradient-to-br from-brand-blue via-baba-teal to-baba-copper-dark p-8 text-baba-alabaster lg:p-10">
           <span className="inline-block rounded-full bg-baba-copper px-3 py-1 text-xs font-bold uppercase tracking-wide text-baba-slate">
             Our Mandate
           </span>
