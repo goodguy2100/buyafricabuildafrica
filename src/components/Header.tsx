@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
-import babaLogo from "@/assets/baba-logo.png.asset.json";
+import babaLogo from "@/assets/baba-logo-transparent.png";
 
 const navLinks = [
   { to: "/", label: "Home" },
@@ -21,7 +21,7 @@ export function Header() {
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-3.5 lg:px-8">
         <Link to="/" className="shrink-0">
           <img
-            src={babaLogo.url}
+            src={babaLogo}
             alt="Buy Africa Build Africa logo"
             className="h-20 w-auto object-contain lg:h-24"
           />
