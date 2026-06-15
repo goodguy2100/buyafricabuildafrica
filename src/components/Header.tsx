@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
-import babaLogo from "@/assets/baba-logo.png.asset.json";
+import babaLogo from "@/assets/baba-logo-transparent.png";
 
 const navLinks = [
   { to: "/", label: "Home" },
