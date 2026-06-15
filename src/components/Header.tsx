@@ -39,7 +39,7 @@ export function Header() {
         <div className="hidden items-center gap-2.5 xl:flex">
           <Link
             to="/register"
-            className="rounded-full bg-baba-teal px-4 py-2 text-sm font-semibold text-baba-alabaster transition-colors hover:bg-baba-teal-dark"
+            className="rounded-full baba-btn-primary px-4 py-2 text-sm font-semibold text-baba-alabaster transition-colors hover:bg-baba-teal-dark"
           >
             Join as Worker
           </Link>
@@ -85,7 +85,7 @@ export function Header() {
             <Link
               to="/register"
               onClick={() => setOpen(false)}
-              className="rounded-full bg-baba-teal px-4 py-2.5 text-center text-sm font-semibold text-baba-alabaster"
+              className="rounded-full baba-btn-primary px-4 py-2.5 text-center text-sm font-semibold text-baba-alabaster"
             >
               Join as Worker
             </Link>
