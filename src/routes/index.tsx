@@ -111,7 +111,7 @@ function Home() {
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 to="/register"
-                className="rounded-full bg-baba-teal px-6 py-3 text-sm font-semibold text-baba-alabaster shadow-lg shadow-baba-teal/25 transition-colors hover:bg-baba-teal-dark"
+                className="rounded-full baba-btn-primary px-6 py-3 text-sm font-semibold text-baba-alabaster shadow-lg shadow-baba-teal/25 transition-colors hover:bg-baba-teal-dark"
               >
                 Join as Worker
               </Link>

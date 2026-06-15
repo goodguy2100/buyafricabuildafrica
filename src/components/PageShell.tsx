@@ -4,7 +4,7 @@ import { Footer } from "./Footer";
 
 export function PageShell({ children }: { children: ReactNode }) {
   return (
-    <div className="flex min-h-screen flex-col bg-baba-alabaster">
+    <div className="flex min-h-screen flex-col baba-page-wash">
       <Header />
       <main className="flex-1">{children}</main>
       <Footer />

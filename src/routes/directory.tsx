@@ -191,7 +191,7 @@ function Directory() {
               className="w-full bg-transparent py-2 text-sm text-baba-slate placeholder:text-baba-slate/40 focus:outline-none"
             />
           </div>
-          <div className="rounded-lg bg-baba-teal px-6 py-3 text-center text-sm font-semibold text-baba-alabaster">
+          <div className="rounded-lg baba-btn-primary px-6 py-3 text-center text-sm font-semibold text-baba-alabaster">
             Find Professionals
           </div>
         </div>
@@ -349,7 +349,7 @@ function Directory() {
                     </button>
                     <button
                       onClick={() => setActive(p)}
-                      className="rounded-lg bg-baba-teal px-4 py-2 text-xs font-semibold text-baba-alabaster transition-colors hover:bg-baba-teal-dark"
+                      className="rounded-lg baba-btn-primary px-4 py-2 text-xs font-semibold text-baba-alabaster transition-colors hover:bg-baba-teal-dark"
                     >
                       Request Contact
                     </button>
@@ -380,7 +380,7 @@ function Directory() {
           <div className="flex flex-wrap gap-3">
             <a
               href="/register"
-              className="rounded-lg bg-baba-teal px-6 py-3 text-sm font-semibold text-baba-alabaster transition-colors hover:bg-baba-teal-light"
+              className="rounded-lg baba-btn-primary px-6 py-3 text-sm font-semibold text-baba-alabaster transition-colors hover:bg-baba-teal-light"
             >
               Join Database
             </a>
