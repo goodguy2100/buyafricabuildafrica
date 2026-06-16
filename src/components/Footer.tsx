@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Globe, Mail, MapPin, Phone } from "lucide-react";
-import { BabaLogo } from "./BabaLogo";
+import babaLogo from "@/assets/baba-logo-transparent.png";
 
 const columns = [
   {
