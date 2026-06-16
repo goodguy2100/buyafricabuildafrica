@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Globe, Mail, MapPin, Phone } from "lucide-react";
-import { BabaLogo } from "./BabaLogo";
+import babaLogo from "@/assets/baba-logo-transparent.png";
 
 const columns = [
   {
@@ -32,9 +32,11 @@ export function Footer() {
     <footer className="bg-baba-teal text-baba-alabaster">
       <div className="mx-auto grid max-w-7xl gap-10 px-5 py-14 lg:grid-cols-12 lg:px-8">
         <div className="lg:col-span-4">
-          <div className="[&_span]:text-baba-alabaster">
-            <BabaLogo className="h-11 w-11" />
-          </div>
+          <img
+            src={babaLogo}
+            alt="Buy Africa Build Africa logo"
+            className="h-24 w-auto object-contain"
+          />
           <p className="mt-4 max-w-sm text-sm leading-relaxed text-baba-alabaster/80">
             Buy Africa Build Africa is dedicated to the industrial transformation of the
             continent through human capital, local value addition and institutional
