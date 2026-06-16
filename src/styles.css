@@ -52,19 +52,19 @@
 :root {
   --radius: 0.75rem;
 
-  /* Bubbly, vibrant palette */
-  --baba-teal: hsl(200 75% 45%);
-  --baba-teal-light: hsl(200 80% 56%);
-  --baba-teal-dark: hsl(200 78% 36%);
-  --baba-copper: hsl(45 92% 55%);
-  --baba-copper-dark: hsl(35 88% 50%);
+  /* Bubbly, vibrant palette — blue matched to the BABA logo (cyan-teal) */
+  --baba-teal: hsl(189 85% 42%);
+  --baba-teal-light: hsl(189 80% 54%);
+  --baba-teal-dark: hsl(189 88% 32%);
+  --baba-copper: hsl(45 95% 55%);
+  --baba-copper-dark: hsl(35 90% 50%);
   --baba-alabaster: hsl(0 0% 100%);
-  --baba-slate: hsl(210 22% 20%);
+  --baba-slate: hsl(195 25% 18%);
 
-  --brand-red: hsl(0 72% 52%);
-  --brand-green: hsl(160 55% 40%);
-  --brand-blue: hsl(200 75% 45%);
-  --brand-yellow: hsl(45 92% 55%);
+  --brand-red: hsl(8 78% 56%);
+  --brand-green: hsl(150 62% 40%);
+  --brand-blue: hsl(189 85% 42%);
+  --brand-yellow: hsl(45 95% 55%);
 
   --background: hsl(0 0% 100%);
   --foreground: hsl(210 22% 20%);
