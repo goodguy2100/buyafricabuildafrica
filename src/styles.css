@@ -173,30 +173,30 @@
     background-image: linear-gradient(
       100deg,
       var(--brand-green),
-      var(--brand-blue) 40%,
-      var(--baba-teal) 60%,
-      var(--brand-yellow)
+      var(--brand-blue) 35%,
+      var(--brand-yellow) 70%,
+      var(--baba-copper-dark)
     );
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
   }
 
-  /* Soft airy gradient background wash */
+  /* Soft airy gradient background wash — green + yellow lead, blue accents */
   .baba-wash {
     background-image:
-      radial-gradient(circle at 0% 0%, color-mix(in oklab, var(--brand-blue) 12%, transparent), transparent 45%),
-      radial-gradient(circle at 100% 0%, color-mix(in oklab, var(--brand-yellow) 14%, transparent), transparent 45%),
-      radial-gradient(circle at 50% 100%, color-mix(in oklab, var(--accent) 12%, transparent), transparent 50%);
+      radial-gradient(circle at 0% 0%, color-mix(in oklab, var(--brand-green) 14%, transparent), transparent 45%),
+      radial-gradient(circle at 100% 0%, color-mix(in oklab, var(--brand-yellow) 16%, transparent), transparent 45%),
+      radial-gradient(circle at 50% 100%, color-mix(in oklab, var(--brand-blue) 12%, transparent), transparent 50%);
   }
 
-  /* Subtle full-page wash so the teal + yellow flavor lives everywhere */
+  /* Subtle full-page wash so the green + yellow + blue flavor lives everywhere */
   .baba-page-wash {
     background-color: var(--color-background);
     background-image:
-      radial-gradient(circle at 0% 0%, color-mix(in oklab, var(--brand-blue) 8%, transparent), transparent 40%),
-      radial-gradient(circle at 100% 12%, color-mix(in oklab, var(--brand-yellow) 9%, transparent), transparent 42%),
-      radial-gradient(circle at 50% 100%, color-mix(in oklab, var(--accent) 7%, transparent), transparent 55%);
+      radial-gradient(circle at 0% 0%, color-mix(in oklab, var(--brand-green) 9%, transparent), transparent 40%),
+      radial-gradient(circle at 100% 12%, color-mix(in oklab, var(--brand-yellow) 11%, transparent), transparent 42%),
+      radial-gradient(circle at 50% 100%, color-mix(in oklab, var(--brand-blue) 8%, transparent), transparent 55%);
     background-attachment: fixed;
   }
 
