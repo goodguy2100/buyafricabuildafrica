@@ -52,10 +52,10 @@
 :root {
   --radius: 0.75rem;
 
-  /* Bubbly, vibrant palette — blue matched to #2596be */
-  --baba-teal: hsl(196 67% 45%);
-  --baba-teal-light: hsl(196 60% 60%);
-  --baba-teal-dark: hsl(196 70% 35%);
+  /* Bubbly, vibrant palette — blue matched to #6996b1 */
+  --baba-teal: hsl(203 32% 55%);
+  --baba-teal-light: hsl(203 28% 68%);
+  --baba-teal-dark: hsl(203 35% 42%);
   --baba-copper: hsl(45 95% 55%);
   --baba-copper-dark: hsl(35 90% 50%);
   --baba-alabaster: hsl(0 0% 100%);
@@ -63,7 +63,7 @@
 
   --brand-red: hsl(8 78% 56%);
   --brand-green: hsl(150 62% 40%);
-  --brand-blue: hsl(196 67% 45%);
+  --brand-blue: hsl(203 32% 55%);
   --brand-yellow: hsl(45 95% 55%);
 
   --background: hsl(0 0% 100%);
@@ -72,7 +72,7 @@
   --card-foreground: hsl(210 22% 20%);
   --popover: hsl(0 0% 100%);
   --popover-foreground: hsl(210 22% 20%);
-  --primary: hsl(196 67% 45%);
+  --primary: hsl(203 32% 55%);
   --primary-foreground: hsl(0 0% 100%);
   --secondary: hsl(150 35% 95%);
   --secondary-foreground: hsl(195 25% 18%);
@@ -82,15 +82,15 @@
   --accent-foreground: hsl(0 0% 100%);
   --destructive: hsl(8 78% 56%);
   --destructive-foreground: hsl(0 0% 100%);
-  --border: hsl(196 25% 88%);
-  --input: hsl(196 25% 88%);
-  --ring: hsl(196 67% 45%);
+  --border: hsl(203 20% 85%);
+  --input: hsl(203 20% 85%);
+  --ring: hsl(203 32% 55%);
 }
 
 .dark {
-  --baba-teal: hsl(196 60% 55%);
-  --baba-teal-light: hsl(196 58% 65%);
-  --baba-teal-dark: hsl(196 65% 42%);
+  --baba-teal: hsl(203 28% 62%);
+  --baba-teal-light: hsl(203 25% 72%);
+  --baba-teal-dark: hsl(203 32% 50%);
   --baba-copper: hsl(45 90% 58%);
   --baba-copper-dark: hsl(35 86% 52%);
   --baba-alabaster: hsl(200 25% 10%);
@@ -98,7 +98,7 @@
 
   --brand-red: hsl(8 75% 58%);
   --brand-green: hsl(150 55% 46%);
-  --brand-blue: hsl(196 60% 55%);
+  --brand-blue: hsl(203 28% 62%);
   --brand-yellow: hsl(45 90% 58%);
 
   --background: hsl(200 25% 9%);
@@ -107,7 +107,7 @@
   --card-foreground: hsl(195 15% 95%);
   --popover: hsl(200 24% 12%);
   --popover-foreground: hsl(195 15% 95%);
-  --primary: hsl(196 60% 55%);
+  --primary: hsl(203 28% 62%);
   --primary-foreground: hsl(200 30% 8%);
   --secondary: hsl(200 20% 18%);
   --secondary-foreground: hsl(195 15% 95%);
@@ -119,7 +119,7 @@
   --destructive-foreground: hsl(0 0% 100%);
   --border: hsl(0 0% 100% / 12%);
   --input: hsl(0 0% 100% / 15%);
-  --ring: hsl(196 60% 55%);
+  --ring: hsl(203 28% 62%);
 }
 
 @layer base {
