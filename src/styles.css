@@ -88,9 +88,9 @@
 }
 
 .dark {
-  --baba-teal: hsl(196 60% 55%);
-  --baba-teal-light: hsl(196 58% 65%);
-  --baba-teal-dark: hsl(196 65% 42%);
+  --baba-teal: hsl(203 28% 62%);
+  --baba-teal-light: hsl(203 25% 72%);
+  --baba-teal-dark: hsl(203 32% 50%);
   --baba-copper: hsl(45 90% 58%);
   --baba-copper-dark: hsl(35 86% 52%);
   --baba-alabaster: hsl(200 25% 10%);
@@ -98,7 +98,7 @@
 
   --brand-red: hsl(8 75% 58%);
   --brand-green: hsl(150 55% 46%);
-  --brand-blue: hsl(196 60% 55%);
+  --brand-blue: hsl(203 28% 62%);
   --brand-yellow: hsl(45 90% 58%);
 
   --background: hsl(200 25% 9%);
