@@ -152,6 +152,55 @@ function Home() {
       </section>
 
 
+      {/* About Us */}
+      <section className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
+        <div className="grid items-center gap-12 lg:grid-cols-2">
+          <div>
+            <span className="text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">
+              About Us
+            </span>
+            <h2 className="mt-2 font-display text-3xl font-extrabold text-baba-slate sm:text-4xl">
+              Empowering Africa's Young Generation
+            </h2>
+            <p className="mt-4 text-baba-slate/70">
+              Africa is a young nation — over 1 billion of its people are youth under the
+              age of 35. Urbanization is happening at a rapid pace, yet too many of our
+              youth remain jobless. Buy Africa Build Africa (BABA) is a foundation built
+              to change that.
+            </p>
+            <p className="mt-4 text-baba-slate/70">
+              We empower youth employment through job creation — linking young people to
+              skills, professionals, funding and certification. We champion building with
+              local products to limit importation, run exchange programs so Africans can
+              learn abroad and return to build at home, and seek global support, funding
+              and tools to train artisans and grow their financial wealth.
+            </p>
+            <Link
+              to="/about"
+              className="mt-7 inline-flex items-center gap-1.5 rounded-full baba-btn-primary px-6 py-3 text-sm font-semibold text-baba-alabaster shadow-lg shadow-baba-teal/25 transition-colors hover:bg-baba-teal-dark"
+            >
+              Learn More About BABA <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+          <div className="grid gap-5 sm:grid-cols-2">
+            {foundationHighlights.map((f) => (
+              <div
+                key={f.title}
+                className="rounded-2xl border border-baba-teal/10 bg-card p-6"
+              >
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-baba-teal/10">
+                  <f.icon className="h-5 w-5 text-baba-teal" />
+                </div>
+                <h3 className="mt-4 font-display text-base font-bold text-baba-slate">
+                  {f.title}
+                </h3>
+                <p className="mt-1.5 text-sm text-baba-slate/65">{f.body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Impact Dashboard */}
       <section className="mx-auto max-w-7xl px-5 lg:px-8">
         <div className="rounded-3xl bg-gradient-to-r from-baba-teal/90 via-baba-teal/75 to-baba-teal/60 px-6 py-12 text-white lg:px-12">
