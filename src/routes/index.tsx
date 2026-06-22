@@ -79,6 +79,13 @@ const impactStats = [
   { icon: Building, value: "120+", label: "Projects" },
 ];
 
+const foundationHighlights = [
+  { icon: Briefcase, title: "Youth Employment", body: "Job creation that links youth to skills, professionals, funding and certification." },
+  { icon: GraduationCap, title: "Skills & Training", body: "Sponsoring artisans on tools and building financial skills to grow their wealth." },
+  { icon: PackageX, title: "Buy Local", body: "Building with local products to limit importation and keep value on the continent." },
+  { icon: Users, title: "Exchange Programs", body: "Africans learn abroad and return home to build, sharing knowledge across borders." },
+];
+
 const countries = [
   { name: "Kenya", flag: "🇰🇪", regions: ["Nairobi", "Coast", "Rift Valley", "Western", "Central"] },
   { name: "Nigeria", flag: "🇳🇬", regions: ["Lagos", "North-Central", "South-East", "South-West", "North-West"] },
