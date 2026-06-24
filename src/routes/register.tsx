@@ -68,7 +68,7 @@ function Register() {
                 <div
                   className={`flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold ${
                     i <= step
-                      ? "bg-baba-teal text-baba-alabaster"
+                      ? "bg-baba-blue text-baba-cream"
                       : "border-2 border-baba-slate/20 text-baba-slate/40"
                   }`}
                 >
@@ -76,7 +76,7 @@ function Register() {
                 </div>
                 <span
                   className={`mt-2 hidden text-[0.65rem] font-bold uppercase tracking-wide sm:block ${
-                    i <= step ? "text-baba-teal" : "text-baba-slate/40"
+                    i <= step ? "text-baba-blue" : "text-baba-slate/40"
                   }`}
                 >
                   {s}
@@ -85,7 +85,7 @@ function Register() {
               {i < steps.length - 1 && (
                 <div
                   className={`mx-2 h-0.5 flex-1 ${
-                    i < step ? "bg-baba-teal" : "bg-baba-slate/15"
+                    i < step ? "bg-baba-blue" : "bg-baba-slate/15"
                   }`}
                 />
               )}
@@ -98,7 +98,7 @@ function Register() {
             {/* Step 1: Category */}
             {step === 0 && (
               <div>
-                <h1 className="font-display text-3xl font-extrabold text-baba-teal">
+                <h1 className="font-display text-3xl font-extrabold text-baba-blue">
                   Select Your Path
                 </h1>
                 <p className="mt-2 text-baba-slate/70">
@@ -113,12 +113,12 @@ function Register() {
                         onClick={() => setTier(t.key)}
                         className={`relative rounded-2xl border-2 p-5 text-left transition-colors ${
                           sel
-                            ? "border-baba-teal bg-baba-teal/5"
-                            : "border-baba-teal/10 bg-card hover:border-baba-teal/30"
+                            ? "border-baba-blue bg-baba-blue/5"
+                            : "border-baba-blue/10 bg-card hover:border-baba-blue/30"
                         }`}
                       >
                         {sel && (
-                          <Check className="absolute right-4 top-4 h-5 w-5 text-baba-teal" />
+                          <Check className="absolute right-4 top-4 h-5 w-5 text-baba-blue" />
                         )}
                         <t.icon className="h-6 w-6 text-baba-copper-dark" />
                         <h3 className="mt-4 font-display text-lg font-bold text-baba-slate">
@@ -138,7 +138,7 @@ function Register() {
             {/* Step 2: Details */}
             {step === 1 && (
               <div>
-                <h1 className="font-display text-3xl font-extrabold text-baba-teal">
+                <h1 className="font-display text-3xl font-extrabold text-baba-blue">
                   Professional Details
                 </h1>
                 <p className="mt-2 text-baba-slate/70">
@@ -150,7 +150,7 @@ function Register() {
                   <Field label="Email Address" placeholder="john@example.com" type="email" />
                   <div>
                     <Label>Primary Location</Label>
-                    <select className="mt-1.5 w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-teal focus:outline-none">
+                    <select className="mt-1.5 w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none">
                       {counties.map((c) => (
                         <option key={c}>{c}</option>
                       ))}
@@ -184,13 +184,13 @@ function Register() {
             {/* Step 3 */}
             {step === 2 && (
               <div>
-                <h1 className="font-display text-3xl font-extrabold text-baba-teal">
+                <h1 className="font-display text-3xl font-extrabold text-baba-blue">
                   Almost There
                 </h1>
                 <p className="mt-2 text-baba-slate/70">
                   Review your membership and complete secure activation using the panel.
                 </p>
-                <div className="mt-6 rounded-2xl border border-baba-teal/10 bg-card p-6">
+                <div className="mt-6 rounded-2xl border border-baba-blue/10 bg-card p-6">
                   <h3 className="font-display text-lg font-bold text-baba-slate">
                     What you get
                   </h3>
@@ -202,7 +202,7 @@ function Register() {
                       "Priority access to opportunities and tenders",
                     ].map((b) => (
                       <li key={b} className="flex gap-2.5">
-                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-baba-teal" />
+                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-baba-blue" />
                         {b}
                       </li>
                     ))}
@@ -215,14 +215,14 @@ function Register() {
               <button
                 onClick={() => setStep((s) => Math.max(0, s - 1))}
                 disabled={step === 0}
-                className="rounded-lg border-2 border-baba-teal/30 px-6 py-2.5 text-sm font-semibold text-baba-teal disabled:opacity-40"
+                className="rounded-lg border-2 border-baba-blue/30 px-6 py-2.5 text-sm font-semibold text-baba-blue disabled:opacity-40"
               >
                 Back
               </button>
               {step < 2 && (
                 <button
                   onClick={() => setStep((s) => Math.min(2, s + 1))}
-                  className="rounded-lg baba-btn-primary px-6 py-2.5 text-sm font-semibold text-baba-alabaster transition-colors hover:bg-baba-teal-dark"
+                  className="rounded-lg baba-btn-primary px-6 py-2.5 text-sm font-semibold text-baba-cream transition-colors hover:bg-baba-blue-dark"
                 >
                   Continue
                 </button>
@@ -232,17 +232,17 @@ function Register() {
 
           {/* Checkout panel */}
           <aside className="lg:sticky lg:top-24 lg:self-start">
-            <div className="overflow-hidden rounded-2xl border border-baba-teal/10 bg-card shadow-sm">
-              <div className="bg-baba-teal p-5 text-baba-alabaster">
+            <div className="overflow-hidden rounded-2xl border border-baba-blue/10 bg-card shadow-sm">
+              <div className="bg-baba-blue p-5 text-baba-cream">
                 <h2 className="font-display text-lg font-bold">Secure Activation</h2>
-                <p className="text-xs text-baba-alabaster/70">
+                <p className="text-xs text-baba-cream/70">
                   Finalize your professional entry
                 </p>
               </div>
               <div className="space-y-4 p-5">
                 <Row label="Member Tier" value={selectedTier.key} />
                 <Row label="Subscription" value="Annual" />
-                <div className="flex items-center justify-between border-t border-baba-teal/10 pt-4">
+                <div className="flex items-center justify-between border-t border-baba-blue/10 pt-4">
                   <span className="font-display font-bold text-baba-slate">Total Due</span>
                   <span className="font-display text-xl font-extrabold text-baba-copper-dark">
                     KES {selectedTier.price}.00
@@ -253,7 +253,7 @@ function Register() {
                   <button
                     onClick={() => setPay("mpesa")}
                     className={`flex items-center justify-center gap-1.5 rounded-md py-2 text-sm font-semibold transition-colors ${
-                      pay === "mpesa" ? "bg-card text-baba-teal shadow-sm" : "text-baba-slate/60"
+                      pay === "mpesa" ? "bg-card text-baba-blue shadow-sm" : "text-baba-slate/60"
                     }`}
                   >
                     <Smartphone className="h-4 w-4" /> M-PESA
@@ -261,7 +261,7 @@ function Register() {
                   <button
                     onClick={() => setPay("card")}
                     className={`flex items-center justify-center gap-1.5 rounded-md py-2 text-sm font-semibold transition-colors ${
-                      pay === "card" ? "bg-card text-baba-teal shadow-sm" : "text-baba-slate/60"
+                      pay === "card" ? "bg-card text-baba-blue shadow-sm" : "text-baba-slate/60"
                     }`}
                   >
                     <CreditCard className="h-4 w-4" /> Card
@@ -273,7 +273,7 @@ function Register() {
                     <Label>M-PESA Number</Label>
                     <input
                       placeholder="+254 712345678"
-                      className="mt-1.5 w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm focus:border-baba-teal focus:outline-none"
+                      className="mt-1.5 w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm focus:border-baba-blue focus:outline-none"
                     />
                     <p className="mt-2 text-xs italic text-baba-slate/50">
                       You will receive an STK push on your phone to authorize the
@@ -286,23 +286,23 @@ function Register() {
                       <Label>Card Number</Label>
                       <input
                         placeholder="4242 4242 4242 4242"
-                        className="mt-1.5 w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm focus:border-baba-teal focus:outline-none"
+                        className="mt-1.5 w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm focus:border-baba-blue focus:outline-none"
                       />
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                       <input
                         placeholder="MM / YY"
-                        className="rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm focus:border-baba-teal focus:outline-none"
+                        className="rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm focus:border-baba-blue focus:outline-none"
                       />
                       <input
                         placeholder="CVC"
-                        className="rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm focus:border-baba-teal focus:outline-none"
+                        className="rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm focus:border-baba-blue focus:outline-none"
                       />
                     </div>
                   </div>
                 )}
 
-                <button className="flex w-full items-center justify-center gap-2 rounded-lg bg-baba-teal py-3 text-sm font-bold text-baba-alabaster transition-colors hover:bg-baba-teal-dark">
+                <button className="flex w-full items-center justify-center gap-2 rounded-lg bg-baba-blue py-3 text-sm font-bold text-baba-cream transition-colors hover:bg-baba-blue-dark">
                   Complete Secure Registration <ShieldCheck className="h-4 w-4" />
                 </button>
                 <p className="flex items-center justify-center gap-1.5 text-[0.7rem] font-semibold uppercase tracking-wide text-baba-copper-dark">
@@ -353,7 +353,7 @@ function Field({
       <input
         type={type}
         placeholder={placeholder}
-        className="mt-1.5 w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate placeholder:text-baba-slate/40 focus:border-baba-teal focus:outline-none"
+        className="mt-1.5 w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate placeholder:text-baba-slate/40 focus:border-baba-blue focus:outline-none"
       />
     </div>
   );
@@ -366,7 +366,7 @@ function YearChip({ label, defaultActive }: { label: string; defaultActive?: boo
       onClick={() => setActive((v) => !v)}
       className={`rounded-lg border-2 py-2 text-sm font-semibold transition-colors ${
         active
-          ? "border-baba-teal bg-baba-teal/5 text-baba-teal"
+          ? "border-baba-blue bg-baba-blue/5 text-baba-blue"
           : "border-input text-baba-slate/60"
       }`}
     >
@@ -387,8 +387,8 @@ function UploadBox({
   return (
     <div>
       <Label>{title}</Label>
-      <label className="mt-1.5 flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-input py-8 text-center transition-colors hover:border-baba-teal/40">
-        <Icon className="h-7 w-7 text-baba-teal/60" />
+      <label className="mt-1.5 flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-input py-8 text-center transition-colors hover:border-baba-blue/40">
+        <Icon className="h-7 w-7 text-baba-blue/60" />
         <span className="text-xs text-baba-slate/55">{hint}</span>
         <input type="file" className="hidden" />
       </label>
@@ -400,7 +400,7 @@ function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-center justify-between text-sm">
       <span className="text-baba-slate/60">{label}</span>
-      <span className="font-display font-bold text-baba-teal">{value}</span>
+      <span className="font-display font-bold text-baba-blue">{value}</span>
     </div>
   );
 }

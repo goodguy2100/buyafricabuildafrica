@@ -60,7 +60,7 @@ const stories = [
 function Impact() {
   return (
     <PageShell>
-      <section className="baba-wash border-b border-baba-teal/10">
+      <section className="baba-wash border-b border-baba-blue/10">
         <div className="mx-auto max-w-7xl px-5 py-16 lg:px-8">
           <span className="text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">
             Measurable Change
@@ -80,10 +80,10 @@ function Impact() {
           {headline.map((s) => (
             <div
               key={s.label}
-              className="rounded-2xl border border-baba-teal/10 bg-card p-6 text-center shadow-sm"
+              className="rounded-2xl border border-baba-blue/10 bg-card p-6 text-center shadow-sm"
             >
-              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-baba-teal/10">
-                <s.icon className="h-6 w-6 text-baba-teal" />
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-baba-blue/10">
+                <s.icon className="h-6 w-6 text-baba-blue" />
               </div>
               <div className="mt-4">
                 <Counter target={s.target} label={s.label} />
@@ -101,7 +101,7 @@ function Impact() {
           {stories.map((s) => (
             <div
               key={s.title}
-              className="baba-card-hover rounded-2xl border border-baba-teal/10 bg-card p-6"
+              className="baba-card-hover rounded-2xl border border-baba-blue/10 bg-card p-6"
             >
               <h3 className="font-display text-lg font-bold text-baba-slate">
                 {s.title}

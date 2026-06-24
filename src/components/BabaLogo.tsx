@@ -47,10 +47,10 @@ export function BabaLogo({ className = "h-14 w-14", showText = true }: BabaLogoP
 
       {showText && (
         <div className="leading-tight">
-          <div className="font-display text-lg font-extrabold tracking-wide text-baba-teal">
+          <div className="font-display text-lg font-extrabold tracking-wide text-baba-blue">
             Buy Africa
           </div>
-          <div className="font-display text-lg font-extrabold tracking-wide text-baba-teal">
+          <div className="font-display text-lg font-extrabold tracking-wide text-baba-blue">
             Build Africa
           </div>
         </div>

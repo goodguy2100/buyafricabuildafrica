@@ -34,13 +34,13 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  /* BABA bubbly brand — DNA from cds-a.org */
-  --color-baba-teal: var(--baba-teal);
-  --color-baba-teal-light: var(--baba-teal-light);
-  --color-baba-teal-dark: var(--baba-teal-dark);
+  /* BABA brand — Susan's chosen palette */
+  --color-baba-blue: var(--baba-blue);
+  --color-baba-blue-light: var(--baba-blue-light);
+  --color-baba-blue-dark: var(--baba-blue-dark);
   --color-baba-copper: var(--baba-copper);
   --color-baba-copper-dark: var(--baba-copper-dark);
-  --color-baba-alabaster: var(--baba-alabaster);
+  --color-baba-cream: var(--baba-cream);
   --color-baba-slate: var(--baba-slate);
 
   --color-brand-red: var(--brand-red);
@@ -52,53 +52,53 @@
 :root {
   --radius: 0.75rem;
 
-  /* Bubbly, vibrant palette — blue matched to #6996b1 */
-  --baba-teal: hsl(203 32% 55%);
-  --baba-teal-light: hsl(203 28% 68%);
-  --baba-teal-dark: hsl(203 35% 42%);
+  /* Susan's chosen palette — primary: #137ba1 */
+  --baba-blue: hsl(196 79% 35%);
+  --baba-blue-light: hsl(196 70% 50%);
+  --baba-blue-dark: hsl(196 80% 25%);
   --baba-copper: hsl(45 95% 55%);
   --baba-copper-dark: hsl(35 90% 50%);
-  --baba-alabaster: hsl(0 0% 100%);
+  --baba-cream: hsl(40 20% 97%);
   --baba-slate: hsl(195 25% 18%);
 
   --brand-red: hsl(8 78% 56%);
   --brand-green: hsl(150 62% 40%);
-  --brand-blue: hsl(203 32% 55%);
+  --brand-blue: hsl(196 79% 35%);
   --brand-yellow: hsl(45 95% 55%);
 
-  --background: hsl(0 0% 100%);
+  --background: hsl(40 20% 97%);
   --foreground: hsl(210 22% 20%);
   --card: hsl(0 0% 100%);
   --card-foreground: hsl(210 22% 20%);
   --popover: hsl(0 0% 100%);
   --popover-foreground: hsl(210 22% 20%);
-  --primary: hsl(203 32% 55%);
+  --primary: hsl(196 79% 35%);
   --primary-foreground: hsl(0 0% 100%);
-  --secondary: hsl(150 35% 95%);
+  --secondary: hsl(40 15% 92%);
   --secondary-foreground: hsl(195 25% 18%);
-  --muted: hsl(45 40% 96%);
+  --muted: hsl(40 20% 94%);
   --muted-foreground: hsl(200 10% 42%);
-  --accent: hsl(150 58% 40%);
+  --accent: hsl(196 70% 50%);
   --accent-foreground: hsl(0 0% 100%);
   --destructive: hsl(8 78% 56%);
   --destructive-foreground: hsl(0 0% 100%);
-  --border: hsl(203 20% 85%);
-  --input: hsl(203 20% 85%);
-  --ring: hsl(203 32% 55%);
+  --border: hsl(196 20% 85%);
+  --input: hsl(196 20% 85%);
+  --ring: hsl(196 79% 35%);
 }
 
 .dark {
-  --baba-teal: hsl(203 28% 62%);
-  --baba-teal-light: hsl(203 25% 72%);
-  --baba-teal-dark: hsl(203 32% 50%);
+  --baba-blue: hsl(196 70% 50%);
+  --baba-blue-light: hsl(196 65% 60%);
+  --baba-blue-dark: hsl(196 75% 40%);
   --baba-copper: hsl(45 90% 58%);
   --baba-copper-dark: hsl(35 86% 52%);
-  --baba-alabaster: hsl(200 25% 10%);
+  --baba-cream: hsl(200 25% 10%);
   --baba-slate: hsl(195 15% 95%);
 
   --brand-red: hsl(8 75% 58%);
   --brand-green: hsl(150 55% 46%);
-  --brand-blue: hsl(203 28% 62%);
+  --brand-blue: hsl(196 70% 50%);
   --brand-yellow: hsl(45 90% 58%);
 
   --background: hsl(200 25% 9%);
@@ -107,19 +107,19 @@
   --card-foreground: hsl(195 15% 95%);
   --popover: hsl(200 24% 12%);
   --popover-foreground: hsl(195 15% 95%);
-  --primary: hsl(203 28% 62%);
+  --primary: hsl(196 70% 50%);
   --primary-foreground: hsl(200 30% 8%);
   --secondary: hsl(200 20% 18%);
   --secondary-foreground: hsl(195 15% 95%);
   --muted: hsl(200 18% 18%);
   --muted-foreground: hsl(195 10% 62%);
-  --accent: hsl(150 50% 46%);
+  --accent: hsl(196 65% 60%);
   --accent-foreground: hsl(0 0% 100%);
   --destructive: hsl(8 72% 58%);
   --destructive-foreground: hsl(0 0% 100%);
   --border: hsl(0 0% 100% / 12%);
   --input: hsl(0 0% 100% / 15%);
-  --ring: hsl(203 28% 62%);
+  --ring: hsl(196 70% 50%);
 }
 
 @layer base {
@@ -150,11 +150,11 @@
     background: var(--color-secondary);
   }
   ::-webkit-scrollbar-thumb {
-    background: color-mix(in oklab, var(--baba-teal) 60%, transparent);
+    background: color-mix(in oklab, var(--baba-blue) 60%, transparent);
     border-radius: 9999px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: var(--baba-teal);
+    background: var(--baba-blue);
   }
 }
 
@@ -165,15 +165,15 @@
   }
   .baba-card-hover:hover {
     transform: translateY(-6px);
-    box-shadow: 0 18px 40px -16px color-mix(in oklab, var(--baba-teal) 35%, transparent);
+    box-shadow: 0 18px 40px -16px color-mix(in oklab, var(--baba-blue) 35%, transparent);
   }
 
-  /* Bubbly rainbow gradient text (the cds-a.org hero DNA) */
+  /* Bubbly gradient text — blue to copper/gold */
   .baba-rainbow {
     background-image: linear-gradient(
       100deg,
-      var(--brand-green),
-      var(--brand-blue) 35%,
+      var(--baba-blue),
+      var(--baba-blue-light) 40%,
       var(--brand-yellow) 70%,
       var(--baba-copper-dark)
     );
@@ -182,34 +182,35 @@
     color: transparent;
   }
 
-  /* Soft airy gradient background wash — green + yellow lead, blue accents */
+  /* Soft cream wash — no green, just warm blues and golds */
   .baba-wash {
     background-image:
-      radial-gradient(circle at 0% 0%, color-mix(in oklab, var(--brand-green) 14%, transparent), transparent 45%),
-      radial-gradient(circle at 100% 0%, color-mix(in oklab, var(--brand-yellow) 16%, transparent), transparent 45%),
-      radial-gradient(circle at 50% 100%, color-mix(in oklab, var(--brand-blue) 12%, transparent), transparent 50%);
+      radial-gradient(circle at 0% 0%, color-mix(in oklab, var(--baba-blue) 10%, transparent), transparent 45%),
+      radial-gradient(circle at 100% 0%, color-mix(in oklab, var(--brand-yellow) 12%, transparent), transparent 45%),
+      radial-gradient(circle at 50% 100%, color-mix(in oklab, var(--baba-blue-light) 8%, transparent), transparent 50%);
+    background-color: var(--baba-cream);
   }
 
-  /* Subtle full-page wash so the green + yellow + blue flavor lives everywhere */
+  /* Subtle full-page cream wash */
   .baba-page-wash {
     background-color: var(--color-background);
     background-image:
-      radial-gradient(circle at 0% 0%, color-mix(in oklab, var(--brand-green) 9%, transparent), transparent 40%),
-      radial-gradient(circle at 100% 12%, color-mix(in oklab, var(--brand-yellow) 11%, transparent), transparent 42%),
-      radial-gradient(circle at 50% 100%, color-mix(in oklab, var(--brand-blue) 8%, transparent), transparent 55%);
+      radial-gradient(circle at 0% 0%, color-mix(in oklab, var(--baba-blue) 6%, transparent), transparent 40%),
+      radial-gradient(circle at 100% 12%, color-mix(in oklab, var(--brand-yellow) 8%, transparent), transparent 42%),
+      radial-gradient(circle at 50% 100%, color-mix(in oklab, var(--baba-blue-light) 5%, transparent), transparent 55%);
     background-attachment: fixed;
   }
 
-  /* Signature teal → yellow/copper gradient for primary CTAs */
+  /* Signature blue + copper gradient for primary CTAs */
   .baba-btn-primary {
     background-image: linear-gradient(
       100deg,
-      var(--baba-teal) 0%,
-      var(--baba-teal) 45%,
+      var(--baba-blue) 0%,
+      var(--baba-blue) 45%,
       var(--baba-copper) 130%
     );
-    color: var(--baba-alabaster);
-    box-shadow: 0 10px 26px -12px color-mix(in oklab, var(--baba-teal) 55%, transparent);
+    color: white;
+    box-shadow: 0 10px 26px -12px color-mix(in oklab, var(--baba-blue) 55%, transparent);
     transition: filter 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
   }
   .baba-btn-primary:hover {

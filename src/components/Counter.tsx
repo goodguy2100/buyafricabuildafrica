@@ -45,7 +45,7 @@ export function Counter({
     <div className="text-center">
       <span
         ref={ref}
-        className="block font-display text-3xl font-extrabold tracking-tight text-baba-alabaster sm:text-4xl"
+        className="block font-display text-3xl font-extrabold tracking-tight text-baba-cream sm:text-4xl"
       >
         {value.toLocaleString()}
         {suffix}

@@ -29,7 +29,7 @@ export function Footer() {
   const [done, setDone] = useState(false);
 
   return (
-    <footer className="bg-baba-teal text-baba-alabaster">
+    <footer className="bg-baba-blue text-baba-cream">
       <div className="mx-auto grid max-w-7xl gap-10 px-5 py-14 lg:grid-cols-12 lg:px-8">
         <div className="lg:col-span-4">
           <img
@@ -37,12 +37,12 @@ export function Footer() {
             alt="Buy Africa Build Africa logo"
             className="h-24 w-auto object-contain"
           />
-          <p className="mt-4 max-w-sm text-sm leading-relaxed text-baba-alabaster/80">
+          <p className="mt-4 max-w-sm text-sm leading-relaxed text-baba-cream/80">
             Buy Africa Build Africa is dedicated to the industrial transformation of the
             continent through human capital, local value addition and institutional
             partnerships.
           </p>
-          <div className="mt-5 space-y-2 text-sm text-baba-alabaster/80">
+          <div className="mt-5 space-y-2 text-sm text-baba-cream/80">
             <p className="flex items-center gap-2">
               <MapPin className="h-4 w-4 text-baba-copper" /> Head Office — Nairobi, Kenya
             </p>
@@ -58,7 +58,7 @@ export function Footer() {
             <p className="flex items-center gap-2">
               <MapPin className="h-4 w-4 text-baba-copper" /> Regional Office — Cairo, Egypt
             </p>
-            <p className="mt-3 text-xs text-baba-alabaster/70">
+            <p className="mt-3 text-xs text-baba-cream/70">
               We will expand to other developing countries as well.
             </p>
             <p className="flex items-center gap-2">
@@ -80,7 +80,7 @@ export function Footer() {
                 <li key={l.label}>
                   <Link
                     to={l.to}
-                    className="text-sm text-baba-alabaster/80 transition-colors hover:text-baba-alabaster"
+                    className="text-sm text-baba-cream/80 transition-colors hover:text-baba-cream"
                   >
                     {l.label}
                   </Link>
@@ -94,7 +94,7 @@ export function Footer() {
           <h4 className="font-display text-sm font-bold uppercase tracking-wide text-baba-copper">
             Newsletter
           </h4>
-          <p className="mt-4 text-sm text-baba-alabaster/80">
+          <p className="mt-4 text-sm text-baba-cream/80">
             Stay updated on the latest industrial opportunities across Africa.
           </p>
           {done ? (
@@ -115,7 +115,7 @@ export function Footer() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Email Address"
-                className="w-full rounded-lg border border-white/20 bg-white/10 px-3.5 py-2.5 text-sm text-baba-alabaster placeholder:text-baba-alabaster/50 focus:border-baba-copper focus:outline-none"
+                className="w-full rounded-lg border border-white/20 bg-white/10 px-3.5 py-2.5 text-sm text-baba-cream placeholder:text-baba-cream/50 focus:border-baba-copper focus:outline-none"
               />
               <button
                 type="submit"
@@ -125,7 +125,7 @@ export function Footer() {
               </button>
             </form>
           )}
-          <div className="mt-6 flex items-center gap-3 text-baba-alabaster/70">
+          <div className="mt-6 flex items-center gap-3 text-baba-cream/70">
             <Globe className="h-5 w-5" />
             <span className="text-xs uppercase tracking-wide">Pan-African Network</span>
           </div>
@@ -133,13 +133,13 @@ export function Footer() {
       </div>
 
       <div className="border-t border-white/15">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-5 py-5 text-xs text-baba-alabaster/60 sm:flex-row lg:px-8">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-5 py-5 text-xs text-baba-cream/60 sm:flex-row lg:px-8">
           <p>© 2024 Buy Africa Build Africa. All rights reserved.</p>
           <div className="flex gap-5">
-            <Link to="/contact" className="hover:text-baba-alabaster">
+            <Link to="/contact" className="hover:text-baba-cream">
               Privacy Policy
             </Link>
-            <Link to="/contact" className="hover:text-baba-alabaster">
+            <Link to="/contact" className="hover:text-baba-cream">
               Terms of Service
             </Link>
             <span className="text-baba-copper">Built for the Bold</span>

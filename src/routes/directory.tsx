@@ -27,7 +27,7 @@ export const Route = createFileRoute("/directory")({
   component: Directory,
 });
 
-type Category = "Workers" | "Professionals" | "Contractors" | "Students & Trainees" | "Suppliers";
+type Category = "Workers" | "Professionals" | "Contractors" | "Suppliers" | "Partners & Institutions" | "Students & Emerging Professionals";
 type Experience = "Entry" | "Intermediate" | "Expert";
 
 interface Profile {
@@ -89,8 +89,8 @@ const profiles: Profile[] = [
     id: 4,
     name: "Amina Bello",
     initials: "AB",
-    role: "Student & Trainee",
-    category: "Students & Trainees",
+    role: "Students & Emerging Professionals",
+    category: "Students & Emerging Professionals",
     location: "Lagos, Nigeria",
     years: 2,
     experience: "Entry",
@@ -128,11 +128,12 @@ const profiles: Profile[] = [
 ];
 
 const categories: { name: Category; count: number }[] = [
-  { name: "Workers", count: 1240 },
   { name: "Professionals", count: 856 },
+  { name: "Workers", count: 1240 },
   { name: "Contractors", count: 412 },
-  { name: "Students & Trainees", count: 2890 },
   { name: "Suppliers", count: 158 },
+  { name: "Partners & Institutions", count: 80 },
+  { name: "Students & Emerging Professionals", count: 2890 },
 ];
 
 const experiences: Experience[] = ["Entry", "Intermediate", "Expert"];
@@ -170,7 +171,7 @@ function Directory() {
         <p className="text-sm text-baba-slate/50">
           Home <span className="mx-1">›</span> National Directory
         </p>
-        <h1 className="mt-3 font-display text-4xl font-extrabold leading-tight text-baba-teal sm:text-5xl">
+        <h1 className="mt-3 font-display text-4xl font-extrabold leading-tight text-baba-blue sm:text-5xl">
           National Workforce &amp;
           <br />
           Professional Database
@@ -181,7 +182,7 @@ function Directory() {
         </p>
 
         {/* Search bar */}
-        <div className="mt-8 flex flex-col gap-3 rounded-2xl border border-baba-teal/10 bg-card p-3 shadow-sm sm:flex-row sm:items-center">
+        <div className="mt-8 flex flex-col gap-3 rounded-2xl border border-baba-blue/10 bg-card p-3 shadow-sm sm:flex-row sm:items-center">
           <div className="flex flex-1 items-center gap-3 px-2">
             <Search className="h-5 w-5 text-baba-slate/40" />
             <input
@@ -191,7 +192,7 @@ function Directory() {
               className="w-full bg-transparent py-2 text-sm text-baba-slate placeholder:text-baba-slate/40 focus:outline-none"
             />
           </div>
-          <div className="rounded-lg baba-btn-primary px-6 py-3 text-center text-sm font-semibold text-baba-alabaster">
+          <div className="rounded-lg baba-btn-primary px-6 py-3 text-center text-sm font-semibold text-baba-cream">
             Find Professionals
           </div>
         </div>
@@ -213,7 +214,7 @@ function Directory() {
                     <label
                       key={c.name}
                       className={`flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors ${
-                        checked ? "bg-baba-teal/10 text-baba-teal" : "hover:bg-secondary"
+                        checked ? "bg-baba-blue/10 text-baba-blue" : "hover:bg-secondary"
                       }`}
                     >
                       <span className="flex items-center gap-2.5">
@@ -277,7 +278,7 @@ function Directory() {
                 <button
                   onClick={() => setVerifiedOnly((v) => !v)}
                   className={`relative h-6 w-11 rounded-full transition-colors ${
-                    verifiedOnly ? "bg-baba-teal" : "bg-baba-slate/20"
+                    verifiedOnly ? "bg-baba-blue" : "bg-baba-slate/20"
                   }`}
                   aria-label="Toggle verified only"
                 >
@@ -308,10 +309,10 @@ function Directory() {
               {filtered.map((p) => (
                 <article
                   key={p.id}
-                  className="baba-card-hover flex flex-col rounded-2xl border border-baba-teal/10 bg-card p-5"
+                  className="baba-card-hover flex flex-col rounded-2xl border border-baba-blue/10 bg-card p-5"
                 >
                   <div className="flex items-start justify-between">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-baba-teal/10 font-display text-sm font-bold text-baba-teal">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-baba-blue/10 font-display text-sm font-bold text-baba-blue">
                       {p.initials}
                     </div>
                     {p.certified ? (
@@ -319,7 +320,7 @@ function Directory() {
                         <Award className="h-3.5 w-3.5" /> Certified
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-baba-teal/10 px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-wide text-baba-teal">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-baba-blue/10 px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-wide text-baba-blue">
                         <BadgeCheck className="h-3.5 w-3.5" /> Verified
                       </span>
                     )}
@@ -343,13 +344,13 @@ function Directory() {
                       </span>
                     ))}
                   </div>
-                  <div className="mt-5 flex items-center justify-between border-t border-baba-teal/10 pt-4">
+                  <div className="mt-5 flex items-center justify-between border-t border-baba-blue/10 pt-4">
                     <button className="text-xs font-bold uppercase tracking-wide text-baba-copper-dark hover:underline">
                       View Portfolio
                     </button>
                     <button
                       onClick={() => setActive(p)}
-                      className="rounded-lg baba-btn-primary px-4 py-2 text-xs font-semibold text-baba-alabaster transition-colors hover:bg-baba-teal-dark"
+                      className="rounded-lg baba-btn-primary px-4 py-2 text-xs font-semibold text-baba-cream transition-colors hover:bg-baba-blue-dark"
                     >
                       Request Contact
                     </button>
@@ -359,7 +360,7 @@ function Directory() {
             </div>
 
             {filtered.length === 0 && (
-              <div className="mt-10 rounded-2xl border border-dashed border-baba-teal/20 p-12 text-center text-baba-slate/50">
+              <div className="mt-10 rounded-2xl border border-dashed border-baba-blue/20 p-12 text-center text-baba-slate/50">
                 No professionals match your filters. Try adjusting your search.
               </div>
             )}
@@ -367,12 +368,12 @@ function Directory() {
         </div>
 
         {/* CTA banner */}
-        <div className="mt-16 grid gap-6 rounded-3xl bg-baba-slate p-8 text-baba-alabaster lg:grid-cols-[1fr_auto] lg:items-center lg:p-12">
+        <div className="mt-16 grid gap-6 rounded-3xl bg-baba-slate p-8 text-baba-cream lg:grid-cols-[1fr_auto] lg:items-center lg:p-12">
           <div>
             <h2 className="font-display text-2xl font-extrabold sm:text-3xl">
-              Are you an artisan, supplier, or professional?
+              Are you a professional, artisan, supplier, or institution?
             </h2>
-            <p className="mt-3 max-w-xl text-sm text-baba-alabaster/70">
+            <p className="mt-3 max-w-xl text-sm text-baba-cream/70">
               Register your profile today to access exclusive opportunities, verify your
               skills, and connect with continental partners.
             </p>
@@ -380,7 +381,7 @@ function Directory() {
           <div className="flex flex-wrap gap-3">
             <a
               href="/register"
-              className="rounded-lg baba-btn-primary px-6 py-3 text-sm font-semibold text-baba-alabaster transition-colors hover:bg-baba-teal-light"
+              className="rounded-lg baba-btn-primary px-6 py-3 text-sm font-semibold text-baba-cream transition-colors hover:bg-baba-blue-light"
             >
               Join Database
             </a>
@@ -406,7 +407,7 @@ function Directory() {
           >
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-baba-teal/10 font-display text-sm font-bold text-baba-teal">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-baba-blue/10 font-display text-sm font-bold text-baba-blue">
                   {active.initials}
                 </div>
                 <div>
@@ -432,13 +433,13 @@ function Directory() {
                 href={`tel:${active.phone}`}
                 className="mt-3 flex items-center gap-2.5 text-sm font-semibold text-baba-slate"
               >
-                <Phone className="h-4 w-4 text-baba-teal" /> {active.phone}
+                <Phone className="h-4 w-4 text-baba-blue" /> {active.phone}
               </a>
               <a
                 href={`mailto:${active.email}`}
                 className="mt-2 flex items-center gap-2.5 text-sm font-semibold text-baba-slate"
               >
-                <Mail className="h-4 w-4 text-baba-teal" /> {active.email}
+                <Mail className="h-4 w-4 text-baba-blue" /> {active.email}
               </a>
             </div>
             <p className="mt-4 text-xs text-baba-slate/50">

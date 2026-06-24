@@ -49,7 +49,7 @@ function Opportunities() {
 
   return (
     <PageShell>
-      <section className="border-b border-baba-teal/10 bg-baba-teal/5">
+      <section className="border-b border-baba-blue/10 bg-baba-blue/5">
         <div className="mx-auto max-w-7xl px-5 py-16 lg:px-8">
           <span className="text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">
             Grow With Us
@@ -72,8 +72,8 @@ function Opportunities() {
               onClick={() => setFilter(k)}
               className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
                 filter === k
-                  ? "bg-baba-teal text-baba-alabaster"
-                  : "bg-secondary text-baba-slate/70 hover:bg-baba-teal/10"
+                  ? "bg-baba-blue text-baba-cream"
+                  : "bg-secondary text-baba-slate/70 hover:bg-baba-blue/10"
               }`}
             >
               {k}
@@ -85,7 +85,7 @@ function Opportunities() {
           {list.map((o) => (
             <article
               key={o.id}
-              className="baba-card-hover flex flex-col rounded-2xl border border-baba-teal/10 bg-card p-6"
+              className="baba-card-hover flex flex-col rounded-2xl border border-baba-blue/10 bg-card p-6"
             >
               <span className="inline-flex w-fit rounded-full bg-baba-copper/15 px-3 py-1 text-[0.65rem] font-bold uppercase tracking-wide text-baba-copper-dark">
                 {o.kind}
@@ -93,7 +93,7 @@ function Opportunities() {
               <h3 className="mt-4 font-display text-lg font-bold text-baba-slate">
                 {o.title}
               </h3>
-              <p className="mt-1 text-sm font-semibold text-baba-teal">{o.org}</p>
+              <p className="mt-1 text-sm font-semibold text-baba-blue">{o.org}</p>
               <p className="mt-3 flex items-center gap-1.5 text-sm text-baba-slate/60">
                 <MapPin className="h-3.5 w-3.5" /> {o.location}
               </p>

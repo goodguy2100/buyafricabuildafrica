@@ -25,7 +25,7 @@ function Pillars() {
 
   return (
     <PageShell>
-      <section className="border-b border-baba-teal/10 bg-baba-teal/5">
+      <section className="border-b border-baba-blue/10 bg-baba-blue/5">
         <div className="mx-auto max-w-7xl px-5 py-16 lg:px-8">
           <span className="text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">
             Foundation
@@ -48,8 +48,8 @@ function Pillars() {
               onClick={() => setActive(p.key)}
               className={`flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold transition-colors ${
                 active === p.key
-                  ? "bg-baba-teal text-baba-alabaster"
-                  : "bg-secondary text-baba-slate/70 hover:bg-baba-teal/10"
+                  ? "bg-baba-blue text-baba-cream"
+                  : "bg-secondary text-baba-slate/70 hover:bg-baba-blue/10"
               }`}
             >
               <p.icon className="h-4 w-4" />
@@ -58,10 +58,10 @@ function Pillars() {
           ))}
         </div>
 
-        <div className="mt-8 grid gap-8 rounded-3xl border border-baba-teal/10 bg-card p-8 lg:grid-cols-2 lg:p-12">
+        <div className="mt-8 grid gap-8 rounded-3xl border border-baba-blue/10 bg-card p-8 lg:grid-cols-2 lg:p-12">
           <div>
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-baba-teal/10">
-              <current.icon className="h-7 w-7 text-baba-teal" />
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-baba-blue/10">
+              <current.icon className="h-7 w-7 text-baba-blue" />
             </div>
             <p className="mt-5 text-xs font-bold uppercase tracking-wide text-baba-copper-dark">
               {current.tagline}
@@ -78,8 +78,8 @@ function Pillars() {
             <ul className="mt-4 space-y-3">
               {current.focus.map((f) => (
                 <li key={f} className="flex items-center gap-3 text-sm text-baba-slate/75">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-baba-teal/15">
-                    <Check className="h-3.5 w-3.5 text-baba-teal" />
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-baba-blue/15">
+                    <Check className="h-3.5 w-3.5 text-baba-blue" />
                   </span>
                   {f}
                 </li>
@@ -95,11 +95,11 @@ function Pillars() {
               onClick={() => setActive(p.key)}
               className={`baba-card-hover rounded-2xl border p-5 text-left ${
                 active === p.key
-                  ? "border-baba-teal bg-baba-teal/5"
-                  : "border-baba-teal/10 bg-card"
+                  ? "border-baba-blue bg-baba-blue/5"
+                  : "border-baba-blue/10 bg-card"
               }`}
             >
-              <p.icon className="h-5 w-5 text-baba-teal" />
+              <p.icon className="h-5 w-5 text-baba-blue" />
               <h3 className="mt-3 font-display text-base font-bold text-baba-slate">
                 {p.name}
               </h3>

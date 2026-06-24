@@ -9,6 +9,22 @@ import {
   Users,
   MapPin,
   Building,
+  Target,
+  Eye,
+  Heart,
+  Lightbulb,
+  Globe,
+  Award,
+  Calendar,
+  BookOpen,
+  Wrench,
+  ShoppingBag,
+  Building2,
+  Leaf,
+  TrendingUp,
+  Star,
+  Shield,
+  Handshake,
 } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { Counter } from "@/components/Counter";
@@ -18,22 +34,123 @@ import heroCollage from "@/assets/hero-collage.jpg";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Buy Africa Build Africa (BABA) | Building the Future of the Continent" },
+      { title: "Buy Africa Build Africa (BABA) | Connecting Local Talent to Continental Opportunity" },
       {
         name: "description",
         content:
-          "An African initiative building skills, jobs, cities and futures. Connect local talent with continental opportunity.",
+          "A Pan-African platform connecting professionals, artisans, institutions, and opportunities to drive economic growth and sustainable development across Africa.",
       },
       { property: "og:title", content: "Buy Africa Build Africa (BABA)" },
       {
         property: "og:description",
-        content: "An African initiative building skills, jobs, cities and futures.",
+        content: "Connecting local talent to continental opportunity.",
       },
     ],
     links: [{ rel: "canonical", href: "/" }],
   }),
   component: Home,
 });
+
+const coreValues = [
+  {
+    icon: Star,
+    title: "African Excellence",
+    body: "African talent, products, services, and innovations can compete globally when given the right opportunities and support.",
+  },
+  {
+    icon: Shield,
+    title: "Integrity",
+    body: "We uphold transparency, accountability, professionalism, and ethical leadership in all that we do.",
+  },
+  {
+    icon: Handshake,
+    title: "Collaboration",
+    body: "Africa's greatest achievements will be built through partnerships and collective action.",
+  },
+  {
+    icon: Lightbulb,
+    title: "Innovation",
+    body: "We embrace creativity, technology, and forward-thinking solutions that advance economic growth.",
+  },
+  {
+    icon: Leaf,
+    title: "Sustainability",
+    body: "We promote solutions that create long-term economic, environmental, and social value.",
+  },
+  {
+    icon: Heart,
+    title: "Empowerment",
+    body: "We create pathways that enable individuals, businesses, and communities to reach their full potential.",
+  },
+];
+
+const empowerPoints = [
+  {
+    icon: Briefcase,
+    title: "Youth Employment",
+    body: "Job creation that links young people to skills, professionals, funding, and certification. Connecting talent to opportunity across the continent.",
+  },
+  {
+    icon: GraduationCap,
+    title: "Skills & Training",
+    body: "Sponsoring artisans on tools, providing master classes, and building financial skills to help professionals grow their wealth.",
+  },
+  {
+    icon: ShoppingBag,
+    title: "Buy Local",
+    body: "Building with local products to limit importation and keep value on the continent. Championing African-made solutions.",
+  },
+  {
+    icon: Globe,
+    title: "Exchange Programs",
+    body: "Africans learn abroad and return home to build, sharing knowledge and skills across borders.",
+  },
+];
+
+const institutePrograms = [
+  {
+    title: "Training Programs",
+    body: "Hands-on technical training in construction, plumbing, electrical, welding, and more — led by industry experts.",
+    icon: Wrench,
+  },
+  {
+    title: "Certification Programs",
+    body: "Industry-recognized certifications that validate skills and open doors to better opportunities.",
+    icon: Award,
+  },
+  {
+    title: "Country Workshops",
+    body: "Regional workshops delivered across African countries, bringing training directly to local communities.",
+    icon: Globe,
+  },
+  {
+    title: "Industry Forums",
+    body: "Platforms for professionals, policymakers, and industry leaders to share knowledge and shape the future of the built environment.",
+    icon: Building2,
+  },
+  {
+    title: "Construction Training",
+    body: "Specialized programs in modern construction techniques, climate-resilient building, and project management.",
+    icon: Building,
+  },
+];
+
+const boardMembers = [
+  { role: "Chairperson", name: "TBD — Government Representative", desc: "Ministry of Housing & Urban Development" },
+  { role: "Vice Chair — Professionals", name: "TBD — Senior Architect/Engineer", desc: "Representing the professional body" },
+  { role: "Programs Manager", name: "TBD — Programs Director", desc: "Oversees all BABA initiatives and operations" },
+  { role: "Secretary", name: "TBD — Administrative Lead", desc: "Coordinates board activities and documentation" },
+  { role: "CEO — Manufacturing Partner", name: "TBD — Manufacturing Sector CEO", desc: "Representing the manufacturing and industrial sector" },
+  { role: "Member — Finance & Investment", name: "TBD — Financial Institution Rep", desc: "Linking BABA to investment and funding" },
+  { role: "Member — Youth & Grassroots", name: "TBD — Community Leader", desc: "Representing grassroots and youth voices" },
+];
+
+const countries = [
+  { name: "Kenya", flag: "🇰🇪", regions: ["Nairobi", "Coast", "Rift Valley", "Western", "Central"] },
+  { name: "Nigeria", flag: "🇳🇬", regions: ["Lagos", "North-Central", "South-East", "South-West", "North-West"] },
+  { name: "South Africa", flag: "🇿🇦", regions: ["Gauteng", "Western Cape", "KwaZulu-Natal", "Eastern Cape", "Limpopo"] },
+  { name: "Egypt", flag: "🇪🇬", regions: ["Cairo", "Alexandria", "Giza", "Delta", "Upper Egypt"] },
+];
 
 const challenges = [
   {
@@ -53,25 +170,6 @@ const challenges = [
   },
 ];
 
-const solutions = [
-  {
-    title: "Integrated Skills Training",
-    body: "Continuous upskilling programs aligned with real-time construction and manufacturing needs.",
-  },
-  {
-    title: "Digital Workforce Database",
-    body: "A centralized, verified registry for workers and professionals to connect with contractors.",
-  },
-  {
-    title: "Manufacturing Integration",
-    body: "Prioritizing local materials and equipment to stimulate continental industry.",
-  },
-  {
-    title: "TVET Collaboration",
-    body: "Direct partnership with Technical and Vocational Education and Training centers.",
-  },
-];
-
 const impactStats = [
   { icon: Briefcase, value: "12,500+", label: "Jobs Created" },
   { icon: Users, value: "350+", label: "Trainings" },
@@ -79,71 +177,51 @@ const impactStats = [
   { icon: Building, value: "120+", label: "Projects" },
 ];
 
-const foundationHighlights = [
-  { icon: Briefcase, title: "Youth Employment", body: "Job creation that links youth to skills, professionals, funding and certification." },
-  { icon: GraduationCap, title: "Skills & Training", body: "Sponsoring artisans on tools and building financial skills to grow their wealth." },
-  { icon: PackageX, title: "Buy Local", body: "Building with local products to limit importation and keep value on the continent." },
-  { icon: Users, title: "Exchange Programs", body: "Africans learn abroad and return home to build, sharing knowledge across borders." },
-];
-
-const countries = [
-  { name: "Kenya", flag: "🇰🇪", regions: ["Nairobi", "Coast", "Rift Valley", "Western", "Central"] },
-  { name: "Nigeria", flag: "🇳🇬", regions: ["Lagos", "North-Central", "South-East", "South-West", "North-West"] },
-  { name: "South Africa", flag: "🇿🇦", regions: ["Gauteng", "Western Cape", "KwaZulu-Natal", "Eastern Cape", "Limpopo"] },
-  { name: "Egypt", flag: "🇪🇬", regions: ["Cairo", "Alexandria", "Giza", "Delta", "Upper Egypt"] },
-];
-
 function Home() {
   return (
     <PageShell>
-      {/* Hero */}
+      {/* ═══ HERO ═══ */}
       <section className="relative overflow-hidden baba-wash">
         <div className="mx-auto grid max-w-7xl items-center gap-12 px-5 py-16 lg:grid-cols-2 lg:px-8 lg:py-24">
           <div>
-            <span className="inline-flex items-center gap-2 rounded-full border border-baba-teal/20 bg-baba-alabaster px-4 py-1.5 text-sm font-semibold text-baba-teal shadow-sm">
-              ✨ Building Africa, by Africans 💪
+            <span className="inline-flex items-center gap-2 rounded-full border border-baba-blue/20 bg-white px-4 py-1.5 text-sm font-semibold text-baba-blue shadow-sm">
+              🌍 Building Africa, by Africans
             </span>
             <h1 className="mt-5 font-display text-5xl font-extrabold leading-[1.02] tracking-tight text-baba-slate sm:text-6xl lg:text-7xl">
               Buy Africa
               <br />
               <span className="baba-rainbow">Build Africa</span>
             </h1>
-            <p className="mt-6 font-display text-xl font-semibold text-baba-teal sm:text-2xl">
-              An African Initiative Building Skills, Jobs, Cities, and Futures.
+            <p className="mt-6 font-display text-xl font-semibold text-baba-blue sm:text-2xl">
+              Connecting Local Talent to Continental Opportunity
             </p>
             <p className="mt-5 max-w-lg text-base leading-relaxed text-baba-slate/70">
-              Join the movement that connects local talent with continental opportunities.
-              We are bridging the gap between skilled workforce and institutional demand.
+              We are bridging the gap between skilled workforce, professionals, institutions, and opportunity.
+              BABA is a Pan-African platform bringing together everyone in the build industry — from artisans to architects — to build Africa from within.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 to="/register"
-                className="rounded-full baba-btn-primary px-6 py-3 text-sm font-semibold text-baba-alabaster shadow-lg shadow-baba-teal/25 transition-colors hover:bg-baba-teal-dark"
+                className="rounded-full baba-btn-primary px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-baba-blue/25 transition-colors hover:bg-baba-blue-dark"
               >
-                Join as Worker
+                Become a Member
+              </Link>
+              <Link
+                to="/partners"
+                className="rounded-full border-2 border-baba-blue px-6 py-3 text-sm font-semibold text-baba-blue transition-colors hover:bg-baba-blue hover:text-white"
+              >
+                Partner With Us
               </Link>
               <Link
                 to="/register"
-                className="rounded-full border-2 border-baba-teal px-6 py-3 text-sm font-semibold text-baba-teal transition-colors hover:bg-baba-teal hover:text-baba-alabaster"
+                className="rounded-full border-2 border-baba-copper px-6 py-3 text-sm font-semibold text-baba-copper-dark transition-colors hover:bg-baba-copper hover:text-baba-slate"
               >
-                Join as Professional
+                Join the BABA Institute
               </Link>
-            <Link
-              to="/partners"
-              className="rounded-full border-2 border-baba-copper px-6 py-3 text-sm font-semibold text-baba-copper-dark transition-colors hover:bg-baba-copper hover:text-baba-slate"
-            >
-              Register as Partner
-            </Link>
-            <Link
-              to="/events"
-              className="rounded-full bg-accent px-6 py-3 text-sm font-semibold text-baba-alabaster shadow-lg shadow-accent/25 transition-colors hover:opacity-90"
-            >
-              BABA Training Institute
-            </Link>
+            </div>
           </div>
-        </div>
-        <div className="relative">
-            <div className="overflow-hidden rounded-[2rem] border border-baba-teal/10 shadow-2xl shadow-baba-slate/10">
+          <div className="relative">
+            <div className="overflow-hidden rounded-[2rem] border border-baba-blue/10 shadow-2xl shadow-baba-slate/10">
               <img
                 src={heroCollage}
                 alt="African artisans, engineers and professionals building modern industry"
@@ -153,64 +231,267 @@ function Home() {
               />
             </div>
             <div className="absolute -bottom-4 -left-4 hidden h-24 w-24 rounded-[1.5rem] border-4 border-baba-copper/50 sm:block" />
-            <div className="absolute -top-4 -right-4 hidden h-16 w-16 rounded-full border-4 border-baba-teal/40 sm:block" />
+            <div className="absolute -top-4 -right-4 hidden h-16 w-16 rounded-full border-4 border-baba-blue/40 sm:block" />
           </div>
         </div>
       </section>
 
-
-      {/* About Us */}
+      {/* ═══ OUR STORY / MISSION ═══ */}
       <section className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
-        <div className="grid items-center gap-12 lg:grid-cols-2">
-          <div>
+        <div className="mx-auto max-w-4xl text-center">
+          <span className="text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">
+            Our Story
+          </span>
+          <h2 className="mt-3 font-display text-4xl font-extrabold text-baba-slate sm:text-5xl">
+            Building Africa's Future Through People, Skills, Enterprise &amp; Sustainable Cities
+          </h2>
+          <p className="mt-6 text-lg leading-relaxed text-baba-slate/70">
+            Africa is the youngest continent in the world, with more than 60% of its population under the age of 35. Every day, thousands move into Africa's cities in search of opportunity. The question is no longer <em>what</em> Africa needs — it's <em>how</em> we move from conversation to implementation.
+          </p>
+          <p className="mt-4 text-lg leading-relaxed text-baba-slate/70">
+            <strong>BABA</strong> was established to bridge that gap. We are a Pan-African platform that brings together professionals, artisans, entrepreneurs, institutions, manufacturers, governments, and communities to collectively contribute to Africa's development through practical action, collaboration, innovation, and enterprise.
+          </p>
+          <div className="mt-10 grid gap-8 sm:grid-cols-2">
+            <div className="rounded-2xl bg-white p-8 shadow-sm border border-baba-blue/10">
+              <Target className="h-8 w-8 text-baba-blue" />
+              <h3 className="mt-4 font-display text-xl font-bold text-baba-slate">Our Mission</h3>
+              <p className="mt-3 text-baba-slate/70 leading-relaxed">
+                To connect people, businesses, industries, institutions, and opportunities through platforms that promote entrepreneurship, skills development, innovation, investment, sustainability, and inclusive economic growth across Africa.
+              </p>
+            </div>
+            <div className="rounded-2xl bg-white p-8 shadow-sm border border-baba-copper/20">
+              <Eye className="h-8 w-8 text-baba-copper-dark" />
+              <h3 className="mt-4 font-display text-xl font-bold text-baba-slate">Our Vision</h3>
+              <p className="mt-3 text-baba-slate/70 leading-relaxed">
+                To become Africa's leading ecosystem for enterprise development, industry collaboration, skills advancement, and sustainable urban transformation.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ CORE VALUES ═══ */}
+      <section className="bg-baba-cream py-20">
+        <div className="mx-auto max-w-7xl px-5 lg:px-8">
+          <div className="mx-auto max-w-3xl text-center">
             <span className="text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">
-              About Us
+              Our DNA
             </span>
             <h2 className="mt-2 font-display text-3xl font-extrabold text-baba-slate sm:text-4xl">
-              Empowering Africa's Young Generation
+              Core Values
             </h2>
-            <p className="mt-4 text-baba-slate/70">
-              Africa is a young nation — over 1 billion of its people are youth under the
-              age of 35. Urbanization is happening at a rapid pace, yet too many of our
-              youth remain jobless. Buy Africa Build Africa (BABA) is a foundation built
-              to change that.
+            <p className="mt-3 text-baba-slate/70">
+              The principles that guide everything we do.
             </p>
-            <p className="mt-4 text-baba-slate/70">
-              We empower youth employment through job creation — linking young people to
-              skills, professionals, funding and certification. We champion building with
-              local products to limit importation, run exchange programs so Africans can
-              learn abroad and return to build at home, and seek global support, funding
-              and tools to train artisans and grow their financial wealth.
-            </p>
-            <Link
-              to="/about"
-              className="mt-7 inline-flex items-center gap-1.5 rounded-full baba-btn-primary px-6 py-3 text-sm font-semibold text-baba-alabaster shadow-lg shadow-baba-teal/25 transition-colors hover:bg-baba-teal-dark"
-            >
-              Learn More About BABA <ArrowRight className="h-4 w-4" />
-            </Link>
           </div>
-          <div className="grid gap-5 sm:grid-cols-2">
-            {foundationHighlights.map((f) => (
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {coreValues.map((v) => (
               <div
-                key={f.title}
-                className="rounded-2xl border border-baba-teal/10 bg-card p-6"
+                key={v.title}
+                className="rounded-2xl border border-baba-blue/10 bg-white p-6 baba-card-hover"
               >
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-baba-teal/10">
-                  <f.icon className="h-5 w-5 text-baba-teal" />
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-baba-blue/10">
+                  <v.icon className="h-5 w-5 text-baba-blue" />
                 </div>
-                <h3 className="mt-4 font-display text-base font-bold text-baba-slate">
-                  {f.title}
-                </h3>
-                <p className="mt-1.5 text-sm text-baba-slate/65">{f.body}</p>
+                <h3 className="mt-4 font-display text-lg font-bold text-baba-slate">{v.title}</h3>
+                <p className="mt-2 text-sm text-baba-slate/65">{v.body}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Impact Dashboard */}
-      <section className="mx-auto max-w-7xl px-5 lg:px-8">
-        <div className="rounded-3xl bg-gradient-to-r from-baba-teal/90 via-baba-teal/75 to-baba-teal/60 px-6 py-12 text-white lg:px-12">
+      {/* ═══ HOW WE EMPOWER ═══ */}
+      <section className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
+        <div className="mx-auto max-w-3xl text-center">
+          <span className="text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">
+            Our Impact
+          </span>
+          <h2 className="mt-2 font-display text-3xl font-extrabold text-baba-slate sm:text-4xl">
+            How We Empower
+          </h2>
+          <p className="mt-3 text-baba-slate/70">
+            Four pillars of impact that drive Africa's development from within.
+          </p>
+        </div>
+        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {empowerPoints.map((p) => (
+            <div
+              key={p.title}
+              className="rounded-2xl border border-baba-blue/10 bg-white p-6 baba-card-hover"
+            >
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-baba-blue/10">
+                <p.icon className="h-6 w-6 text-baba-blue" />
+              </div>
+              <h3 className="mt-4 font-display text-lg font-bold text-baba-slate">{p.title}</h3>
+              <p className="mt-2 text-sm text-baba-slate/65">{p.body}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ═══ BABA INSTITUTE ═══ */}
+      <section className="bg-gradient-to-br from-baba-blue/5 via-baba-cream to-baba-cream py-20">
+        <div className="mx-auto max-w-7xl px-5 lg:px-8">
+          <div className="mx-auto max-w-3xl text-center">
+            <span className="text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">
+              Capacity Building
+            </span>
+            <h2 className="mt-2 font-display text-3xl font-extrabold text-baba-slate sm:text-4xl">
+              BABA Institute
+            </h2>
+            <p className="mt-3 text-baba-slate/70">
+              Empowering Africa's workforce through training, certification, and industry engagement.
+            </p>
+          </div>
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {institutePrograms.map((prog) => (
+              <div
+                key={prog.title}
+                className="rounded-2xl border border-baba-blue/10 bg-white p-6 baba-card-hover"
+              >
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-baba-copper/10">
+                  <prog.icon className="h-5 w-5 text-baba-copper-dark" />
+                </div>
+                <h3 className="mt-4 font-display text-lg font-bold text-baba-slate">{prog.title}</h3>
+                <p className="mt-2 text-sm text-baba-slate/65">{prog.body}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-10 text-center">
+            <Link
+              to="/register"
+              className="inline-flex items-center gap-2 rounded-full baba-btn-primary px-6 py-3 text-sm font-semibold text-white"
+            >
+              Join the BABA Institute <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ ADVISORY BOARD ═══ */}
+      <section className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
+        <div className="mx-auto max-w-3xl text-center">
+          <span className="text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">
+            Leadership
+          </span>
+          <h2 className="mt-2 font-display text-3xl font-extrabold text-baba-slate sm:text-4xl">
+            Advisory Board
+          </h2>
+          <p className="mt-3 text-baba-slate/70">
+            Guiding BABA's vision with expertise across government, professional bodies, industry, and community.
+          </p>
+        </div>
+        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {boardMembers.map((m) => (
+            <div
+              key={m.role}
+              className="rounded-2xl border border-baba-blue/10 bg-white p-6 text-center baba-card-hover"
+            >
+              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-baba-blue/10">
+                <Star className="h-6 w-6 text-baba-blue" />
+              </div>
+              <h3 className="mt-4 font-display text-sm font-bold uppercase tracking-wide text-baba-copper-dark">
+                {m.role}
+              </h3>
+              <p className="mt-1 font-display text-base font-bold text-baba-slate">{m.name}</p>
+              <p className="mt-1 text-xs text-baba-slate/60">{m.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ═══ OUR PRESENCE ═══ */}
+      <section className="bg-baba-blue text-baba-cream py-20">
+        <div className="mx-auto max-w-7xl px-5 lg:px-8">
+          <div className="mx-auto max-w-3xl text-center">
+            <span className="text-xs font-bold uppercase tracking-[0.3em] text-baba-copper">
+              Footprint
+            </span>
+            <h2 className="mt-2 font-display text-3xl font-extrabold sm:text-4xl">
+              Our Presence
+            </h2>
+            <p className="mt-3 text-white/80">
+              We are currently active across Africa, with plans to expand to every region of the continent.
+            </p>
+          </div>
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {countries.map((c) => (
+              <div
+                key={c.name}
+                className="rounded-2xl border border-white/15 bg-white/10 p-5 transition-transform hover:-translate-y-1"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-3xl">{c.flag}</span>
+                  <h3 className="font-display text-lg font-bold text-white">{c.name}</h3>
+                </div>
+                <ul className="mt-4 space-y-2">
+                  {c.regions.map((r) => (
+                    <li
+                      key={r}
+                      className="flex items-center gap-2 text-sm text-white/80"
+                    >
+                      <span className="h-1.5 w-1.5 rounded-full bg-baba-copper" />
+                      {r}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+          <div className="mt-8 text-center">
+            <p className="text-sm text-white/70">
+              Map markers coming soon — showing dots across the continent where BABA is active.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ UPCOMING EVENTS ═══ */}
+      <section className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
+        <div className="mx-auto max-w-3xl text-center">
+          <span className="text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">
+            Events
+          </span>
+          <h2 className="mt-2 font-display text-3xl font-extrabold text-baba-slate sm:text-4xl">
+            Upcoming Events
+          </h2>
+        </div>
+        <div className="mt-10 grid gap-6 sm:grid-cols-2">
+          <div className="rounded-2xl border border-baba-blue/10 bg-white p-8 baba-card-hover">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-baba-blue/10">
+              <Calendar className="h-6 w-6 text-baba-blue" />
+            </div>
+            <h3 className="mt-4 font-display text-xl font-bold text-baba-slate">BABA Official Launch</h3>
+            <p className="mt-2 text-sm font-semibold text-baba-copper-dark">End of September 2026</p>
+            <p className="mt-2 text-baba-slate/70">
+              The official launch of BABA — bringing together professionals, artisans, partners, and stakeholders from across Africa to mark the beginning of this transformative journey.
+            </p>
+          </div>
+          <div className="rounded-2xl border border-baba-copper/20 bg-white p-8 baba-card-hover">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-baba-copper/10">
+              <Award className="h-6 w-6 text-baba-copper-dark" />
+            </div>
+            <h3 className="mt-4 font-display text-xl font-bold text-baba-slate">BABA Annual Awards</h3>
+            <p className="mt-2 text-sm font-semibold text-baba-copper-dark">December 7, 2026</p>
+            <p className="mt-2 text-baba-slate/70">
+              Recognizing excellence across the built environment — celebrating the best plumbers, electricians, architects, engineers, contractors, and innovators in the industry.
+            </p>
+          </div>
+        </div>
+        <div className="mt-8 text-center">
+          <Link
+            to="/events"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-baba-blue hover:text-baba-blue-dark"
+          >
+            View All Events <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+      </section>
+
+      {/* ═══ IMPACT DASHBOARD ═══ */}
+      <section className="mx-auto max-w-7xl px-5 pb-20 lg:px-8">
+        <div className="rounded-3xl bg-gradient-to-r from-baba-blue/90 via-baba-blue/75 to-baba-blue/60 px-6 py-12 text-white lg:px-12">
           <p className="text-center text-xs font-bold uppercase tracking-[0.3em] text-baba-copper">
             Real-Time Impact Tracker
           </p>
@@ -240,94 +521,10 @@ function Home() {
               </div>
             ))}
           </div>
-
-          <div className="mt-10 border-t border-white/20 pt-8">
-            <p className="text-center text-xs font-bold uppercase tracking-[0.3em] text-baba-copper">
-              Countries We Aim to Work With
-            </p>
-            <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              {countries.map((c) => (
-                <div
-                  key={c.name}
-                  className="rounded-2xl border border-white/15 bg-white/10 p-5 transition-transform hover:-translate-y-1"
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="text-3xl">{c.flag}</span>
-                    <h3 className="font-display text-lg font-bold text-white">{c.name}</h3>
-                  </div>
-                  <ul className="mt-4 space-y-2">
-                    {c.regions.map((r) => (
-                      <li
-                        key={r}
-                        className="flex items-center gap-2 text-sm text-white/80"
-                      >
-                        <span className="h-1.5 w-1.5 rounded-full bg-baba-copper" />
-                        {r}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-7xl gap-10 px-5 py-20 lg:grid-cols-2 lg:px-8">
-        <div>
-          <span className="text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">
-            Market Realities
-          </span>
-          <h2 className="mt-2 font-display text-3xl font-extrabold text-baba-slate sm:text-4xl">
-            The Challenge
-          </h2>
-          <p className="mt-3 max-w-md text-baba-slate/70">
-            Fragmented markets and reliance on external expertise limit local economic
-            growth potential.
-          </p>
-          <div className="mt-8 space-y-5">
-            {challenges.map((c) => (
-              <div key={c.title} className="flex gap-4">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-destructive/10">
-                  <c.icon className="h-5 w-5 text-destructive" />
-                </div>
-                <div>
-                  <h3 className="font-display text-base font-bold text-baba-slate">
-                    {c.title}
-                  </h3>
-                  <p className="mt-1 text-sm text-baba-slate/65">{c.body}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="rounded-2xl bg-baba-teal p-8 text-baba-alabaster lg:p-10">
-          <span className="inline-block rounded-full bg-baba-copper px-3 py-1 text-xs font-bold uppercase tracking-wide text-baba-slate">
-            Our Mandate
-          </span>
-          <h2 className="mt-4 font-display text-3xl font-extrabold sm:text-4xl">
-            The BABA Solution
-          </h2>
-          <p className="mt-3 text-baba-alabaster/80">
-            We provide the technical and organizational framework to build Africa from
-            within.
-          </p>
-          <div className="mt-7 space-y-5">
-            {solutions.map((s) => (
-              <div key={s.title} className="flex gap-3">
-                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-baba-copper" />
-                <div>
-                  <h3 className="font-display text-base font-bold">{s.title}</h3>
-                  <p className="mt-0.5 text-sm text-baba-alabaster/70">{s.body}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Pillars Preview */}
+      {/* ═══ PILLARS PREVIEW ═══ */}
       <section className="mx-auto max-w-7xl px-5 pb-24 lg:px-8">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
@@ -340,7 +537,7 @@ function Home() {
           </div>
           <Link
             to="/pillars"
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-baba-teal hover:text-baba-teal-dark"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-baba-blue hover:text-baba-blue-dark"
           >
             View Full Strategy <ArrowRight className="h-4 w-4" />
           </Link>
@@ -350,10 +547,10 @@ function Home() {
             <Link
               key={p.key}
               to="/pillars"
-              className="baba-card-hover rounded-2xl border border-baba-teal/10 bg-card p-6"
+              className="baba-card-hover rounded-2xl border border-baba-blue/10 bg-white p-6"
             >
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-baba-teal/10">
-                <p.icon className="h-5 w-5 text-baba-teal" />
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-baba-blue/10">
+                <p.icon className="h-5 w-5 text-baba-blue" />
               </div>
               <h3 className="mt-4 font-display text-lg font-bold text-baba-slate">
                 {p.name}

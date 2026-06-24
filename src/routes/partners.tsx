@@ -34,7 +34,7 @@ const benefits = [
 function Partners() {
   return (
     <PageShell>
-      <section className="border-b border-baba-teal/10 bg-baba-teal/5">
+      <section className="border-b border-baba-blue/10 bg-baba-blue/5">
         <div className="mx-auto max-w-7xl px-5 py-16 lg:px-8">
           <span className="text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">
             Collaboration
@@ -60,10 +60,10 @@ function Partners() {
           {types.map((t) => (
             <div
               key={t.title}
-              className="baba-card-hover flex gap-4 rounded-2xl border border-baba-teal/10 bg-card p-6"
+              className="baba-card-hover flex gap-4 rounded-2xl border border-baba-blue/10 bg-card p-6"
             >
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-baba-teal/10">
-                <t.icon className="h-6 w-6 text-baba-teal" />
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-baba-blue/10">
+                <t.icon className="h-6 w-6 text-baba-blue" />
               </div>
               <div>
                 <h3 className="font-display text-lg font-bold text-baba-slate">
@@ -75,17 +75,17 @@ function Partners() {
           ))}
         </div>
 
-        <div className="mt-12 grid gap-8 rounded-3xl bg-baba-teal p-8 text-baba-alabaster lg:grid-cols-2 lg:p-12">
+        <div className="mt-12 grid gap-8 rounded-3xl bg-baba-blue p-8 text-baba-cream lg:grid-cols-2 lg:p-12">
           <div>
             <h2 className="font-display text-3xl font-extrabold">Why partner with us</h2>
-            <p className="mt-3 text-baba-alabaster/80">
+            <p className="mt-3 text-baba-cream/80">
               We provide the verified infrastructure, data and reach to turn local-content
               ambitions into measurable continental impact.
             </p>
           </div>
           <ul className="space-y-3">
             {benefits.map((b) => (
-              <li key={b} className="flex gap-3 text-sm text-baba-alabaster/90">
+              <li key={b} className="flex gap-3 text-sm text-baba-cream/90">
                 <Check className="mt-0.5 h-5 w-5 shrink-0 text-baba-copper" />
                 {b}
               </li>

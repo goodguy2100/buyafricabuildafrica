@@ -17,7 +17,7 @@ export function Header() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-baba-teal/10 bg-baba-alabaster/90 backdrop-blur-md">
+    <header className="sticky top-0 z-50 border-b border-baba-blue/10 bg-baba-cream/90 backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-3.5 lg:px-8">
         <Link to="/" className="shrink-0">
           <img
@@ -32,8 +32,8 @@ export function Header() {
             <Link
               key={l.to}
               to={l.to}
-              className="font-display text-sm font-semibold uppercase tracking-wide text-baba-slate/70 transition-colors hover:text-baba-teal"
-              activeProps={{ className: "text-baba-teal" }}
+              className="font-display text-sm font-semibold uppercase tracking-wide text-baba-slate/70 transition-colors hover:text-baba-blue"
+              activeProps={{ className: "text-baba-blue" }}
             >
               {l.label}
             </Link>
@@ -43,13 +43,13 @@ export function Header() {
         <div className="hidden items-center gap-2.5 xl:flex">
           <Link
             to="/register"
-            className="rounded-full baba-btn-primary px-4 py-2 text-sm font-semibold text-baba-alabaster transition-colors hover:bg-baba-teal-dark"
+            className="rounded-full baba-btn-primary px-4 py-2 text-sm font-semibold text-baba-cream transition-colors hover:bg-baba-blue-dark"
           >
             Join as Worker
           </Link>
           <Link
             to="/register"
-            className="rounded-full border-2 border-baba-teal px-4 py-2 text-sm font-semibold text-baba-teal transition-colors hover:bg-baba-teal hover:text-baba-alabaster"
+            className="rounded-full border-2 border-baba-blue px-4 py-2 text-sm font-semibold text-baba-blue transition-colors hover:bg-baba-blue hover:text-baba-cream"
           >
             Join as Professional
           </Link>
@@ -62,7 +62,7 @@ export function Header() {
         </div>
 
         <button
-          className="rounded-lg p-2 text-baba-teal lg:hidden"
+          className="rounded-lg p-2 text-baba-blue lg:hidden"
           onClick={() => setOpen((v) => !v)}
           aria-label="Toggle menu"
         >
@@ -71,7 +71,7 @@ export function Header() {
       </div>
 
       {open && (
-        <div className="border-t border-baba-teal/10 bg-baba-alabaster px-5 py-4 lg:hidden">
+        <div className="border-t border-baba-blue/10 bg-baba-cream px-5 py-4 lg:hidden">
           <nav className="flex flex-col gap-1">
             {navLinks.map((l) => (
               <Link
@@ -79,7 +79,7 @@ export function Header() {
                 to={l.to}
                 onClick={() => setOpen(false)}
                 className="rounded-lg px-3 py-2.5 font-display text-sm font-semibold uppercase tracking-wide text-baba-slate/80 hover:bg-secondary"
-                activeProps={{ className: "text-baba-teal" }}
+                activeProps={{ className: "text-baba-blue" }}
               >
                 {l.label}
               </Link>
@@ -89,14 +89,14 @@ export function Header() {
             <Link
               to="/register"
               onClick={() => setOpen(false)}
-              className="rounded-full baba-btn-primary px-4 py-2.5 text-center text-sm font-semibold text-baba-alabaster"
+              className="rounded-full baba-btn-primary px-4 py-2.5 text-center text-sm font-semibold text-baba-cream"
             >
               Join as Worker
             </Link>
             <Link
               to="/register"
               onClick={() => setOpen(false)}
-              className="rounded-full border-2 border-baba-teal px-4 py-2.5 text-center text-sm font-semibold text-baba-teal"
+              className="rounded-full border-2 border-baba-blue px-4 py-2.5 text-center text-sm font-semibold text-baba-blue"
             >
               Join as Professional
             </Link>

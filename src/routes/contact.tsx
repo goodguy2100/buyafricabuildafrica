@@ -26,7 +26,7 @@ function Contact() {
 
   return (
     <PageShell>
-      <section className="border-b border-baba-teal/10 bg-baba-teal/5">
+      <section className="border-b border-baba-blue/10 bg-baba-blue/5">
         <div className="mx-auto max-w-7xl px-5 py-16 lg:px-8">
           <span className="text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">
             Get In Touch
@@ -42,11 +42,11 @@ function Contact() {
       </section>
 
       <section className="mx-auto grid max-w-7xl gap-10 px-5 py-16 lg:grid-cols-[1fr_340px] lg:px-8">
-        <div className="rounded-3xl border border-baba-teal/10 bg-card p-8">
+        <div className="rounded-3xl border border-baba-blue/10 bg-card p-8">
           {sent ? (
             <div className="flex flex-col items-center justify-center py-16 text-center">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-baba-teal/10">
-                <Check className="h-7 w-7 text-baba-teal" />
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-baba-blue/10">
+                <Check className="h-7 w-7 text-baba-blue" />
               </div>
               <h2 className="mt-5 font-display text-2xl font-bold text-baba-slate">
                 Message sent
@@ -73,8 +73,8 @@ function Contact() {
                     onClick={() => setCategory(c)}
                     className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
                       category === c
-                        ? "bg-baba-teal text-baba-alabaster"
-                        : "bg-secondary text-baba-slate/70 hover:bg-baba-teal/10"
+                        ? "bg-baba-blue text-baba-cream"
+                        : "bg-secondary text-baba-slate/70 hover:bg-baba-blue/10"
                     }`}
                   >
                     {c}
@@ -96,12 +96,12 @@ function Contact() {
                   required
                   rows={5}
                   placeholder="How can we help?"
-                  className="mt-1.5 w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate placeholder:text-baba-slate/40 focus:border-baba-teal focus:outline-none"
+                  className="mt-1.5 w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate placeholder:text-baba-slate/40 focus:border-baba-blue focus:outline-none"
                 />
               </div>
               <button
                 type="submit"
-                className="mt-6 rounded-lg baba-btn-primary px-6 py-3 text-sm font-semibold text-baba-alabaster transition-colors hover:bg-baba-teal-dark"
+                className="mt-6 rounded-lg baba-btn-primary px-6 py-3 text-sm font-semibold text-baba-cream transition-colors hover:bg-baba-blue-dark"
               >
                 Send Message
               </button>
@@ -113,9 +113,9 @@ function Contact() {
           <InfoCard icon={Mail} title="Email" value="hello@buildafrica.org" />
           <InfoCard icon={Phone} title="Phone" value="+254 712 345 678" />
           <InfoCard icon={MapPin} title="Head Office" value="Nairobi, Kenya" />
-          <div className="rounded-2xl bg-baba-slate p-6 text-baba-alabaster">
+          <div className="rounded-2xl bg-baba-slate p-6 text-baba-cream">
             <h3 className="font-display text-lg font-bold">County Offices</h3>
-            <p className="mt-2 text-sm text-baba-alabaster/70">
+            <p className="mt-2 text-sm text-baba-cream/70">
               BABA operates regional desks across 47 counties. Member support is available
               Monday–Friday, 8am–5pm EAT.
             </p>
@@ -146,7 +146,7 @@ function Field({
         type={type}
         required={required}
         placeholder={placeholder}
-        className="mt-1.5 w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate placeholder:text-baba-slate/40 focus:border-baba-teal focus:outline-none"
+        className="mt-1.5 w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate placeholder:text-baba-slate/40 focus:border-baba-blue focus:outline-none"
       />
     </div>
   );
@@ -162,9 +162,9 @@ function InfoCard({
   value: string;
 }) {
   return (
-    <div className="flex items-center gap-4 rounded-2xl border border-baba-teal/10 bg-card p-5">
-      <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-baba-teal/10">
-        <Icon className="h-5 w-5 text-baba-teal" />
+    <div className="flex items-center gap-4 rounded-2xl border border-baba-blue/10 bg-card p-5">
+      <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-baba-blue/10">
+        <Icon className="h-5 w-5 text-baba-blue" />
       </div>
       <div>
         <p className="text-xs font-bold uppercase tracking-wide text-baba-slate/50">
