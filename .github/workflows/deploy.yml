@@ -24,9 +24,9 @@ jobs:
       - name: Build
         run: bun run build
 
-      - name: Upload build artifact
+      - name: Upload client build
         uses: actions/upload-artifact@v4
         with:
-          name: site-build
-          path: .output/public/
-          retention-days: 7
+          name: baba-site
+          path: dist/client/
+          retention-days: 30
