@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Calendar, Award, MapPin, Clock, ArrowRight } from "lucide-react";
+import { Calendar, Award, Globe, Building, MapPin, Clock, ArrowRight } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 
 export const Route = createFileRoute("/events")({
@@ -9,7 +9,7 @@ export const Route = createFileRoute("/events")({
       {
         name: "description",
         content:
-          "Upcoming BABA events — the Official Launch and Annual Awards.",
+          "BABA's three major annual events — the Awards, Word Conference & Expo, and Corporate Strategy Meeting.",
       },
     ],
     links: [{ rel: "canonical", href: "/events" }],
@@ -19,33 +19,51 @@ export const Route = createFileRoute("/events")({
 
 const events = [
   {
-    title: "BABA Official Launch",
-    date: "End of September 2026",
-    time: "To be announced",
-    location: "To be announced",
-    description:
-      "The official launch of Buy Africa Build Africa (BABA) — bringing together professionals, artisans, partners, government representatives, and stakeholders from across the continent. This landmark event marks the beginning of a transformative journey to connect local talent with continental opportunity.",
-    highlights: [
-      "Keynote address by BABA leadership outlining the vision and strategic priorities",
-      "Panel discussion with industry leaders from across Africa's built environment",
-      "Networking reception with professionals, partners, and policymakers",
-      "Launch of BABA membership programmes and inaugural initiatives",
-      "Showcasing of the BABA Institute and upcoming training programmes",
-    ],
-  },
-  {
+    icon: Award,
     title: "BABA Annual Awards",
-    date: "December 7, 2026",
+    date: "Every December",
     time: "Evening gala",
     location: "To be announced",
     description:
-      "Celebrating excellence across the built environment. The BABA Annual Awards recognize outstanding achievements and contributions from professionals, artisans, contractors, suppliers, and innovators who are building Africa from within.",
+      "Celebrating excellence across the built environment. The BABA Annual Awards recognize outstanding achievements from professionals and artisans across multiple categories.",
     highlights: [
-      "Awards ceremony recognizing excellence in multiple categories",
-      "Best Plumber, Best Electrician, Best Architect, Best Engineer, and more",
-      "Gala dinner with distinguished guests from government and industry",
-      "Live entertainment and cultural showcase celebrating African talent",
-      "Networking with senior business leaders and decision-makers",
+      "Best Plumber — recognizing excellence in plumbing and sanitation",
+      "Best Electrician — honoring electrical installation and maintenance skills",
+      "Best ICT Professional — for innovation in construction technology",
+      "Architects — first runner, second runner, third runner categories",
+      "Multiple categories across all trades and professions in the built environment",
+    ],
+  },
+  {
+    icon: Globe,
+    title: "Word Conference & Expo",
+    date: "Annual",
+    time: "Full-day event",
+    location: "Rotating across African cities",
+    description:
+      "A continental gathering where engineers, architects, innovators, and manufacturers showcase African-made solutions. Products and innovations that don't require importation — built in Africa, for Africa. The expo highlights climate-resilient building, local materials, and indigenous innovation.",
+    highlights: [
+      "Exhibition of African-made building materials and technologies",
+      "Presentations by engineers and architects on local innovation",
+      "Climate-resilient and green building showcase",
+      "Networking between manufacturers, suppliers, and buyers",
+      "Spotlight on products that keep value on the continent",
+    ],
+  },
+  {
+    icon: Building,
+    title: "Corporate Strategy Meeting",
+    date: "Annual (August)",
+    time: "Full-day session",
+    location: "Nairobi, Kenya",
+    description:
+      "High-level strategy session bringing together board members, partners, government representatives, and key stakeholders. This meeting sets the direction for the year ahead, reviews progress across all pillars, and aligns on expansion plans into new regions.",
+    highlights: [
+      "Annual performance review and strategic planning",
+      "Regional expansion roadmap discussion",
+      "Partnership and funding alignment",
+      "Stakeholder presentations and feedback",
+      "Budget and resource allocation for the coming year",
     ],
   },
 ];
@@ -63,14 +81,13 @@ export function Events() {
           <div className="max-w-3xl">
             <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-sm font-medium text-white backdrop-blur-sm">
               <Calendar className="h-4 w-4" />
-              Upcoming Events
+              Three Major Annual Events
             </span>
             <h1 className="mt-6 font-display text-4xl font-extrabold text-white sm:text-5xl lg:text-6xl">
-              Flagship Events
+              BABA Annual Events
             </h1>
             <p className="mt-4 max-w-2xl text-lg text-white/80">
-              Discover the key events driving the BABA mission forward — from our official
-              launch to the annual celebration of excellence across the built environment.
+              Every year, BABA delivers three major events — the Awards ceremony in December, the Word Conference &amp; Expo, and the Corporate Strategy Meeting — bringing together the entire built environment community from across Africa.
             </p>
           </div>
         </div>
@@ -80,41 +97,44 @@ export function Events() {
       {/* Events List */}
       <section className="bg-baba-cream py-16 md:py-24">
         <div className="mx-auto max-w-7xl px-5 lg:px-8">
-          <div className="grid gap-8 md:grid-cols-2 lg:gap-10">
+          <div className="grid gap-8 lg:grid-cols-3">
             {events.map((event) => (
               <div
                 key={event.title}
                 className="baba-card-hover overflow-hidden rounded-2xl border border-baba-copper/20 bg-white"
               >
                 <div className="h-2 bg-gradient-to-r from-baba-blue to-baba-copper" />
-                <div className="p-8 md:p-10">
-                  <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-baba-blue/10 px-4 py-1.5 text-sm font-semibold text-baba-blue">
-                    <Calendar className="h-4 w-4" />
-                    {event.date}
+                <div className="p-6 md:p-8">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-baba-copper/10">
+                    <event.icon className="h-6 w-6 text-baba-copper-dark" />
                   </div>
-                  <h3 className="font-display text-2xl font-bold text-baba-slate md:text-3xl">
+                  <h3 className="mt-5 font-display text-xl font-bold text-baba-slate">
                     {event.title}
                   </h3>
-                  <div className="mt-4 flex flex-wrap gap-4 text-sm text-baba-slate/70">
-                    <span className="flex items-center gap-1.5">
-                      <Clock className="h-4 w-4 text-baba-copper" />
+                  <div className="mt-3 flex flex-wrap gap-3 text-sm text-baba-slate/70">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-baba-blue/10 px-3 py-1 text-xs font-semibold text-baba-blue">
+                      <Calendar className="h-3.5 w-3.5" />
+                      {event.date}
+                    </span>
+                    <span className="inline-flex items-center gap-1.5 text-xs">
+                      <Clock className="h-3.5 w-3.5 text-baba-copper" />
                       {event.time}
                     </span>
-                    <span className="flex items-center gap-1.5">
-                      <MapPin className="h-4 w-4 text-baba-copper" />
+                    <span className="inline-flex items-center gap-1.5 text-xs">
+                      <MapPin className="h-3.5 w-3.5 text-baba-copper" />
                       {event.location}
                     </span>
                   </div>
-                  <p className="mt-6 leading-relaxed text-baba-slate/80">
+                  <p className="mt-4 leading-relaxed text-baba-slate/80 text-sm">
                     {event.description}
                   </p>
-                  <h4 className="mb-3 mt-6 text-sm font-bold uppercase tracking-wider text-baba-blue">
-                    Event Highlights
+                  <h4 className="mb-2 mt-5 text-xs font-bold uppercase tracking-wider text-baba-blue">
+                    Highlights
                   </h4>
-                  <ul className="space-y-2">
+                  <ul className="space-y-1.5">
                     {event.highlights.map((item, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm text-baba-slate/80">
-                        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-baba-copper/15 text-xs text-baba-copper-dark">
+                      <li key={i} className="flex items-start gap-2 text-xs text-baba-slate/75">
+                        <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-baba-copper/15 text-[9px] text-baba-copper-dark">
                           ✓
                         </span>
                         {item}
@@ -145,6 +165,19 @@ export function Events() {
               </Link>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Monthly Regional Activities Note */}
+      <section className="mx-auto max-w-7xl px-5 pb-20 lg:px-8">
+        <div className="rounded-2xl border border-baba-blue/10 bg-white p-8 text-center">
+          <Calendar className="mx-auto h-8 w-8 text-baba-blue" />
+          <h3 className="mt-3 font-display text-xl font-bold text-baba-slate">
+            Monthly Regional Activities
+          </h3>
+          <p className="mx-auto mt-2 max-w-xl text-sm text-baba-slate/70">
+            Beyond the three major annual events, BABA runs training and marketing activities in regional blocks every two months — covering Western, Coastal, Mount Kenya, Rift Valley, Northern, and Nairobi regions in rotation.
+          </p>
         </div>
       </section>
     </PageShell>
