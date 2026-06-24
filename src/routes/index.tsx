@@ -124,7 +124,7 @@ const challenges = [
   {
     icon: TrendingUp,
     title: "Professionals' Problem: Financial Stagnation",
-    body: "Even skilled architects, engineers, and designers struggle — many are "pencil millionaires" with no cash flow. BABA provides financial education, master classes on special skills, and platforms to connect with paying clients.",
+    body: "Even skilled architects, engineers, and designers struggle — many are 'pencil millionaires' with no cash flow. BABA provides financial education, master classes on special skills, and platforms to connect with paying clients.",
   },
   {
     icon: Network,
