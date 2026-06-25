@@ -44,7 +44,7 @@ export function Footer() {
           </p>
           <div className="mt-5 space-y-2 text-sm text-baba-cream/80">
             <p className="flex items-center gap-2">
-              <MapPin className="h-4 w-4 text-baba-copper" /> Head Office — Nairobi, Kenya
+              <MapPin className="h-4 w-4 text-baba-copper" /> Head Office — Riara Road, Victoria Courts Building, HQ Offices
             </p>
             <p className="flex items-center gap-2">
               <MapPin className="h-4 w-4 text-baba-copper" /> Regional Office — Lagos, Nigeria
@@ -62,10 +62,10 @@ export function Footer() {
               We will expand to other developing countries as well.
             </p>
             <p className="flex items-center gap-2">
-              <Phone className="h-4 w-4 text-baba-copper" /> +254 712 345 678
+              <Phone className="h-4 w-4 text-baba-copper" /> +254 XXX XXX XXX
             </p>
             <p className="flex items-center gap-2">
-              <Mail className="h-4 w-4 text-baba-copper" /> Info@buyafricabuildafrica.org
+              <Mail className="h-4 w-4 text-baba-copper" /> info@buyafricabuildafrica.org
             </p>
           </div>
         </div>
