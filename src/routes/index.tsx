@@ -371,26 +371,21 @@ function Home() {
             </div>
 
 
-            {/* Region widgets */}
-            <div className="grid gap-4 sm:grid-cols-2">
+            {/* Region list */}
+            <div className="grid gap-3 sm:grid-cols-2">
               {kenyaRegions.map((r) => (
                 <div
                   key={r.name}
-                  className="group rounded-2xl border border-white/15 bg-white/10 p-5 transition-all hover:-translate-y-1 hover:bg-white/20"
+                  className="rounded-2xl border border-white/15 bg-white/10 px-5 py-4 text-center transition-all hover:-translate-y-1 hover:bg-white/20"
                 >
-                  <div className="flex items-center gap-3">
-                    <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-baba-copper/25 text-2xl">
-                      {r.icon}
-                    </span>
-                    <h3 className="font-display text-lg font-bold text-white">{r.name}</h3>
-                  </div>
-                  <p className="mt-3 text-sm text-white/80">{r.note}</p>
+                  <h3 className="font-display text-lg font-bold text-white">{r.name}</h3>
                 </div>
               ))}
-              <div className="flex items-center justify-center rounded-2xl border border-dashed border-white/30 bg-white/5 p-5 text-center text-sm font-semibold text-baba-copper">
+              <div className="flex items-center justify-center rounded-2xl border border-dashed border-white/30 bg-white/5 px-5 py-4 text-center text-sm font-semibold text-baba-copper">
                 More regions coming soon
               </div>
             </div>
+
           </div>
         </div>
       </section>
