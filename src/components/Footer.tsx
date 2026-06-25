@@ -62,7 +62,7 @@ export function Footer() {
               We will expand to other developing countries as well.
             </p>
             <p className="flex items-center gap-2">
-              <Phone className="h-4 w-4 text-baba-copper" /> +254 XXX XXX XXX
+              <Phone className="h-4 w-4 text-baba-copper" /> +254 712 345 678
             </p>
             <p className="flex items-center gap-2">
               <Mail className="h-4 w-4 text-baba-copper" /> info@buyafricabuildafrica.org
