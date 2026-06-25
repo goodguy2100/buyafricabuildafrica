@@ -146,15 +146,7 @@ function Home() {
               <br />
               <span className="baba-rainbow">Build Africa</span>
             </h1>
-            <p className="mx-auto mt-6 max-w-3xl font-display text-xl font-semibold text-baba-blue sm:text-2xl">
-              Building Africa's Future by Africans
-            </p>
-            <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-baba-slate/70">
-              Africa's future should not only be discussed. It should be built. BABA is a Pan-African platform
-              connecting people, industries, institutions, skills, innovation, and opportunities to drive economic
-              growth, sustainable development, thriving enterprises, and resilient communities across Africa.
-            </p>
-            <p className="mx-auto mt-4 max-w-xl text-sm font-semibold text-baba-copper-dark">
+            <p className="mx-auto mt-6 max-w-xl text-sm font-semibold text-baba-copper-dark">
               We believe Africa's greatest resource is not beneath its soil. It is its people.
             </p>
             <div className="mt-10 flex flex-wrap justify-center gap-3">
@@ -186,37 +178,53 @@ function Home() {
                 <Counter target={5} label="Regions" tone="dark" />
               </div>
             </div>
+
+            <p className="mx-auto mt-12 max-w-3xl font-display text-xl font-semibold text-baba-blue sm:text-2xl">
+              Building Africa's Future by Africans
+            </p>
+            <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-baba-slate/70">
+              Africa's future should not only be discussed. It should be built. BABA is a Pan-African platform
+              connecting people, industries, institutions, skills, innovation, and opportunities to drive economic
+              growth, sustainable development, thriving enterprises, and resilient communities across Africa.
+            </p>
           </div>
 
         </div>
       </section>
 
       {/* ═══ OUR STORY ═══ */}
-      <section className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
-        <div className="mx-auto max-w-4xl">
-          <span className="text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">Our Story</span>
-          <h2 className="mt-3 font-display text-4xl font-extrabold text-baba-slate sm:text-5xl">Building Africa's Future by Africans</h2>
-          <div className="mt-8 space-y-5 text-lg leading-relaxed text-baba-slate/80">
-            <p>
-              Africa is the youngest continent in the world, with more than 60% of its population under the age of 35.
-              Every day, more than 200,000 people move into Africa's cities in search of opportunity, livelihoods,
-              education, and a better future.
-            </p>
-            <p>
-              These rapidly growing urban populations are shaping the future of the continent and creating unprecedented demand for housing, infrastructure, services, innovation, employment, and sustainable development.
-            </p>
-            <p>
-              At the same time, conversations about economic growth, climate resilience, entrepreneurship, youth empowerment, sustainable cities, and industrial development continue to take place across boardrooms, classrooms, conferences, policy forums, and development institutions throughout Africa.
-            </p>
-            <p className="text-xl font-semibold text-baba-blue">
-              The question is no longer what Africa needs. The question is how we move from conversation to implementation.
-            </p>
-            <p>
-              <strong>Buy Africa Build Africa (BABA)</strong> was established to help bridge that gap. Because Africa's future should not only be discussed. It should be built.
-            </p>
+      <section className="relative overflow-hidden baba-wash py-20">
+        <div className="pointer-events-none absolute -left-16 top-10 h-64 w-64 rounded-full bg-baba-copper/20 blur-3xl" />
+        <div className="pointer-events-none absolute -right-16 bottom-10 h-64 w-64 rounded-full bg-baba-blue/20 blur-3xl" />
+        <div className="relative mx-auto max-w-7xl px-5 lg:px-8">
+          <div className="mx-auto max-w-4xl rounded-3xl border border-baba-blue/10 bg-white/70 p-8 shadow-xl shadow-baba-blue/10 backdrop-blur sm:p-12">
+            <span className="inline-flex items-center gap-2 rounded-full bg-baba-copper/15 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">📖 Our Story</span>
+            <h2 className="mt-4 font-display text-4xl font-extrabold sm:text-5xl">
+              <span className="baba-rainbow">Building Africa's Future by Africans</span>
+            </h2>
+            <div className="mt-8 space-y-5 text-lg leading-relaxed text-baba-slate/80">
+              <p>
+                <span className="font-bold text-baba-blue">Africa is the youngest continent</span> in the world, with more than <span className="font-bold text-baba-copper-dark">60%</span> of its population under the age of 35.
+                Every day, more than <span className="font-bold text-baba-copper-dark">200,000 people</span> move into Africa's cities in search of opportunity, livelihoods,
+                education, and a better future.
+              </p>
+              <p>
+                These rapidly growing urban populations are shaping the future of the continent and creating unprecedented demand for housing, infrastructure, services, innovation, employment, and sustainable development.
+              </p>
+              <p>
+                At the same time, conversations about economic growth, climate resilience, entrepreneurship, youth empowerment, sustainable cities, and industrial development continue to take place across boardrooms, classrooms, conferences, policy forums, and development institutions throughout Africa.
+              </p>
+              <p className="rounded-2xl bg-gradient-to-r from-baba-blue/10 via-baba-copper/10 to-baba-blue/10 px-6 py-4 text-xl font-semibold text-baba-blue">
+                The question is no longer what Africa needs. The question is how we move from conversation to implementation.
+              </p>
+              <p>
+                <strong className="baba-rainbow font-extrabold">Buy Africa Build Africa (BABA)</strong> was established to help bridge that gap. Because Africa's future should not only be discussed. It should be built.
+              </p>
+            </div>
           </div>
         </div>
       </section>
+
 
       {/* ═══ OUR IMPACT AREAS ═══ */}
       <section className="bg-baba-cream py-20">
