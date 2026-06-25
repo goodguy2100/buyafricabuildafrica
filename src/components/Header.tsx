@@ -5,12 +5,12 @@ import babaLogo from "@/assets/baba-logo-transparent.png";
 
 const navLinks = [
   { to: "/", label: "Home" },
-  { to: "/about", label: "About Us" },
-  { to: "/pillars", label: "Pillars" },
-  { to: "/directory", label: "Directory" },
+  { to: "/about", label: "About" },
+  { to: "/directory", label: "National Directory" },
   { to: "/opportunities", label: "Opportunities" },
-  { to: "/impact", label: "Impact" },
+  { to: "/pillars", label: "Pillars" },
   { to: "/events", label: "Events" },
+  { to: "/contact", label: "Contact" },
 ] as const;
 
 export function Header() {
