@@ -46,18 +46,17 @@ jobs:
           <!DOCTYPE html>
           <html lang="en">
           <head>
-            <base href="/buyafricabuildafrica/">
             <meta charset="utf-8" />
             <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-            <title>Buy Africa Build Africa (BABA) | Connecting Local Talent to Continental Opportunity</title>
+            <title>Buy Africa Build Africa (BABA)</title>
             <link rel="preconnect" href="https://fonts.googleapis.com" />
             <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
             <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-            <link rel="stylesheet" href="assets/${CSS}" />
+            <link rel="stylesheet" href="/buyafricabuildafrica/assets/${CSS}" />
           </head>
           <body>
             <div id="root"></div>
-            <script type="module" crossorigin src="assets/${JS}"></script>
+            <script type="module" crossorigin src="/buyafricabuildafrica/assets/${JS}"></script>
           </body>
           </html>
           HTML
