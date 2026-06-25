@@ -36,38 +36,35 @@ jobs:
       - name: Build
         run: bun run build
 
-      - name: Create index.html with relative paths
+      - name: Create index.html with base tag
         run: |
-          # Find the actual JS and CSS files
+          # Find JS and CSS files
           JS_FILE=$(ls dist/client/assets/index-*.js 2>/dev/null | head -1)
           CSS_FILE=$(ls dist/client/assets/styles-*.css 2>/dev/null | head -1)
           JS_NAME=$(basename "$JS_FILE")
           CSS_NAME=$(basename "$CSS_FILE")
-          echo "JS: $JS_NAME"
-          echo "CSS: $CSS_NAME"
+          echo "JS: $JS_NAME  CSS: $CSS_NAME"
           
-          # Use relative paths (no leading /) since we're in a subdirectory
-          cat > dist/client/index.html << 'HTMLEOF'
+          # Use base tag so all relative paths resolve correctly
+          cat > dist/client/index.html << ENDHTML
           <!DOCTYPE html>
           <html lang="en">
           <head>
+            <base href="/buyafricabuildafrica/">
             <meta charset="utf-8" />
             <meta name="viewport" content="width=device-width, initial-scale=1.0" />
             <title>Buy Africa Build Africa (BABA)</title>
             <link rel="preconnect" href="https://fonts.googleapis.com" />
             <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
             <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-            <link rel="stylesheet" href="assets/CSS_PLACEHOLDER" />
+            <link rel="stylesheet" href="${CSS_NAME}" />
           </head>
           <body>
             <div id="root"></div>
-            <script type="module" crossorigin src="assets/JS_PLACEHOLDER"></script>
+            <script type="module" crossorigin src="${JS_NAME}"></script>
           </body>
           </html>
-          HTMLEOF
-          # Replace placeholders
-          sed -i "s|CSS_PLACEHOLDER|$CSS_NAME|g" dist/client/index.html
-          sed -i "s|JS_PLACEHOLDER|$JS_NAME|g" dist/client/index.html
+          ENDHTML
           echo "--- index.html ---"
           cat dist/client/index.html
 
