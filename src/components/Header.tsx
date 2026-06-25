@@ -32,7 +32,7 @@ export function Header() {
             <Link
               key={l.to}
               to={l.to}
-              className="font-display text-sm font-semibold uppercase tracking-wide text-baba-slate/70 transition-colors hover:text-baba-blue"
+              className="font-display text-[0.78rem] font-semibold uppercase tracking-wide text-baba-slate/70 transition-colors hover:text-baba-blue"
               activeProps={{ className: "text-baba-blue" }}
             >
               {l.label}
