@@ -173,13 +173,16 @@ function Home() {
             </div>
 
             <div className="mx-auto mt-14 max-w-4xl rounded-3xl border border-baba-blue/10 bg-white/70 p-6 shadow-xl shadow-baba-blue/10 backdrop-blur sm:p-8">
-              <div className="flex items-center justify-center">
-                <LiveBadge label="Live Impact Tracker" />
+              <div className="flex flex-col items-center gap-2">
+                <span className="inline-flex items-center gap-2 rounded-full border border-baba-blue/20 bg-white/80 px-3 py-1 text-xs font-bold uppercase tracking-widest text-baba-blue shadow-sm backdrop-blur">
+                  🎯 Our Impact Targets
+                </span>
+                <p className="text-xs text-baba-slate/60">Where we're headed as we grow — goals, not yet achieved.</p>
               </div>
               <div className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-4">
-                <Counter target={45230} label="Members" tone="dark" />
-                <Counter target={12500} label="Jobs Created" suffix="+" tone="dark" />
-                <Counter target={350} label="Trainings" suffix="+" tone="dark" />
+                <Counter target={50000} label="Members Target" suffix="+" tone="dark" />
+                <Counter target={40000} label="Jobs Target" suffix="+" tone="dark" />
+                <Counter target={1200} label="Trainings Target" suffix="+" tone="dark" />
                 <Counter target={5} label="Regions" tone="dark" />
               </div>
             </div>
