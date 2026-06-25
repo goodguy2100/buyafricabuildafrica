@@ -36,8 +36,15 @@ jobs:
       - name: Build
         run: bun run build
 
-      - name: Create index.html
+      - name: Fix asset paths and create index.html
         run: |
+          # Fix absolute asset paths in JS files - add subdirectory prefix
+          echo "Fixing asset paths in built files..."
+          find dist/client -name "*.js" -exec sed -i 's|"/assets/|"/buyafricabuildafrica/assets/|g' {} +
+          find dist/client -name "*.css" -exec sed -i 's|url("/assets/|url("/buyafricabuildafrica/assets/|g' {} +
+          find dist/client -name "*.js" -exec sed -i "s|'/assets/|'/buyafricabuildafrica/assets/|g" {} +
+          
+          # Create index.html
           JS=$(ls dist/client/assets/index-*.js | head -1 | xargs basename)
           CSS=$(ls dist/client/assets/styles-*.css | head -1 | xargs basename)
           echo "JS=$JS CSS=$CSS"
