@@ -2,16 +2,16 @@ import kenyaMap from "@/assets/kenya-map.png";
 
 // Pop order: Nairobi → Coast → Central → Rift Valley → Western
 const regions = [
-  { name: "Nairobi", x: 62, y: 66 },
-  { name: "Coast", x: 80, y: 86 },
-  { name: "Central", x: 60, y: 52 },
-  { name: "Rift Valley", x: 42, y: 56 },
-  { name: "Western", x: 24, y: 46 },
+  { name: "Nairobi", x: 57, y: 58 },
+  { name: "Coast", x: 72, y: 80 },
+  { name: "Central", x: 56, y: 43 },
+  { name: "Rift Valley", x: 39, y: 50 },
+  { name: "Western", x: 19, y: 45 },
 ];
 
 export function KenyaMap() {
   return (
-    <div className="relative mx-auto aspect-[417/548] w-full max-w-sm">
+    <div className="relative mx-auto aspect-[744/956] w-full max-w-sm">
       <img
         src={kenyaMap}
         alt="Map of Kenya showing BABA active regions"
@@ -31,14 +31,14 @@ export function KenyaMap() {
               animationDelay: `${0.3 + i * 0.45}s`,
             }}
           >
-            <span className="relative flex h-2.5 w-2.5">
+            <span className="relative flex h-3 w-3">
               <span
                 className="absolute inline-flex h-full w-full rounded-full bg-baba-copper"
                 style={{ animation: `baba-pin-ping 1.6s ease-out ${0.6 + i * 0.45}s infinite` }}
               />
-              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-baba-copper ring-2 ring-white/70" />
+              <span className="relative inline-flex h-3 w-3 rounded-full bg-baba-copper ring-2 ring-white" />
             </span>
-            <span className="whitespace-nowrap text-xs font-bold text-white drop-shadow">
+            <span className="whitespace-nowrap text-xs font-bold text-baba-slate">
               {r.name}
             </span>
           </div>
