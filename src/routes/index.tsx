@@ -178,6 +178,15 @@ function Home() {
                 <Counter target={5} label="Regions" tone="dark" />
               </div>
             </div>
+
+            <p className="mx-auto mt-12 max-w-3xl font-display text-xl font-semibold text-baba-blue sm:text-2xl">
+              Building Africa's Future by Africans
+            </p>
+            <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-baba-slate/70">
+              Africa's future should not only be discussed. It should be built. BABA is a Pan-African platform
+              connecting people, industries, institutions, skills, innovation, and opportunities to drive economic
+              growth, sustainable development, thriving enterprises, and resilient communities across Africa.
+            </p>
           </div>
 
         </div>
