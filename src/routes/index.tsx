@@ -115,11 +115,12 @@ const ecosystemGroups = [
   },
 ];
 
-const countries = [
-  { name: "Kenya", flag: "🇰🇪", regions: ["Nairobi", "Coast", "Rift Valley", "Western", "Central"] },
-  { name: "Nigeria", flag: "🇳🇬", regions: ["Lagos", "North-Central", "South-East", "South-West", "North-West"] },
-  { name: "South Africa", flag: "🇿🇦", regions: ["Gauteng", "Western Cape", "KwaZulu-Natal", "Eastern Cape", "Limpopo"] },
-  { name: "Egypt", flag: "🇪🇬", regions: ["Cairo", "Alexandria", "Giza", "Delta", "Upper Egypt"] },
+const kenyaRegions = [
+  { name: "Nairobi", icon: "🏙️", note: "Headquarters & national hub" },
+  { name: "Central", icon: "⛰️", note: "Highlands enterprise network" },
+  { name: "Rift Valley", icon: "🌾", note: "Agri-industry & artisans" },
+  { name: "Western", icon: "🌿", note: "Community skills programmes" },
+  { name: "Coast", icon: "🌊", note: "Coastal trade & tourism" },
 ];
 
 const impactStats = [
