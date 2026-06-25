@@ -36,9 +36,9 @@ jobs:
       - name: Build
         run: bun run build
 
-      - name: Create index.html from build assets
+      - name: Create index.html with relative paths
         run: |
-          # Find the actual JS and CSS files in the build output
+          # Find the actual JS and CSS files
           JS_FILE=$(ls dist/client/assets/index-*.js 2>/dev/null | head -1)
           CSS_FILE=$(ls dist/client/assets/styles-*.css 2>/dev/null | head -1)
           JS_NAME=$(basename "$JS_FILE")
@@ -46,8 +46,8 @@ jobs:
           echo "JS: $JS_NAME"
           echo "CSS: $CSS_NAME"
           
-          # Create index.html that loads all JS bundles
-          cat > dist/client/index.html << HTMLEOF
+          # Use relative paths (no leading /) since we're in a subdirectory
+          cat > dist/client/index.html << 'HTMLEOF'
           <!DOCTYPE html>
           <html lang="en">
           <head>
@@ -57,22 +57,19 @@ jobs:
             <link rel="preconnect" href="https://fonts.googleapis.com" />
             <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
             <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-            <link rel="stylesheet" href="/assets/$CSS_NAME" />
+            <link rel="stylesheet" href="assets/CSS_PLACEHOLDER" />
           </head>
           <body>
             <div id="root"></div>
-            <script type="module" crossorigin src="/assets/$JS_NAME"></script>
+            <script type="module" crossorigin src="assets/JS_PLACEHOLDER"></script>
           </body>
           </html>
           HTMLEOF
+          # Replace placeholders
+          sed -i "s|CSS_PLACEHOLDER|$CSS_NAME|g" dist/client/index.html
+          sed -i "s|JS_PLACEHOLDER|$JS_NAME|g" dist/client/index.html
           echo "--- index.html ---"
           cat dist/client/index.html
-          
-          # Also create _redirects for SPA
-          echo "/*    /index.html   200" > dist/client/_redirects
-
-      - name: Verify build output
-        run: ls -la dist/client/ && ls -la dist/client/assets/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
