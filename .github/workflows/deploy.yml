@@ -36,6 +36,40 @@ jobs:
       - name: Build
         run: bun run build
 
+      - name: Create index.html from build assets
+        run: |
+          # Find the actual JS and CSS files in the build output
+          JS_FILE=$(ls dist/client/assets/index-*.js 2>/dev/null | head -1)
+          CSS_FILE=$(ls dist/client/assets/styles-*.css 2>/dev/null | head -1)
+          JS_NAME=$(basename "$JS_FILE")
+          CSS_NAME=$(basename "$CSS_FILE")
+          echo "JS: $JS_NAME"
+          echo "CSS: $CSS_NAME"
+          
+          # Create index.html
+          cat > dist/client/index.html << EOF
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="utf-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <title>Buy Africa Build Africa (BABA)</title>
+            <link rel="stylesheet" href="/assets/$CSS_NAME" />
+            <script type="module" crossorigin src="/assets/$JS_NAME"></script>
+          </head>
+          <body>
+            <div id="root"></div>
+          </body>
+          </html>
+          EOF
+          cat dist/client/index.html
+          
+          # Also create _redirects for SPA
+          echo "/*    /index.html   200" > dist/client/_redirects
+
+      - name: Verify build output
+        run: ls -la dist/client/ && ls -la dist/client/assets/
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
