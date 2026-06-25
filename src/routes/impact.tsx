@@ -86,7 +86,7 @@ function Impact() {
                 <s.icon className="h-6 w-6 text-baba-blue" />
               </div>
               <div className="mt-4">
-                <Counter target={s.target} label={s.label} />
+                <Counter target={s.target} label={s.label} tone="dark" />
               </div>
             </div>
           ))}
