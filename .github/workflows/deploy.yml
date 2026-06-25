@@ -36,20 +36,6 @@ jobs:
       - name: Build
         run: bun run build
 
-      - name: Enable GitHub Pages via API
-        run: |
-          curl -L -X POST \
-            -H "Authorization: Bearer ${{ secrets.GH_PAT }}" \
-            -H "Accept: application/vnd.github+json" \
-            -H "Content-Type: application/json" \
-            https://api.github.com/repos/goodguy2100/buyafricabuildafrica/pages \
-            -d '{"build_type":"github_actions","source":{"branch":"main","path":"/"}}' || true
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-        with:
-          static_site_generator: react
-
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
