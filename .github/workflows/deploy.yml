@@ -36,35 +36,31 @@ jobs:
       - name: Build
         run: bun run build
 
-      - name: Create index.html with base tag
+      - name: Create index.html
         run: |
-          # Find JS and CSS files
-          JS_FILE=$(ls dist/client/assets/index-*.js 2>/dev/null | head -1)
-          CSS_FILE=$(ls dist/client/assets/styles-*.css 2>/dev/null | head -1)
-          JS_NAME=$(basename "$JS_FILE")
-          CSS_NAME=$(basename "$CSS_FILE")
-          echo "JS: $JS_NAME  CSS: $CSS_NAME"
+          JS=$(ls dist/client/assets/index-*.js | head -1 | xargs basename)
+          CSS=$(ls dist/client/assets/styles-*.css | head -1 | xargs basename)
+          echo "JS=$JS CSS=$CSS"
           
-          # Use base tag so all relative paths resolve correctly
-          cat > dist/client/index.html << ENDHTML
+          cat > dist/client/index.html << HTML
           <!DOCTYPE html>
           <html lang="en">
           <head>
             <base href="/buyafricabuildafrica/">
             <meta charset="utf-8" />
             <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-            <title>Buy Africa Build Africa (BABA)</title>
+            <title>Buy Africa Build Africa (BABA) | Connecting Local Talent to Continental Opportunity</title>
             <link rel="preconnect" href="https://fonts.googleapis.com" />
             <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
             <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-            <link rel="stylesheet" href="${CSS_NAME}" />
+            <link rel="stylesheet" href="assets/${CSS}" />
           </head>
           <body>
             <div id="root"></div>
-            <script type="module" crossorigin src="${JS_NAME}"></script>
+            <script type="module" crossorigin src="assets/${JS}"></script>
           </body>
           </html>
-          ENDHTML
+          HTML
           echo "--- index.html ---"
           cat dist/client/index.html
 
