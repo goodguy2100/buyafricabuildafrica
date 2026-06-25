@@ -335,32 +335,49 @@ function Home() {
       </section>
 
       {/* ═══ OUR PRESENCE ═══ */}
-      <section className="bg-baba-blue text-baba-cream py-20">
+      <section className="bg-baba-blue py-20 text-baba-cream">
         <div className="mx-auto max-w-7xl px-5 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
-            <span className="text-xs font-bold uppercase tracking-[0.3em] text-baba-copper">Footprint</span>
-            <h2 className="mt-2 font-display text-3xl font-extrabold sm:text-4xl">Our Presence</h2>
-            <p className="mt-3 text-white/80">We are active across Africa, with plans to expand to every region of the continent.</p>
+            <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.3em] text-baba-copper">
+              🇰🇪 Footprint
+            </span>
+            <h2 className="mt-3 font-display text-3xl font-extrabold sm:text-4xl">Our Presence in Kenya</h2>
+            <p className="mt-3 text-white/80">
+              We are currently active across Kenya, building our network region by region — with plans to expand
+              across Africa.
+            </p>
           </div>
-          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {countries.map((c) => (
-              <div key={c.name} className="rounded-2xl border border-white/15 bg-white/10 p-5 transition-transform hover:-translate-y-1">
-                <div className="flex items-center gap-3">
-                  <span className="text-3xl">{c.flag}</span>
-                  <h3 className="font-display text-lg font-bold text-white">{c.name}</h3>
+
+          <div className="mt-12 grid items-center gap-10 lg:grid-cols-2">
+            {/* Map */}
+            <div className="rounded-3xl bg-white/5 p-6 ring-1 ring-white/10">
+              <KenyaMap />
+            </div>
+
+            {/* Region widgets */}
+            <div className="grid gap-4 sm:grid-cols-2">
+              {kenyaRegions.map((r) => (
+                <div
+                  key={r.name}
+                  className="group rounded-2xl border border-white/15 bg-white/10 p-5 transition-all hover:-translate-y-1 hover:bg-white/20"
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-baba-copper/25 text-2xl">
+                      {r.icon}
+                    </span>
+                    <h3 className="font-display text-lg font-bold text-white">{r.name}</h3>
+                  </div>
+                  <p className="mt-3 text-sm text-white/80">{r.note}</p>
                 </div>
-                <ul className="mt-4 space-y-2">
-                  {c.regions.map((r) => (
-                    <li key={r} className="flex items-center gap-2 text-sm text-white/80">
-                      <span className="h-1.5 w-1.5 rounded-full bg-baba-copper" /> {r}
-                    </li>
-                  ))}
-                </ul>
+              ))}
+              <div className="flex items-center justify-center rounded-2xl border border-dashed border-white/30 bg-white/5 p-5 text-center text-sm font-semibold text-baba-copper">
+                More regions coming soon
               </div>
-            ))}
+            </div>
           </div>
         </div>
       </section>
+
 
       {/* ═══ EVENTS PREVIEW ═══ */}
       <section className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
