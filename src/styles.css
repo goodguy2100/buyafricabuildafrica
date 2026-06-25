@@ -88,9 +88,9 @@
 }
 
 .dark {
-  --baba-blue: hsl(196 70% 50%);
-  --baba-blue-light: hsl(196 65% 60%);
-  --baba-blue-dark: hsl(196 75% 40%);
+  --baba-blue: hsl(186 70% 45%);
+  --baba-blue-light: hsl(186 62% 55%);
+  --baba-blue-dark: hsl(186 80% 32%);
   --baba-copper: hsl(45 90% 58%);
   --baba-copper-dark: hsl(35 86% 52%);
   --baba-cream: hsl(200 25% 10%);
