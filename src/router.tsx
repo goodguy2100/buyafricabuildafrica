@@ -6,7 +6,6 @@ export const getRouter = () => {
   const queryClient = new QueryClient();
 
   const router = createRouter({
-    basepath: '/buyafricabuildafrica',
     routeTree,
     context: { queryClient },
     scrollRestoration: true,

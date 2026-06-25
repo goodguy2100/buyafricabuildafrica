@@ -73,3 +73,4 @@ export function LiveBadge({ label = "Live Impact" }: { label?: string }) {
     </span>
   );
 }
+
