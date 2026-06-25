@@ -46,22 +46,26 @@ jobs:
           echo "JS: $JS_NAME"
           echo "CSS: $CSS_NAME"
           
-          # Create index.html
-          cat > dist/client/index.html << EOF
+          # Create index.html that loads all JS bundles
+          cat > dist/client/index.html << HTMLEOF
           <!DOCTYPE html>
           <html lang="en">
           <head>
             <meta charset="utf-8" />
             <meta name="viewport" content="width=device-width, initial-scale=1.0" />
             <title>Buy Africa Build Africa (BABA)</title>
+            <link rel="preconnect" href="https://fonts.googleapis.com" />
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+            <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
             <link rel="stylesheet" href="/assets/$CSS_NAME" />
-            <script type="module" crossorigin src="/assets/$JS_NAME"></script>
           </head>
           <body>
             <div id="root"></div>
+            <script type="module" crossorigin src="/assets/$JS_NAME"></script>
           </body>
           </html>
-          EOF
+          HTMLEOF
+          echo "--- index.html ---"
           cat dist/client/index.html
           
           # Also create _redirects for SPA
