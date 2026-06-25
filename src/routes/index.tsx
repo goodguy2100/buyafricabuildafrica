@@ -169,9 +169,22 @@ function Home() {
                 Attend BABA Events
               </Link>
             </div>
+
+            <div className="mx-auto mt-14 max-w-4xl rounded-3xl border border-baba-blue/10 bg-white/70 p-6 shadow-xl shadow-baba-blue/10 backdrop-blur sm:p-8">
+              <div className="flex items-center justify-center">
+                <LiveBadge label="Live Impact Tracker" />
+              </div>
+              <div className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-4">
+                <Counter target={45230} label="Members" tone="dark" />
+                <Counter target={12500} label="Jobs Created" suffix="+" tone="dark" />
+                <Counter target={350} label="Trainings" suffix="+" tone="dark" />
+                <Counter target={4} label="Countries" tone="dark" />
+              </div>
+            </div>
           </div>
         </div>
       </section>
+
 
       {/* ═══ OUR STORY ═══ */}
       <section className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
