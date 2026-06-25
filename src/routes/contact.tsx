@@ -86,7 +86,7 @@ function Contact() {
                 <Field label="Full Name" placeholder="John Doe" required />
                 <Field label="Email" placeholder="john@example.com" type="email" required />
                 <Field label="Organization" placeholder="Optional" />
-                <Field label="Phone" placeholder="+254 712 345 678" />
+                <Field label="Phone" placeholder="+254 746216258" />
               </div>
               <div className="mt-5">
                 <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
@@ -111,7 +111,7 @@ function Contact() {
 
         <aside className="space-y-4">
           <InfoCard icon={Mail} title="Email" value="hello@buildafrica.org" />
-          <InfoCard icon={Phone} title="Phone" value="+254 712 345 678" />
+          <InfoCard icon={Phone} title="Phone" value="+254 746216258" />
           <InfoCard icon={MapPin} title="Head Office" value="Nairobi, Kenya" />
           <div className="rounded-2xl bg-baba-slate p-6 text-baba-cream">
             <h3 className="font-display text-lg font-bold">County Offices</h3>
