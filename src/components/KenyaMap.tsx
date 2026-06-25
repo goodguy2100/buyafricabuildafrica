@@ -2,10 +2,10 @@ import { MapPin } from "lucide-react";
 import kenyaMap from "@/assets/kenya-map.webp";
 
 const regions = [
-  { name: "Nairobi", x: 60, y: 64 },
-  { name: "Central", x: 56, y: 54 },
-  { name: "Rift Valley", x: 42, y: 50 },
-  { name: "Western", x: 26, y: 50 },
+  { name: "Nairobi", x: 58, y: 64 },
+  { name: "Central", x: 56, y: 45 },
+  { name: "Rift Valley", x: 40, y: 57 },
+  { name: "Western", x: 23, y: 45 },
   { name: "Coast", x: 78, y: 82 },
 ];
 
