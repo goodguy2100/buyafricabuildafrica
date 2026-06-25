@@ -366,9 +366,10 @@ function Home() {
 
           <div className="mt-12 grid items-center gap-10 lg:grid-cols-2">
             {/* Map */}
-            <div className="rounded-3xl bg-white/5 p-6 ring-1 ring-white/10">
+            <div>
               <KenyaMap />
             </div>
+
 
             {/* Region widgets */}
             <div className="grid gap-4 sm:grid-cols-2">
