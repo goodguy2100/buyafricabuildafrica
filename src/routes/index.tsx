@@ -460,15 +460,16 @@ function Home() {
       {/* ═══ IMPACT DASHBOARD ═══ */}
       <section className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
         <div className="rounded-3xl bg-gradient-to-r from-baba-blue/90 via-baba-blue/75 to-baba-blue/60 px-6 py-12 text-white lg:px-12">
-          <p className="text-center text-xs font-bold uppercase tracking-[0.3em] text-baba-copper">Real-Time Impact Tracker</p>
+          <p className="text-center text-xs font-bold uppercase tracking-[0.3em] text-baba-copper">Our Growth Targets</p>
           <h2 className="mt-2 text-center font-display text-2xl font-extrabold sm:text-3xl">Scaling Modern African Industry</h2>
+          <p className="mx-auto mt-2 max-w-xl text-center text-sm text-white/70">The numbers we're working towards as the BABA ecosystem grows.</p>
           <div className="mt-10 grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-6">
-            <Counter target={45230} label="Members" />
-            <Counter target={28150} label="Workers" />
-            <Counter target={8420} label="Professionals" />
-            <Counter target={3120} label="Contractors" />
-            <Counter target={960} label="Suppliers" />
-            <Counter target={80} label="Partners" />
+            <Counter target={50000} label="Members" suffix="+" />
+            <Counter target={30000} label="Workers" suffix="+" />
+            <Counter target={9000} label="Professionals" suffix="+" />
+            <Counter target={3500} label="Contractors" suffix="+" />
+            <Counter target={1000} label="Suppliers" suffix="+" />
+            <Counter target={100} label="Partners" suffix="+" />
           </div>
           <div className="mt-10 grid gap-6 border-t border-white/20 pt-8 sm:grid-cols-2 lg:grid-cols-4">
             {impactStats.map((s) => (
