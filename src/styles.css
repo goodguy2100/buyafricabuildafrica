@@ -53,9 +53,9 @@
   --radius: 0.75rem;
 
   /* Susan's chosen palette — primary: #137ba1 */
-  --baba-blue: hsl(196 79% 35%);
-  --baba-blue-light: hsl(196 70% 50%);
-  --baba-blue-dark: hsl(196 80% 25%);
+  --baba-blue: hsl(186 89% 29%);
+  --baba-blue-light: hsl(186 70% 42%);
+  --baba-blue-dark: hsl(186 92% 20%);
   --baba-copper: hsl(45 95% 55%);
   --baba-copper-dark: hsl(35 90% 50%);
   --baba-cream: hsl(40 20% 97%);
@@ -88,9 +88,9 @@
 }
 
 .dark {
-  --baba-blue: hsl(196 70% 50%);
-  --baba-blue-light: hsl(196 65% 60%);
-  --baba-blue-dark: hsl(196 75% 40%);
+  --baba-blue: hsl(186 70% 45%);
+  --baba-blue-light: hsl(186 62% 55%);
+  --baba-blue-dark: hsl(186 80% 32%);
   --baba-copper: hsl(45 90% 58%);
   --baba-copper-dark: hsl(35 86% 52%);
   --baba-cream: hsl(200 25% 10%);

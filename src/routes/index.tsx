@@ -29,7 +29,7 @@ import {
   PenTool,
 } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
-import { Counter, LiveBadge } from "@/components/Counter";
+import { Counter } from "@/components/Counter";
 import { pillars } from "@/data/pillars";
 import heroCollage from "@/assets/hero-collage.jpg";
 import { KenyaMap } from "@/components/KenyaMap";
@@ -173,13 +173,16 @@ function Home() {
             </div>
 
             <div className="mx-auto mt-14 max-w-4xl rounded-3xl border border-baba-blue/10 bg-white/70 p-6 shadow-xl shadow-baba-blue/10 backdrop-blur sm:p-8">
-              <div className="flex items-center justify-center">
-                <LiveBadge label="Live Impact Tracker" />
+              <div className="flex flex-col items-center gap-2">
+                <span className="inline-flex items-center gap-2 rounded-full border border-baba-blue/20 bg-white/80 px-3 py-1 text-xs font-bold uppercase tracking-widest text-baba-blue shadow-sm backdrop-blur">
+                  🎯 Our Impact Targets
+                </span>
+                <p className="text-xs text-baba-slate/60">Where we're headed as we grow — goals, not yet achieved.</p>
               </div>
               <div className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-4">
-                <Counter target={45230} label="Members" tone="dark" />
-                <Counter target={12500} label="Jobs Created" suffix="+" tone="dark" />
-                <Counter target={350} label="Trainings" suffix="+" tone="dark" />
+                <Counter target={50000} label="Members Target" suffix="+" tone="dark" />
+                <Counter target={40000} label="Jobs Target" suffix="+" tone="dark" />
+                <Counter target={1200} label="Trainings Target" suffix="+" tone="dark" />
                 <Counter target={5} label="Regions" tone="dark" />
               </div>
             </div>
@@ -457,15 +460,16 @@ function Home() {
       {/* ═══ IMPACT DASHBOARD ═══ */}
       <section className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
         <div className="rounded-3xl bg-gradient-to-r from-baba-blue/90 via-baba-blue/75 to-baba-blue/60 px-6 py-12 text-white lg:px-12">
-          <p className="text-center text-xs font-bold uppercase tracking-[0.3em] text-baba-copper">Real-Time Impact Tracker</p>
+          <p className="text-center text-xs font-bold uppercase tracking-[0.3em] text-baba-copper">Our Growth Targets</p>
           <h2 className="mt-2 text-center font-display text-2xl font-extrabold sm:text-3xl">Scaling Modern African Industry</h2>
+          <p className="mx-auto mt-2 max-w-xl text-center text-sm text-white/70">The numbers we're working towards as the BABA ecosystem grows.</p>
           <div className="mt-10 grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-6">
-            <Counter target={45230} label="Members" />
-            <Counter target={28150} label="Workers" />
-            <Counter target={8420} label="Professionals" />
-            <Counter target={3120} label="Contractors" />
-            <Counter target={960} label="Suppliers" />
-            <Counter target={80} label="Partners" />
+            <Counter target={50000} label="Members" suffix="+" />
+            <Counter target={30000} label="Workers" suffix="+" />
+            <Counter target={9000} label="Professionals" suffix="+" />
+            <Counter target={3500} label="Contractors" suffix="+" />
+            <Counter target={1000} label="Suppliers" suffix="+" />
+            <Counter target={100} label="Partners" suffix="+" />
           </div>
           <div className="mt-10 grid gap-6 border-t border-white/20 pt-8 sm:grid-cols-2 lg:grid-cols-4">
             {impactStats.map((s) => (
