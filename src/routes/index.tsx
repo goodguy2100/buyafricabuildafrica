@@ -180,7 +180,7 @@ function Home() {
                 <Counter target={45230} label="Members" tone="dark" />
                 <Counter target={12500} label="Jobs Created" suffix="+" tone="dark" />
                 <Counter target={350} label="Trainings" suffix="+" tone="dark" />
-                <Counter target={4} label="Countries" tone="dark" />
+                <Counter target={5} label="Regions" tone="dark" />
               </div>
             </div>
           </div>
