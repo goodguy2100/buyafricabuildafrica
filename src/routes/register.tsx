@@ -282,31 +282,25 @@ function Register() {
                   </div>
                 ) : (
                   <div className="space-y-3">
-                    <div>
-                      <Label>Card Number</Label>
-                      <input
-                        placeholder="4242 4242 4242 4242"
-                        className="mt-1.5 w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm focus:border-baba-blue focus:outline-none"
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-3">
-                      <input
-                        placeholder="MM / YY"
-                        className="rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm focus:border-baba-blue focus:outline-none"
-                      />
-                      <input
-                        placeholder="CVC"
-                        className="rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm focus:border-baba-blue focus:outline-none"
-                      />
+                    <div className="rounded-lg border border-baba-blue/10 bg-secondary/60 p-4 text-sm text-baba-slate/70">
+                      <p className="flex items-center gap-2 font-semibold text-baba-slate">
+                        <CreditCard className="h-4 w-4 text-baba-blue" /> Card payments
+                      </p>
+                      <p className="mt-1.5 text-xs leading-relaxed">
+                        You'll be redirected to our certified payment partner to
+                        enter your card details securely. Your card information is
+                        handled entirely by the processor and never touches our
+                        servers.
+                      </p>
                     </div>
                   </div>
                 )}
 
                 <button className="flex w-full items-center justify-center gap-2 rounded-lg bg-baba-blue py-3 text-sm font-bold text-baba-cream transition-colors hover:bg-baba-blue-dark">
-                  Complete Secure Registration <ShieldCheck className="h-4 w-4" />
+                  Continue to Secure Payment <ShieldCheck className="h-4 w-4" />
                 </button>
                 <p className="flex items-center justify-center gap-1.5 text-[0.7rem] font-semibold uppercase tracking-wide text-baba-copper-dark">
-                  <Lock className="h-3.5 w-3.5" /> 256-bit secure encryption
+                  <Lock className="h-3.5 w-3.5" /> Processed by a PCI-compliant payment partner
                 </p>
               </div>
             </div>
