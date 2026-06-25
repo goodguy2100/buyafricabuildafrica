@@ -146,15 +146,7 @@ function Home() {
               <br />
               <span className="baba-rainbow">Build Africa</span>
             </h1>
-            <p className="mx-auto mt-6 max-w-3xl font-display text-xl font-semibold text-baba-blue sm:text-2xl">
-              Building Africa's Future by Africans
-            </p>
-            <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-baba-slate/70">
-              Africa's future should not only be discussed. It should be built. BABA is a Pan-African platform
-              connecting people, industries, institutions, skills, innovation, and opportunities to drive economic
-              growth, sustainable development, thriving enterprises, and resilient communities across Africa.
-            </p>
-            <p className="mx-auto mt-4 max-w-xl text-sm font-semibold text-baba-copper-dark">
+            <p className="mx-auto mt-6 max-w-xl text-sm font-semibold text-baba-copper-dark">
               We believe Africa's greatest resource is not beneath its soil. It is its people.
             </p>
             <div className="mt-10 flex flex-wrap justify-center gap-3">
