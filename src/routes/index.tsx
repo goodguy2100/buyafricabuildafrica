@@ -180,8 +180,8 @@ function Home() {
                 <p className="text-xs text-baba-slate/60">Where we're headed as we grow — goals, not yet achieved.</p>
               </div>
               <div className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-4">
-                <Counter target={50000} label="Members Target" suffix="+" tone="dark" />
-                <Counter target={40000} label="Jobs Target" suffix="+" tone="dark" />
+                <Counter target={10000} label="Members Target" suffix="+" tone="dark" />
+                <Counter target={800} label="Jobs Target" suffix="+" tone="dark" />
                 <Counter target={1200} label="Trainings Target" suffix="+" tone="dark" />
                 <Counter target={5} label="Regions" tone="dark" />
               </div>

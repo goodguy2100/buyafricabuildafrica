@@ -47,22 +47,22 @@ export function Footer() {
               <MapPin className="h-4 w-4 text-baba-copper" /> Head Office — Riara Road, Victoria Courts Building, HQ Offices
             </p>
             <p className="flex items-center gap-2">
-              <MapPin className="h-4 w-4 text-baba-copper" /> Regional Office — Lagos, Nigeria
+              {"\n"}
             </p>
             <p className="flex items-center gap-2">
-              <MapPin className="h-4 w-4 text-baba-copper" /> Regional Office — Casablanca, Morocco
+              {"\n"}
             </p>
             <p className="flex items-center gap-2">
-              <MapPin className="h-4 w-4 text-baba-copper" /> Regional Office — Johannesburg, South Africa
+              {"\n"}
             </p>
             <p className="flex items-center gap-2">
-              <MapPin className="h-4 w-4 text-baba-copper" /> Regional Office — Cairo, Egypt
+              {""}
             </p>
             <p className="mt-3 text-xs text-baba-cream/70">
               We will expand to other developing countries as well.
             </p>
             <p className="flex items-center gap-2">
-              <Phone className="h-4 w-4 text-baba-copper" /> +254 712 345 678
+              <Phone className="h-4 w-4 text-baba-copper" />+254 746216258
             </p>
             <p className="flex items-center gap-2">
               <Mail className="h-4 w-4 text-baba-copper" /> info@buyafricabuildafrica.org
