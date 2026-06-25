@@ -146,7 +146,7 @@ function Register() {
                 </p>
                 <div className="mt-6 grid gap-5 sm:grid-cols-2">
                   <Field label="Full Name" placeholder="John Doe" />
-                  <Field label="Phone Number" placeholder="+254 712 345 678" />
+                  <Field label="Phone Number" placeholder="+254 746216258" />
                   <Field label="Email Address" placeholder="john@example.com" type="email" />
                   <div>
                     <Label>Primary Location</Label>
