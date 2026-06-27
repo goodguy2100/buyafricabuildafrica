@@ -456,19 +456,17 @@ function Home() {
           </Link>
         </div>
         <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
-          {pillars.map((p) => (
-            <Link key={p.key} to="/pillars" className="baba-card-hover rounded-2xl border border-baba-blue/10 bg-white p-6">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-baba-blue/10">
-                <p.icon className="h-5 w-5 text-baba-blue" />
-              </div>
-              <h3 className="mt-4 font-display text-lg font-bold text-baba-slate">{p.name}</h3>
-              <p className="mt-2 text-sm text-baba-slate/65">{p.description}</p>
-              <span className="mt-4 inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wide text-baba-copper-dark">
+          {strategicPillars.map((name, i) => (
+            <Link key={name} to="/about" className="baba-card-hover flex flex-col rounded-2xl border border-baba-blue/10 bg-white p-6">
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-baba-blue to-baba-copper text-sm font-bold text-white">{i + 1}</span>
+              <h3 className="mt-4 font-display text-lg font-bold text-baba-slate">{name}</h3>
+              <span className="mt-auto inline-flex items-center gap-1 pt-4 text-xs font-bold uppercase tracking-wide text-baba-copper-dark">
                 Learn More <ArrowRight className="h-3.5 w-3.5" />
               </span>
             </Link>
           ))}
         </div>
+
       </section>
     </PageShell>
   );
