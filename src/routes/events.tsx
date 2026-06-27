@@ -98,12 +98,21 @@ export function Events() {
                   {event.categories && (
                     <div className="mt-4">
                       <h4 className="mb-2 text-xs font-bold uppercase tracking-wider text-baba-blue">Award Categories</h4>
-                      {event.categories.map((cat) => (
-                        <div key={cat.title} className="mb-2">
-                          <p className="text-[10px] font-bold uppercase tracking-wide text-baba-copper-dark">{cat.title}</p>
-                          <p className="text-[11px] text-baba-slate/70">{cat.awards.join(" · ")}</p>
-                        </div>
-                      ))}
+                      <div className="grid gap-2 sm:grid-cols-2">
+                        {event.categories.map((cat) => (
+                          <details key={cat.title} className="group rounded-lg border border-baba-blue/10 bg-baba-cream/30 transition-all hover:border-baba-copper/30">
+                            <summary className="flex cursor-pointer items-center justify-between px-3 py-2.5 text-[11px] font-bold uppercase tracking-wide text-baba-copper-dark list-none">
+                              {cat.title}
+                              <span className="text-baba-copper transition-transform group-open:rotate-180">▼</span>
+                            </summary>
+                            <div className="border-t border-baba-blue/10 px-3 py-2 text-[11px] text-baba-slate/75 space-y-1">
+                              {cat.awards.map((a) => (
+                                <p key={a} className="flex items-center gap-1.5">• {a}</p>
+                              ))}
+                            </div>
+                          </details>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>

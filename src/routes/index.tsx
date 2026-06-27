@@ -78,9 +78,12 @@ const strategicPillars = [
 ];
 
 const whoWeServe = [
-  "Governments", "Development Partners", "NGOs", "Financial Institutions",
-  "Investors", "Universities", "Professionals", "Entrepreneurs",
-  "SMEs", "Manufacturers", "Suppliers", "Artisans", "Youth", "Communities",
+  "Architects", "Interior Designers", "Plumbers", "Electricians", "Carpenters",
+  "Welders", "Engineers", "Quantity Surveyors", "Urban Planners",
+  "Project Managers", "Contractors", "Manufacturers", "Suppliers",
+  "Entrepreneurs", "SMEs", "Artisans", "Youth", "Professionals",
+  "Universities", "Investors", "NGOs", "Governments",
+  "Development Partners", "Financial Institutions", "Communities",
 ];
 
 const ecosystemGroups = [
