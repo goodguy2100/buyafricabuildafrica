@@ -53,13 +53,27 @@ const strategicPillars = [
   "Research, Innovation & Implementation Hub",
 ];
 
-const whoWeServe = [
-  "Architects", "Interior Designers", "Plumbers", "Electricians", "Carpenters",
-  "Welders", "Engineers", "Quantity Surveyors", "Urban Planners",
-  "Project Managers", "Contractors", "Manufacturers", "Suppliers",
-  "Entrepreneurs", "SMEs", "Artisans", "Youth", "Professionals",
-  "Universities", "Investors", "NGOs", "Governments",
-  "Development Partners", "Financial Institutions", "Communities",
+const whoWeServeGroups = [
+  {
+    label: "Individuals & Professionals",
+    items: [
+      "Architects", "Engineers", "Quantity Surveyors", "Interior Designers",
+      "Urban Planners", "Project Managers", "Contractors", "Plumbers",
+      "Electricians", "Carpenters", "Welders", "Artisans", "Entrepreneurs", "Youth",
+    ],
+  },
+  {
+    label: "Government Institutions",
+    items: ["Government Agencies", "Public Institutions", "NGOs", "Development Partners"],
+  },
+  {
+    label: "Private Sector",
+    items: ["Manufacturers", "Suppliers", "SMEs", "Financial Institutions", "Investors"],
+  },
+  {
+    label: "Universities",
+    items: ["Educational Institutions", "Students", "Researchers"],
+  },
 ];
 
 const ecosystemGroups = [
@@ -236,7 +250,7 @@ function Home() {
           </div>
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {strategicPillars.map((pillar, i) => (
-              <Link key={pillar} to="/about" className="rounded-xl border border-baba-blue/10 bg-white p-5 baba-card-hover">
+              <Link key={pillar} to="/pillars" className="rounded-xl border border-baba-blue/10 bg-white p-5 baba-card-hover">
                 <div className="flex items-center gap-3">
                   <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-baba-blue to-baba-copper text-sm font-bold text-white">{i + 1}</span>
                   <h3 className="font-display text-base font-bold text-baba-slate">{pillar}</h3>
@@ -245,10 +259,11 @@ function Home() {
             ))}
           </div>
           <div className="mt-8 text-center">
-            <Link to="/about" className="inline-flex items-center gap-1.5 text-sm font-semibold text-baba-blue hover:text-baba-blue-dark">
+            <Link to="/pillars" className="inline-flex items-center gap-1.5 text-sm font-semibold text-baba-blue hover:text-baba-blue-dark">
               Explore the Five Pillars <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
+
 
         </div>
       </section>
@@ -259,11 +274,18 @@ function Home() {
           <span className="text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">Our Community</span>
           <h2 className="mt-2 font-display text-3xl font-extrabold text-baba-slate sm:text-4xl">Who We Serve</h2>
         </div>
-        <div className="mt-10 flex flex-wrap justify-center gap-3">
-          {whoWeServe.map((item) => (
-            <span key={item} className="rounded-full border border-baba-blue/20 bg-white px-5 py-2.5 text-sm font-medium text-baba-slate shadow-sm transition-colors hover:border-baba-blue/40 hover:text-baba-blue">
-              {item}
-            </span>
+        <div className="mt-12 space-y-8">
+          {whoWeServeGroups.map((group) => (
+            <div key={group.label}>
+              <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-baba-copper-dark">{group.label}</p>
+              <div className="mt-4 flex flex-wrap justify-center gap-3">
+                {group.items.map((item) => (
+                  <span key={item} className="rounded-full border border-baba-blue/20 bg-white px-5 py-2.5 text-sm font-medium text-baba-slate shadow-sm transition-colors hover:border-baba-blue/40 hover:text-baba-blue">
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </div>
           ))}
         </div>
       </section>
