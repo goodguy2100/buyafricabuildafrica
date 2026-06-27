@@ -110,7 +110,7 @@ function Contact() {
         </div>
 
         <aside className="space-y-4">
-          <InfoCard icon={Mail} title="Email" value="hello@buildafrica.org" />
+          <InfoCard icon={Mail} title="Email" value="Hello@ buyafricabuildafrica" />
           <InfoCard icon={Phone} title="Phone" value="+254 746216258" />
           <InfoCard icon={MapPin} title="Head Office" value="Nairobi, Kenya" />
           <div className="rounded-2xl bg-baba-slate p-6 text-baba-cream">
