@@ -200,7 +200,10 @@ function Home() {
             </div>
           </div>
         </div>
+      </section>
+
       {/* ═══ HOW BABA WORKS ═══ */}
+
       <section className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <span className="text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">Our Process</span>
