@@ -1,27 +1,15 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { 
-  Wrench, 
-  ShoppingBag, 
-  Building2, 
-  Leaf, 
-  TrendingUp, 
-  CheckCircle2, 
-  Target, 
-  Users, 
-  Globe, 
-  Zap,
-  ArrowRight
-} from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Users, BookOpen, Leaf, Award, Lightbulb, ArrowRight, type LucideIcon } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 
 export const Route = createFileRoute("/pillars")({
   head: () => ({
     meta: [
-      { title: "The Five Strategic Pillars | Buy Africa Build Africa (BABA)" },
+      { title: "Our Five Strategic Pillars | Buy Africa Build Africa (BABA)" },
       {
         name: "description",
         content:
-          "Explore the five strategic pillars of BABA: Skills Africa, Buy Africa, Build Africa, Green Africa, and Prosper Africa. Our roadmap for a self-reliant continent.",
+          "The five strategic pillars guiding BABA: Membership & Industry Network, Capacity Building Hub, Sustainability & Green Building, Events & Recognition, and Research, Innovation & Implementation.",
       },
     ],
     links: [{ rel: "canonical", href: "/pillars" }],
@@ -29,254 +17,391 @@ export const Route = createFileRoute("/pillars")({
   component: PillarsPage,
 });
 
-const pillarDetails = [
+interface PillarSection {
+  title: string;
+  items?: string[];
+  body?: string;
+}
+
+interface SubEvent {
+  name: string;
+  period: string;
+  intro: string;
+  sections: PillarSection[];
+  note?: string;
+}
+
+interface Pillar {
+  key: string;
+  num: number;
+  icon: LucideIcon;
+  name: string;
+  tagline: string;
+  paras: string[];
+  sections: PillarSection[];
+  subEvents?: SubEvent[];
+  closing?: string;
+}
+
+const pillars: Pillar[] = [
   {
-    key: "skills",
-    name: "Skills Africa",
-    icon: Wrench,
-    tagline: "Empowering the Youth & Workforce",
-    description: "Skills Africa is dedicated to bridging the technical skills gap by empowering the youth and experienced workers through specialized, technically certified training. We believe that a highly skilled workforce is the foundation of industrial growth.",
-    longDescription: "Our approach focuses on transforming the African labor market from one of raw potential to one of certified expertise. By partnering with Technical and Vocational Education and Training (TVET) institutions, we ensure that training is aligned with modern industrial needs. We don't just provide classroom learning; we facilitate hands-on apprenticeships and attachments that turn theory into practice.",
-    focusAreas: [
-      { title: "Technically Certified Trades", detail: "Standardizing certifications for masons, electricians, plumbers, and welders to meet international standards." },
-      { title: "TVET Partnerships", detail: "Collaborating with vocational colleges to modernize curriculum and provide industry-relevant equipment." },
-      { title: "Apprenticeships & Attachments", detail: "Connecting students with real-world projects to gain practical experience and mentorship." },
-      { title: "Continuous Upskilling", detail: "Providing masterclasses and refresher courses for seasoned professionals to stay ahead of technology." }
+    key: "network",
+    num: 1,
+    icon: Users,
+    name: "BABA Membership & Industry Network",
+    tagline: "Connecting Africa's People, Skills and Opportunities",
+    paras: [
+      "The BABA Membership & Industry Network is the foundation of our ecosystem and serves as a platform for collaboration, visibility, professional growth, enterprise development, and industry engagement.",
+      "We bring together professionals, artisans, entrepreneurs, SMEs, manufacturers, suppliers, institutions, governments, development partners, investors, and communities into one interconnected network focused on building Africa's future.",
+      "Our objective is to strengthen relationships, create opportunities, facilitate partnerships, and promote knowledge sharing across industries and regions.",
     ],
-    impact: "Creating a future-ready workforce that drives efficiency and innovation in the built environment."
+    sections: [
+      {
+        title: "Who Can Join",
+        items: [
+          "Architects", "Engineers", "Quantity Surveyors", "Interior Designers",
+          "Urban Planners", "Project Managers", "Contractors", "Developers",
+          "Manufacturers", "Suppliers", "Entrepreneurs", "SMEs", "Artisans",
+          "Educational Institutions", "Government Agencies", "NGOs", "Development Partners",
+        ],
+      },
+      {
+        title: "Benefits",
+        items: [
+          "Professional Visibility", "Networking Opportunities", "Industry Connections",
+          "Business Opportunities", "Strategic Partnerships", "Knowledge Sharing",
+          "Market Access", "Industry Recognition",
+        ],
+      },
+    ],
+    closing:
+      "By strengthening connections between people, industries, and institutions, we help create an environment where opportunities can flourish.",
   },
   {
-    key: "buy",
-    name: "Buy Africa",
-    icon: ShoppingBag,
-    tagline: "Prioritizing Local Value Chains",
-    description: "Buy Africa fosters intra-continental trade and supports home-grown brands and products. We aim to keep African wealth within Africa by connecting local manufacturers with local buyers.",
-    longDescription: "The Buy Africa pillar is about changing the procurement mindset. We are building a comprehensive directory of African-made products and verified suppliers. By reducing reliance on external imports for materials that can be produced locally, we strengthen our industries, reduce carbon footprints associated with long-distance shipping, and create a robust internal market.",
-    focusAreas: [
-      { title: "Home-Grown Brand Directory", detail: "A curated platform showcasing high-quality African brands across construction and manufacturing." },
-      { title: "Local Procurement Grids", detail: "Helping developers and governments source materials locally for large-scale infrastructure projects." },
-      { title: "Intra-Continental Trade", detail: "Leveraging AfCFTA to facilitate the movement of goods and services between African nations." },
-      { title: "Verified Supplier Network", detail: "Rigorous vetting process to ensure reliability, quality, and ethical standards among our partners." }
+    key: "capacity",
+    num: 2,
+    icon: BookOpen,
+    name: "BABA Capacity Building Hub",
+    tagline: "Building Skills. Strengthening Enterprises. Empowering Communities.",
+    paras: [
+      "The BABA Capacity Building Hub focuses on developing the skills, knowledge, leadership, and entrepreneurial capabilities needed to drive Africa's growth.",
+      "As cities expand, industries evolve, and economies become increasingly competitive, the demand for skilled and adaptable professionals continues to grow.",
+      "Through strategic partnerships with governments, professional associations, manufacturers, educational institutions, financial institutions, development partners, and industry experts, BABA delivers practical and market-driven learning opportunities.",
     ],
-    impact: "Strengthening local economies and ensuring that every dollar spent on development builds African industry."
+    sections: [
+      {
+        title: "Focus Areas",
+        items: [
+          "Technical Skills Development", "Entrepreneurship Development", "Financial Literacy",
+          "Business Growth", "Leadership Development", "Professional Development",
+          "Digital Skills", "Sustainability Education", "Ethics and Professionalism",
+        ],
+      },
+      {
+        title: "Delivery Channels",
+        items: [
+          "Physical Workshops", "Online Learning", "Masterclasses", "Industry Forums",
+          "Community Outreach Programmes", "Mentorship Programmes", "Certification Programmes",
+        ],
+      },
+      {
+        title: "Community Chapters",
+        body:
+          "The Capacity Building Hub operates through Community Chapters across counties, regions, and countries, ensuring opportunities reach people where they live and work. Through monthly activities, members gain access to practical learning, networking, mentorship, and enterprise support.",
+      },
+    ],
   },
   {
-    key: "build",
-    name: "Build Africa",
-    icon: Building2,
-    tagline: "Modern Infrastructure & Smart Cities",
-    description: "Build Africa focuses on developing sustainable infrastructure and smart cities through localized construction ecosystems. We believe in building for the future, today.",
-    longDescription: "This pillar addresses the urgent need for housing and urban infrastructure driven by rapid urbanization. We advocate for localized construction methods that utilize African talent and materials. Our vision includes the development of 'Smart Cities'—urban centers that are technologically integrated, inclusive, and designed to improve the quality of life for all residents.",
-    focusAreas: [
-      { title: "Localized Construction", detail: "Utilizing local materials and labor to reduce costs and increase community ownership of projects." },
-      { title: "Smart City Development", detail: "Integrating technology in urban planning to manage resources efficiently and improve service delivery." },
-      { title: "Affordable Housing", detail: "Developing innovative, scalable models to address the continent's housing deficit." },
-      { title: "Project Tendering", detail: "Creating transparent platforms where local contractors can bid for and win significant infrastructure projects." }
-    ],
-    impact: "Transforming the African landscape with resilient, modern, and inclusive infrastructure."
-  },
-  {
-    key: "green",
-    name: "Green Africa",
+    key: "sustainability",
+    num: 3,
     icon: Leaf,
-    tagline: "Sustainable & Regenerative Development",
-    description: "Green Africa leads the transition to sustainable development and eco-friendly manufacturing. We ensure that our growth does not come at the expense of our environment.",
-    longDescription: "Sustainability is not an afterthought at BABA; it is a core principle. Green Africa promotes circular economy models where waste is minimized and resources are reused. From renewable energy integration in new builds to the use of eco-materials in manufacturing, we are setting the standard for climate-resilient development across the continent.",
-    focusAreas: [
-      { title: "Recycling Systems", detail: "Implementing robust waste management and material recovery systems in industrial and urban zones." },
-      { title: "Renewable Energy", detail: "Promoting solar, wind, and geothermal solutions for residential and industrial energy needs." },
-      { title: "Eco-Materials", detail: "Researching and promoting the use of sustainable alternatives like stabilized earth bricks and bamboo." },
-      { title: "Climate-Resilient Design", detail: "Ensuring all infrastructure is built to withstand and adapt to the changing climate." }
+    name: "BABA Sustainability & Green Building Initiative",
+    tagline: "Building Resilient Cities and Communities for Future Generations",
+    paras: [
+      "Africa's urban population is growing rapidly, creating increased demand for housing, infrastructure, public services, and economic opportunities.",
+      "As this growth continues, sustainability must remain at the centre of development.",
+      "The BABA Sustainability & Green Building Initiative promotes practical solutions that support climate resilience, environmental stewardship, sustainable construction, and healthier communities.",
+      "We work alongside governments, development partners, professional associations, researchers, manufacturers, and sustainability experts to advance implementation-focused initiatives that contribute to resilient cities and communities.",
     ],
-    impact: "Securing a healthy, sustainable environment for future generations of Africans."
+    sections: [
+      {
+        title: "Focus Areas",
+        items: [
+          "Green Building", "Climate Resilience", "Sustainable Urban Development",
+          "Circular Economy Practices", "Environmental Stewardship", "Sustainable Construction",
+          "Resource Efficiency", "Community Sustainability Projects", "Green Skills Development",
+        ],
+      },
+      {
+        title: "Strategic Goals",
+        items: [
+          "Promote sustainable building practices", "Advance climate-smart development",
+          "Encourage responsible urban growth", "Support environmental awareness",
+          "Build local capacity in sustainability", "Foster collaboration on green initiatives",
+        ],
+      },
+    ],
+    closing:
+      "Because the cities we build today will shape the future generations of tomorrow.",
   },
   {
-    key: "prosper",
-    name: "Prosper Africa",
-    icon: TrendingUp,
-    tagline: "Shared Prosperity & Financial Inclusion",
-    description: "Prosper Africa drives economic empowerment and financial inclusion across all levels of the workforce. We believe that growth must be inclusive to be sustainable.",
-    longDescription: "The ultimate goal of BABA is prosperity for all. This pillar focuses on unlocking the financial resources needed for SMEs and artisans to scale. By providing access to specialized financing, insurance, and investment opportunities, we are building a foundation of wealth that reaches the grassroots level of the African economy.",
-    focusAreas: [
-      { title: "SME Loans & Financing", detail: "Bridging the credit gap by providing accessible capital for business expansion and project funding." },
-      { title: "Financial Inclusion", detail: "Bringing unbanked artisans and small-scale entrepreneurs into the formal financial ecosystem." },
-      { title: "Wealth Creation", detail: "Facilitating equity participation and ownership opportunities for workers in the projects they build." },
-      { title: "Cooperative Investment", detail: "Enabling collective investment schemes that allow members to pool resources for larger ventures." }
+    key: "events",
+    num: 4,
+    icon: Award,
+    name: "BABA Events & Recognition Platform",
+    tagline: "Connecting Ideas, Opportunities and Excellence",
+    paras: [
+      "The BABA Events & Recognition Platform serves as our annual engagement framework, bringing together leaders, professionals, businesses, institutions, development partners, and communities to collaborate, learn, showcase, and celebrate excellence.",
+      "Through our flagship events, we create opportunities for visibility, partnerships, investment, networking, and industry advancement.",
     ],
-    impact: "Lifting millions into the middle class and creating a self-sustaining cycle of economic growth."
-  }
+    sections: [],
+    subEvents: [
+      {
+        name: "BABA Corporate Strategy Summit",
+        period: "January",
+        intro: "The annual leadership platform focused on Africa's economic future.",
+        sections: [
+          {
+            title: "The Summit brings together",
+            items: [
+              "Government Leaders", "Policy Makers", "Investors", "Financial Institutions",
+              "Development Partners", "Industry Leaders", "Business Executives", "Professional Associations",
+            ],
+          },
+          {
+            title: "Key Focus Areas",
+            items: [
+              "Economic Development", "Industrial Growth", "Sustainable Cities", "Skills Development",
+              "Entrepreneurship", "Investment Opportunities", "Public-Private Partnerships",
+            ],
+          },
+        ],
+      },
+      {
+        name: "BABA Expo & Conference",
+        period: "July – September",
+        intro:
+          "Africa's marketplace for products, services, innovations, technologies, research, and opportunities. The Expo & Conference provides a platform for businesses, institutions, manufacturers, suppliers, entrepreneurs, and professionals to showcase their work while connecting with potential clients, partners, and investors.",
+        sections: [
+          {
+            title: "Features",
+            items: [
+              "Product Exhibitions", "Industry Showcases", "Technology Demonstrations",
+              "Supplier Engagement Forums", "Business Matching Sessions", "Networking Opportunities",
+              "Thought Leadership Sessions", "Sustainability Forums", "Entrepreneurship Forums",
+            ],
+          },
+        ],
+        note:
+          "The Expo also serves as the official launch platform for nominations for the BABA Excellence Awards.",
+      },
+      {
+        name: "BABA Excellence Awards",
+        period: "December",
+        intro:
+          "The BABA Excellence Awards recognize outstanding individuals, organizations, projects, and initiatives contributing to Africa's development.",
+        sections: [
+          {
+            title: "Categories include",
+            items: [
+              "Professional Excellence", "Artisan Excellence", "Business Excellence",
+              "Sustainability Leadership", "Innovation Awards", "Youth Achievement Awards",
+              "Community Impact Awards", "Lifetime Achievement Awards",
+            ],
+          },
+        ],
+        note:
+          "The Awards celebrate excellence while inspiring future generations to contribute to Africa's growth.",
+      },
+    ],
+  },
+  {
+    key: "research",
+    num: 5,
+    icon: Lightbulb,
+    name: "BABA Research, Innovation & Implementation Hub",
+    tagline: "Turning Ideas Into Action",
+    paras: [
+      "The BABA Research, Innovation & Implementation Hub exists to ensure that ideas, discussions, and recommendations translate into practical action and measurable impact.",
+      "Working with governments, universities, professional bodies, development agencies, industry stakeholders, and communities, the Hub identifies opportunities, challenges, and emerging trends affecting Africa's development.",
+    ],
+    sections: [
+      {
+        title: "Focus Areas",
+        items: [
+          "Sustainable Cities", "Affordable Housing", "Climate Resilience", "Youth Employment",
+          "Skills Development", "SME Growth", "Industrial Development", "Innovation Ecosystems",
+          "Community Development",
+        ],
+      },
+      {
+        title: "Key Outputs",
+        items: [
+          "Research Reports", "Industry Studies", "Policy Papers", "Pilot Projects",
+          "Innovation Challenges", "Community Assessments", "Development Frameworks", "Implementation Models",
+        ],
+      },
+      {
+        title: "Our Approach",
+        body:
+          "We believe research should not remain on shelves. It should inform action. By combining knowledge, collaboration, innovation, and implementation, the Hub contributes to solutions that improve lives, strengthen communities, and support Africa's long-term development.",
+      },
+    ],
+  },
 ];
+
+const ecosystemSummary = [
+  { name: "Membership & Industry Network", desc: "Connecting people and opportunities." },
+  { name: "Capacity Building Hub", desc: "Developing skills and capabilities." },
+  { name: "Sustainability & Green Building Initiative", desc: "Building resilient communities." },
+  { name: "Events & Recognition Platform", desc: "Showcasing ideas and celebrating excellence." },
+  { name: "Research, Innovation & Implementation Hub", desc: "Transforming knowledge into action." },
+];
+
+function SectionBlock({ section }: { section: PillarSection }) {
+  return (
+    <div>
+      <p className="text-xs font-bold uppercase tracking-[0.2em] text-baba-copper-dark">{section.title}</p>
+      {section.body && <p className="mt-3 leading-relaxed text-baba-slate/75">{section.body}</p>}
+      {section.items && (
+        <div className="mt-4 flex flex-wrap gap-2.5">
+          {section.items.map((it) => (
+            <span
+              key={it}
+              className="rounded-full border border-baba-blue/15 bg-white px-4 py-1.5 text-sm font-medium text-baba-slate shadow-sm transition-colors hover:border-baba-blue/40 hover:text-baba-blue"
+            >
+              {it}
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 function PillarsPage() {
   return (
     <PageShell>
-      {/* Hero Section */}
-      <section className="relative overflow-hidden baba-wash py-20 lg:py-32">
-        <div className="mx-auto max-w-7xl px-5 lg:px-8">
-          <div className="text-center">
-            <span className="inline-flex items-center gap-2 rounded-full bg-baba-copper/15 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">
-              Strategic Roadmap
-            </span>
-            <h1 className="mt-6 font-display text-5xl font-extrabold tracking-tight text-baba-slate sm:text-6xl lg:text-7xl">
-              The Five <span className="baba-rainbow">Pillars</span>
-            </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-lg text-baba-slate/70">
-              Our holistic strategy to transform the African continent through skills, trade, 
-              infrastructure, sustainability, and shared prosperity.
-            </p>
-          </div>
+      {/* Hero */}
+      <section className="relative overflow-hidden baba-wash py-20 lg:py-28">
+        <div className="mx-auto max-w-7xl px-5 lg:px-8 text-center">
+          <span className="inline-flex items-center gap-2 rounded-full bg-baba-copper/15 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">
+            Our Framework
+          </span>
+          <h1 className="mt-6 font-display text-5xl font-extrabold tracking-tight text-baba-slate sm:text-6xl lg:text-7xl">
+            Our Five <span className="baba-rainbow">Strategic Pillars</span>
+          </h1>
+          <p className="mx-auto mt-6 max-w-2xl text-lg text-baba-slate/70">
+            Our five pillars guide everything we do — connecting people, building industries, and transforming Africa.
+          </p>
         </div>
       </section>
 
-      {/* Navigation / Jump Links */}
-      <div className="sticky top-[72px] z-30 border-y border-baba-blue/10 bg-white/80 backdrop-blur-md">
+      {/* Jump nav */}
+      <div className="sticky top-[72px] z-30 border-y border-baba-blue/10 bg-white/85 backdrop-blur-md">
         <div className="mx-auto max-w-7xl px-5 lg:px-8">
-          <div className="flex items-center justify-center gap-4 overflow-x-auto py-4 no-scrollbar sm:gap-8">
-            {pillarDetails.map((p) => (
-              <a 
-                key={p.key} 
+          <div className="flex items-center justify-start gap-6 overflow-x-auto py-4 no-scrollbar sm:justify-center">
+            {pillars.map((p) => (
+              <a
+                key={p.key}
                 href={`#${p.key}`}
                 className="flex shrink-0 items-center gap-2 text-sm font-bold text-baba-slate transition-colors hover:text-baba-blue"
               >
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-baba-blue/10 text-xs text-baba-blue">{p.num}</span>
                 <p.icon className="h-4 w-4" />
-                <span className="hidden sm:inline">{p.name}</span>
               </a>
             ))}
           </div>
         </div>
       </div>
 
-      {/* Detailed Pillar Sections */}
+      {/* Pillar sections */}
       <div className="divide-y divide-baba-blue/10">
-        {pillarDetails.map((pillar, index) => (
-          <section 
-            key={pillar.key} 
-            id={pillar.key} 
-            className={`py-24 lg:py-32 ${index % 2 === 1 ? 'bg-baba-blue/5' : 'bg-white'}`}
+        {pillars.map((pillar, index) => (
+          <section
+            key={pillar.key}
+            id={pillar.key}
+            className={`scroll-mt-32 py-20 lg:py-24 ${index % 2 === 1 ? "bg-baba-blue/5" : "bg-white"}`}
           >
-            <div className="mx-auto max-w-7xl px-5 lg:px-8">
-              <div className="grid gap-12 lg:grid-cols-2 lg:items-start">
-                {/* Content Left */}
-                <div>
-                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-baba-blue/10 shadow-sm">
-                    <pillar.icon className="h-8 w-8 text-baba-blue" />
-                  </div>
-                  <p className="mt-6 text-xs font-bold uppercase tracking-[0.2em] text-baba-copper-dark">
-                    Pillar 0{index + 1}
-                  </p>
-                  <h2 className="mt-2 font-display text-4xl font-extrabold text-baba-slate sm:text-5xl">
-                    {pillar.name}
-                  </h2>
-                  <p className="mt-4 text-xl font-semibold text-baba-blue">
-                    {pillar.tagline}
-                  </p>
-                  <p className="mt-6 text-lg leading-relaxed text-baba-slate/70">
-                    {pillar.description}
-                  </p>
-                  <div className="mt-8 space-y-6 text-base leading-relaxed text-baba-slate/80">
-                    <p>{pillar.longDescription}</p>
-                  </div>
-                  
-                  <div className="mt-10 rounded-2xl border border-baba-blue/10 bg-white p-6 shadow-sm">
-                    <div className="flex items-center gap-3">
-                      <Target className="h-5 w-5 text-baba-copper-dark" />
-                      <h4 className="font-display text-lg font-bold text-baba-slate">The Impact</h4>
-                    </div>
-                    <p className="mt-3 text-baba-slate/70 italic">
-                      "{pillar.impact}"
-                    </p>
-                  </div>
+            <div className="mx-auto max-w-4xl px-5 lg:px-8">
+              <div className="flex items-center gap-4">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-baba-blue to-baba-copper text-xl font-bold text-white shadow-md">
+                  {pillar.num}
                 </div>
-
-                {/* Focus Areas Right */}
-                <div className="space-y-6">
-                  <h3 className="font-display text-2xl font-bold text-baba-slate">Key Focus Areas</h3>
-                  <div className="grid gap-4">
-                    {pillar.focusAreas.map((area) => (
-                      <div 
-                        key={area.title} 
-                        className="group rounded-2xl border border-baba-blue/10 bg-white p-6 transition-all hover:border-baba-blue/30 hover:shadow-md"
-                      >
-                        <div className="flex items-start gap-4">
-                          <div className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-baba-blue/10 group-hover:bg-baba-blue/20">
-                            <CheckCircle2 className="h-4 w-4 text-baba-blue" />
-                          </div>
-                          <div>
-                            <h4 className="font-display font-bold text-baba-slate">{area.title}</h4>
-                            <p className="mt-1 text-sm text-baba-slate/65 leading-relaxed">
-                              {area.detail}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Call to action for this specific pillar */}
-                  <div className="mt-8 overflow-hidden rounded-2xl bg-baba-slate p-8 text-white">
-                    <div className="relative z-10">
-                      <h4 className="font-display text-xl font-bold">Get Involved in {pillar.name}</h4>
-                      <p className="mt-2 text-sm text-white/70">
-                        Join our network of professionals and organizations driving {pillar.name.toLowerCase()} across Africa.
-                      </p>
-                      <button className="mt-6 flex items-center gap-2 rounded-full bg-white px-6 py-2.5 text-sm font-bold text-baba-slate transition-transform hover:scale-105">
-                        Join the Movement <ArrowRight className="h-4 w-4" />
-                      </button>
-                    </div>
-                    {/* Decorative background icon */}
-                    <pillar.icon className="absolute -right-8 -bottom-8 h-32 w-32 rotate-12 text-white/5" />
-                  </div>
-                </div>
+                <pillar.icon className="h-8 w-8 text-baba-blue" />
               </div>
+              <h2 className="mt-6 font-display text-3xl font-extrabold text-baba-slate sm:text-4xl">{pillar.name}</h2>
+              <p className="mt-3 text-xl font-semibold text-baba-blue">{pillar.tagline}</p>
+
+              <div className="mt-6 space-y-4 text-lg leading-relaxed text-baba-slate/80">
+                {pillar.paras.map((p, i) => (
+                  <p key={i}>{p}</p>
+                ))}
+              </div>
+
+              {pillar.sections.length > 0 && (
+                <div className="mt-10 space-y-8">
+                  {pillar.sections.map((s) => (
+                    <SectionBlock key={s.title} section={s} />
+                  ))}
+                </div>
+              )}
+
+              {pillar.subEvents && (
+                <div className="mt-10 space-y-6">
+                  {pillar.subEvents.map((ev) => (
+                    <div key={ev.name} className="rounded-2xl border border-baba-blue/10 bg-baba-cream/50 p-6 sm:p-8">
+                      <div className="flex flex-wrap items-baseline justify-between gap-2">
+                        <h3 className="font-display text-2xl font-bold text-baba-slate">{ev.name}</h3>
+                        <span className="rounded-full bg-baba-blue/10 px-3 py-1 text-xs font-bold uppercase tracking-widest text-baba-blue">{ev.period}</span>
+                      </div>
+                      <p className="mt-3 leading-relaxed text-baba-slate/80">{ev.intro}</p>
+                      <div className="mt-6 space-y-6">
+                        {ev.sections.map((s) => (
+                          <SectionBlock key={s.title} section={s} />
+                        ))}
+                      </div>
+                      {ev.note && <p className="mt-5 text-sm font-semibold italic text-baba-copper-dark">{ev.note}</p>}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {pillar.closing && (
+                <p className="mt-8 rounded-2xl bg-gradient-to-r from-baba-blue/10 via-baba-copper/10 to-baba-blue/10 px-6 py-4 text-lg font-semibold text-baba-blue">
+                  {pillar.closing}
+                </p>
+              )}
             </div>
           </section>
         ))}
       </div>
 
-      {/* Global CTA */}
-      <section className="bg-baba-cream py-24">
+      {/* Ecosystem summary */}
+      <section className="bg-baba-slate py-20 text-white">
         <div className="mx-auto max-w-4xl px-5 text-center lg:px-8">
-          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-baba-blue/10 shadow-inner">
-            <Globe className="h-10 w-10 text-baba-blue animate-pulse" />
-          </div>
-          <h2 className="mt-8 font-display text-3xl font-extrabold text-baba-slate sm:text-4xl">
-            A Unified Strategy for a Stronger Africa
+          <h2 className="font-display text-3xl font-extrabold sm:text-4xl">
+            Together, These Five Pillars Form the <span className="baba-rainbow">BABA Ecosystem</span>
           </h2>
-          <p className="mt-6 text-lg text-baba-slate/70">
-            These five pillars are not isolated initiatives; they are an interconnected ecosystem 
-            designed to create a self-reliant, prosperous, and sustainable Africa.
-          </p>
-          <div className="mt-10 flex flex-wrap justify-center gap-4">
-            <button className="rounded-full baba-btn-primary px-10 py-4 font-bold">
-              Become a Member
-            </button>
-            <button className="rounded-full border-2 border-baba-blue px-10 py-4 font-bold text-baba-blue transition-colors hover:bg-baba-blue hover:text-white">
-              Download Strategy PDF
-            </button>
+          <div className="mt-10 space-y-4 text-left">
+            {ecosystemSummary.map((e, i) => (
+              <div key={e.name} className="flex items-start gap-4 rounded-2xl bg-white/5 p-5">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-baba-copper text-sm font-bold text-baba-slate">{i + 1}</span>
+                <div>
+                  <p className="font-display font-bold text-white">{e.name}</p>
+                  <p className="text-sm text-white/70">{e.desc}</p>
+                </div>
+              </div>
+            ))}
           </div>
-        </div>
-      </section>
-
-      {/* Summary Stats */}
-      <section className="bg-baba-slate py-16 text-white">
-        <div className="mx-auto max-w-7xl px-5 lg:px-8">
-          <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
-            <div className="text-center">
-              <p className="font-display text-4xl font-extrabold text-baba-copper">5</p>
-              <p className="mt-1 text-sm font-medium uppercase tracking-widest text-white/60">Pillars</p>
-            </div>
-            <div className="text-center">
-              <p className="font-display text-4xl font-extrabold text-baba-copper">20+</p>
-              <p className="mt-1 text-sm font-medium uppercase tracking-widest text-white/60">Focus Areas</p>
-            </div>
-            <div className="text-center">
-              <p className="font-display text-4xl font-extrabold text-baba-copper">1 Mission</p>
-              <p className="mt-1 text-sm font-medium uppercase tracking-widest text-white/60">Self-Reliance</p>
-            </div>
-            <div className="text-center">
-              <p className="font-display text-4xl font-extrabold text-baba-copper">54</p>
-              <p className="mt-1 text-sm font-medium uppercase tracking-widest text-white/60">Nations</p>
-            </div>
+          <p className="mt-10 text-lg font-semibold text-baba-copper">Connecting People. Building Industries. Transforming Africa.</p>
+          <div className="mt-8 flex flex-wrap justify-center gap-4">
+            <Link to="/register" className="rounded-full baba-btn-primary px-8 py-3.5 text-sm font-bold">
+              Become a Member
+            </Link>
+            <Link to="/partners" className="inline-flex items-center gap-2 rounded-full border-2 border-white px-8 py-3.5 text-sm font-bold text-white transition-colors hover:bg-white hover:text-baba-slate">
+              Partner With Us <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
         </div>
       </section>
