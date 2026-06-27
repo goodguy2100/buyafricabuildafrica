@@ -10,6 +10,8 @@ import {
   BookOpen,
   Star,
   Search,
+  Lightbulb,
+
 } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { Counter } from "@/components/Counter";
