@@ -8,12 +8,14 @@ import {
   Globe,
   Award,
   BookOpen,
-  Star,
+  
   Search,
+  Lightbulb,
+
 } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { Counter } from "@/components/Counter";
-import { pillars } from "@/data/pillars";
+
 import heroCollage from "@/assets/hero-collage.jpg";
 import { KenyaMap } from "@/components/KenyaMap";
 
@@ -200,7 +202,10 @@ function Home() {
             </div>
           </div>
         </div>
+      </section>
+
       {/* ═══ HOW BABA WORKS ═══ */}
+
       <section className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <span className="text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">Our Process</span>
@@ -230,15 +235,21 @@ function Home() {
             <h2 className="mt-2 font-display text-3xl font-extrabold text-baba-slate sm:text-4xl">Our Strategic Pillars</h2>
           </div>
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {strategicPillars.map((pillar) => (
-              <div key={pillar} className="rounded-xl border border-baba-blue/10 bg-white p-5 baba-card-hover">
+            {strategicPillars.map((pillar, i) => (
+              <Link key={pillar} to="/about" className="rounded-xl border border-baba-blue/10 bg-white p-5 baba-card-hover">
                 <div className="flex items-center gap-3">
-                  <Star className="h-5 w-5 text-baba-copper-dark" />
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-baba-blue to-baba-copper text-sm font-bold text-white">{i + 1}</span>
                   <h3 className="font-display text-base font-bold text-baba-slate">{pillar}</h3>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
+          <div className="mt-8 text-center">
+            <Link to="/about" className="inline-flex items-center gap-1.5 text-sm font-semibold text-baba-blue hover:text-baba-blue-dark">
+              Explore the Five Pillars <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+
         </div>
       </section>
 
@@ -444,32 +455,7 @@ function Home() {
         </div>
       </section>
 
-      {/* ═══ PILLARS PREVIEW ═══ */}
-      <section className="mx-auto max-w-7xl px-5 pb-24 lg:px-8">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <span className="text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">Foundation</span>
-            <h2 className="mt-2 font-display text-3xl font-extrabold text-baba-slate sm:text-4xl">The BABA Pillars</h2>
-          </div>
-          <Link to="/pillars" className="inline-flex items-center gap-1.5 text-sm font-semibold text-baba-blue hover:text-baba-blue-dark">
-            View Full Strategy <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
-        <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
-          {pillars.map((p) => (
-            <Link key={p.key} to="/pillars" className="baba-card-hover rounded-2xl border border-baba-blue/10 bg-white p-6">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-baba-blue/10">
-                <p.icon className="h-5 w-5 text-baba-blue" />
-              </div>
-              <h3 className="mt-4 font-display text-lg font-bold text-baba-slate">{p.name}</h3>
-              <p className="mt-2 text-sm text-baba-slate/65">{p.description}</p>
-              <span className="mt-4 inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wide text-baba-copper-dark">
-                Learn More <ArrowRight className="h-3.5 w-3.5" />
-              </span>
-            </Link>
-          ))}
-        </div>
-      </section>
+
     </PageShell>
   );
 }
