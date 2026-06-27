@@ -250,7 +250,7 @@ function Home() {
           </div>
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {strategicPillars.map((pillar, i) => (
-              <Link key={pillar} to="/about" className="rounded-xl border border-baba-blue/10 bg-white p-5 baba-card-hover">
+              <Link key={pillar} to="/pillars" className="rounded-xl border border-baba-blue/10 bg-white p-5 baba-card-hover">
                 <div className="flex items-center gap-3">
                   <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-baba-blue to-baba-copper text-sm font-bold text-white">{i + 1}</span>
                   <h3 className="font-display text-base font-bold text-baba-slate">{pillar}</h3>
@@ -259,10 +259,11 @@ function Home() {
             ))}
           </div>
           <div className="mt-8 text-center">
-            <Link to="/about" className="inline-flex items-center gap-1.5 text-sm font-semibold text-baba-blue hover:text-baba-blue-dark">
+            <Link to="/pillars" className="inline-flex items-center gap-1.5 text-sm font-semibold text-baba-blue hover:text-baba-blue-dark">
               Explore the Five Pillars <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
+
 
         </div>
       </section>
