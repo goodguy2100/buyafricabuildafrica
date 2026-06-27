@@ -172,9 +172,7 @@ function Directory() {
           Home <span className="mx-1">›</span> National Directory
         </p>
         <h1 className="mt-3 font-display text-4xl font-extrabold leading-tight text-baba-blue sm:text-5xl">
-          National Workforce &amp;
-          <br />
-          Professional Database
+          Directory &amp; professional Database{"\u00A0"}
         </h1>
         <p className="mt-4 max-w-2xl text-baba-slate/70">
           Search, filter, and connect with verified construction artisans, technical
