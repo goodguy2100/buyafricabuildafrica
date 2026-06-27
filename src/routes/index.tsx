@@ -449,30 +449,7 @@ function Home() {
         </div>
       </section>
 
-      {/* ═══ PILLARS PREVIEW ═══ */}
-      <section className="mx-auto max-w-7xl px-5 pb-24 lg:px-8">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <span className="text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">Foundation</span>
-            <h2 className="mt-2 font-display text-3xl font-extrabold text-baba-slate sm:text-4xl">The BABA Pillars</h2>
-          </div>
-          <Link to="/pillars" className="inline-flex items-center gap-1.5 text-sm font-semibold text-baba-blue hover:text-baba-blue-dark">
-            View Full Strategy <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
-        <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
-          {strategicPillars.map((name, i) => (
-            <Link key={name} to="/about" className="baba-card-hover flex flex-col rounded-2xl border border-baba-blue/10 bg-white p-6">
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-baba-blue to-baba-copper text-sm font-bold text-white">{i + 1}</span>
-              <h3 className="mt-4 font-display text-lg font-bold text-baba-slate">{name}</h3>
-              <span className="mt-auto inline-flex items-center gap-1 pt-4 text-xs font-bold uppercase tracking-wide text-baba-copper-dark">
-                Learn More <ArrowRight className="h-3.5 w-3.5" />
-              </span>
-            </Link>
-          ))}
-        </div>
 
-      </section>
     </PageShell>
   );
 }
