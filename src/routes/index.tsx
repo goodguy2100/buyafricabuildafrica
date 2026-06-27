@@ -69,12 +69,11 @@ const howBabaWorks = [
 ];
 
 const strategicPillars = [
-  "BABA Membership Network",
-  "BABA Capacity Building Initiative",
-  "BABA Corporate Strategy Summit",
-  "BABA Expo & Conference",
-  "BABA Excellence Awards",
-  "BABA Research & Innovation Hub",
+  "Membership & Industry Network",
+  "Capacity Building Hub",
+  "Sustainability & Green Building Initiative",
+  "Events & Recognition Platform",
+  "Research, Innovation & Implementation Hub",
 ];
 
 const whoWeServe = [
