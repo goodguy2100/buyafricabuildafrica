@@ -8,7 +8,7 @@ import {
   Globe,
   Award,
   BookOpen,
-  Star,
+  
   Search,
   Lightbulb,
 
