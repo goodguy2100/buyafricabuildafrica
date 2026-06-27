@@ -123,13 +123,36 @@ export function Events() {
       </section>
 
       <section className="mx-auto max-w-7xl px-5 pb-20 lg:px-8">
-        <div className="rounded-2xl border border-baba-blue/10 bg-white p-8 text-center">
-          <Calendar className="mx-auto h-8 w-8 text-baba-blue" />
-          <h3 className="mt-3 font-display text-xl font-bold text-baba-slate">Interested in Participating?</h3>
-          <p className="mx-auto mt-2 max-w-xl text-sm text-baba-slate/70">Registration details for each event will be announced closer to the date. Contact us for sponsorship, exhibition, and partnership opportunities.</p>
-          <Link to="/contact" className="baba-btn-primary mt-6 inline-flex items-center gap-2 rounded-xl px-8 py-3.5 text-sm font-semibold text-white shadow-lg">
-            Contact Us <ArrowRight className="h-4 w-4" />
-          </Link>
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-baba-blue via-baba-blue-dark to-baba-slate p-8 text-center md:p-12">
+          <div className="absolute -top-20 -right-20 h-72 w-72 rounded-full bg-baba-copper/15 blur-3xl" />
+          <div className="absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-baba-yellow/10 blur-3xl" />
+          <div className="relative">
+            <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-sm font-medium text-white backdrop-blur-sm">
+              <Calendar className="h-4 w-4" /> Get Involved
+            </span>
+            <h3 className="mt-5 font-display text-3xl font-extrabold text-white sm:text-4xl">Join the Movement</h3>
+            <p className="mx-auto mt-3 max-w-2xl text-sm text-white/80 md:text-base">
+              There's a place for everyone building Africa. Become a member, explore opportunities, list your profile, or partner with us.
+            </p>
+            <div className="mx-auto mt-8 grid max-w-4xl gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {[
+                { to: "/register", label: "Become a Member", desc: "Join the network" },
+                { to: "/opportunities", label: "Opportunities", desc: "Trainings & more" },
+                { to: "/directory", label: "Join the Directory", desc: "List your profile" },
+                { to: "/contact", label: "Partner With Us", desc: "Sponsor & collaborate" },
+              ].map((cta) => (
+                <Link
+                  key={cta.label}
+                  to={cta.to}
+                  className="group flex flex-col items-center rounded-2xl border border-white/15 bg-white/10 p-5 text-center backdrop-blur-sm transition-all hover:bg-white/20"
+                >
+                  <span className="font-display text-base font-bold text-white">{cta.label}</span>
+                  <span className="mt-1 text-xs text-white/70">{cta.desc}</span>
+                  <ArrowRight className="mt-3 h-4 w-4 text-baba-yellow transition-transform group-hover:translate-x-1" />
+                </Link>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
     </PageShell>
