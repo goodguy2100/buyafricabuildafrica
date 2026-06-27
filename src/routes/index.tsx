@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { Counter } from "@/components/Counter";
-import { pillars } from "@/data/pillars";
+
 import heroCollage from "@/assets/hero-collage.jpg";
 import { KenyaMap } from "@/components/KenyaMap";
 
