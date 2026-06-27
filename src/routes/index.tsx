@@ -5,28 +5,11 @@ import {
   Users,
   MapPin,
   Building,
-  Target,
-  Eye,
-  Heart,
   Globe,
   Award,
-  Calendar,
   BookOpen,
-  Wrench,
-  ShoppingBag,
-  Building2,
-  Leaf,
-  TrendingUp,
   Star,
-  Handshake,
-  Lightbulb,
-  GraduationCap,
-  Network,
-  Shield,
-  Zap,
   Search,
-  DollarSign,
-  PenTool,
 } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { Counter } from "@/components/Counter";
@@ -51,14 +34,6 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-const impactAreas = [
-  { icon: GraduationCap, title: "Skills Development", body: "Building a skilled and future-ready African workforce." },
-  { icon: Briefcase, title: "Enterprise Development", body: "Supporting entrepreneurs, SMEs, and growing businesses." },
-  { icon: Handshake, title: "Industry Collaboration", body: "Connecting professionals, institutions, manufacturers, and suppliers." },
-  { icon: Building2, title: "Sustainable Cities", body: "Promoting resilient, green, and people-centered urban development." },
-  { icon: DollarSign, title: "Investment Facilitation", body: "Connecting opportunities with capital and strategic partnerships." },
-  { icon: Lightbulb, title: "Research & Innovation", body: "Turning ideas into practical solutions for African development." },
-];
 
 const howBabaWorks = [
   { icon: Search, title: "CONNECT", body: "We build networks of professionals, artisans, entrepreneurs, institutions, manufacturers, suppliers, and development partners across Africa." },
@@ -225,30 +200,6 @@ function Home() {
             </div>
           </div>
         </div>
-      </section>
-
-
-      {/* ═══ OUR IMPACT AREAS ═══ */}
-      <section className="bg-baba-cream py-20">
-        <div className="mx-auto max-w-7xl px-5 lg:px-8">
-          <div className="mx-auto max-w-3xl text-center">
-            <span className="text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">Our Focus</span>
-            <h2 className="mt-2 font-display text-3xl font-extrabold text-baba-slate sm:text-4xl">Our Impact Areas</h2>
-          </div>
-          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {impactAreas.map((area) => (
-              <div key={area.title} className="rounded-2xl border border-baba-blue/10 bg-white p-6 baba-card-hover">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-baba-blue/10">
-                  <area.icon className="h-5 w-5 text-baba-blue" />
-                </div>
-                <h3 className="mt-4 font-display text-lg font-bold text-baba-slate">{area.title}</h3>
-                <p className="mt-2 text-sm text-baba-slate/65">{area.body}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ═══ HOW BABA WORKS ═══ */}
       <section className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
