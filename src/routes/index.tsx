@@ -53,13 +53,27 @@ const strategicPillars = [
   "Research, Innovation & Implementation Hub",
 ];
 
-const whoWeServe = [
-  "Architects", "Interior Designers", "Plumbers", "Electricians", "Carpenters",
-  "Welders", "Engineers", "Quantity Surveyors", "Urban Planners",
-  "Project Managers", "Contractors", "Manufacturers", "Suppliers",
-  "Entrepreneurs", "SMEs", "Artisans", "Youth", "Professionals",
-  "Universities", "Investors", "NGOs", "Governments",
-  "Development Partners", "Financial Institutions", "Communities",
+const whoWeServeGroups = [
+  {
+    label: "Individuals & Professionals",
+    items: [
+      "Architects", "Engineers", "Quantity Surveyors", "Interior Designers",
+      "Urban Planners", "Project Managers", "Contractors", "Plumbers",
+      "Electricians", "Carpenters", "Welders", "Artisans", "Entrepreneurs", "Youth",
+    ],
+  },
+  {
+    label: "Government Institutions",
+    items: ["Government Agencies", "Public Institutions", "NGOs", "Development Partners"],
+  },
+  {
+    label: "Private Sector",
+    items: ["Manufacturers", "Suppliers", "SMEs", "Financial Institutions", "Investors"],
+  },
+  {
+    label: "Universities",
+    items: ["Educational Institutions", "Students", "Researchers"],
+  },
 ];
 
 const ecosystemGroups = [
