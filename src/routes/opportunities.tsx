@@ -6,11 +6,11 @@ import { PageShell } from "@/components/PageShell";
 export const Route = createFileRoute("/opportunities")({
   head: () => ({
     meta: [
-      { title: "Opportunities | Buy Africa Build Africa (BABA)" },
+      { title: "Up & Coming | Buy Africa Build Africa (BABA)" },
       {
         name: "description",
         content:
-          "Browse jobs, apprenticeships, training masterclasses and project tenders across Africa on the BABA network.",
+          "Upcoming trainings, masterclasses and events you can sign up for across the BABA network.",
       },
     ],
     links: [{ rel: "canonical", href: "/opportunities" }],
@@ -18,7 +18,7 @@ export const Route = createFileRoute("/opportunities")({
   component: Opportunities,
 });
 
-type Kind = "Jobs" | "Apprenticeships" | "Training" | "Tenders";
+type Kind = "Trainings" | "Masterclasses" | "Events";
 
 interface Opp {
   id: number;
@@ -30,17 +30,16 @@ interface Opp {
 }
 
 const opportunities: Opp[] = [
-  { id: 1, kind: "Jobs", title: "Tiling Artisan", org: "Skyline Builders Ltd", location: "Nairobi, Kenya", meta: "Full-time · KES 60k–90k" },
-  { id: 2, kind: "Jobs", title: "Interior Architect", org: "Urban Forge Studio", location: "Kisumu, Kenya", meta: "Full-time · Senior" },
-  { id: 3, kind: "Apprenticeships", title: "County Public Works Attachment", org: "Nakuru County Government", location: "Nakuru, Kenya", meta: "6 months · Stipend" },
-  { id: 4, kind: "Apprenticeships", title: "Solar Installation Apprentice", org: "GreenGrid Africa", location: "Mombasa, Kenya", meta: "12 months · Certified" },
-  { id: 5, kind: "Training", title: "Advanced Masonry Masterclass", org: "BABA Skills Academy", location: "Online + Nairobi", meta: "4 weeks · Certificate" },
-  { id: 6, kind: "Training", title: "Construction Project Management", org: "BABA Skills Academy", location: "Online", meta: "8 weeks · Diploma" },
-  { id: 7, kind: "Tenders", title: "Supply of Eco-Bricks (50,000 units)", org: "Affordable Housing Board", location: "Eldoret, Kenya", meta: "Closes in 14 days" },
-  { id: 8, kind: "Tenders", title: "Bamboo Scaffolding Supply", org: "Coastal Developers", location: "Mombasa, Kenya", meta: "Closes in 9 days" },
+  { id: 1, kind: "Trainings", title: "Advanced Masonry Training", org: "BABA Skills Academy", location: "Online + Nairobi", meta: "Runs every other month · Certificate" },
+  { id: 2, kind: "Trainings", title: "Green Building Fundamentals", org: "BABA Skills Academy", location: "Online", meta: "Next intake · Bi-monthly" },
+  { id: 3, kind: "Trainings", title: "Construction Project Management", org: "BABA Skills Academy", location: "Online", meta: "8 weeks · Diploma" },
+  { id: 4, kind: "Masterclasses", title: "Sustainable Design Masterclass", org: "BABA Capacity Building Hub", location: "Nairobi, Kenya", meta: "1 day · Sign up" },
+  { id: 5, kind: "Masterclasses", title: "Entrepreneurship & Business Growth", org: "BABA Capacity Building Hub", location: "Online", meta: "Live session · Sign up" },
+  { id: 6, kind: "Events", title: "BABA Industry Networking Meetup", org: "Buy Africa Build Africa", location: "Nairobi, Kenya", meta: "Free · Sign up to attend" },
+  { id: 7, kind: "Events", title: "Green Building & Innovation Expo", org: "Buy Africa Build Africa", location: "Nairobi, Kenya", meta: "Register your interest" },
 ];
 
-const kinds: ("All" | Kind)[] = ["All", "Jobs", "Apprenticeships", "Training", "Tenders"];
+const kinds: ("All" | Kind)[] = ["All", "Trainings", "Masterclasses", "Events"];
 
 function Opportunities() {
   const [filter, setFilter] = useState<"All" | Kind>("All");
@@ -55,11 +54,11 @@ function Opportunities() {
             Grow With Us
           </span>
           <h1 className="mt-2 font-display text-4xl font-extrabold text-baba-slate sm:text-5xl">
-            Opportunities
+            Up &amp; Coming
           </h1>
           <p className="mt-4 max-w-2xl text-baba-slate/70">
-            Jobs, apprenticeships, training masterclasses and project tenders — all in one
-            verified continental marketplace.
+            Upcoming trainings held every other month, masterclasses, and events you can
+            sign up for across the BABA network.
           </p>
         </div>
       </section>
@@ -101,7 +100,7 @@ function Opportunities() {
                 <Clock className="h-3.5 w-3.5" /> {o.meta}
               </p>
               <button className="mt-5 inline-flex items-center gap-1.5 text-sm font-bold text-baba-copper-dark hover:underline">
-                View &amp; Apply <ArrowRight className="h-4 w-4" />
+                Sign Up <ArrowRight className="h-4 w-4" />
               </button>
             </article>
           ))}
