@@ -236,16 +236,22 @@
     background-image: linear-gradient(
       100deg,
       var(--baba-blue) 0%,
-      var(--baba-blue) 45%,
-      var(--baba-copper) 130%
+      var(--baba-blue-light) 38%,
+      var(--brand-yellow) 78%,
+      var(--baba-copper) 105%
     );
+    background-size: 180% 100%;
+    background-position: 0% 50%;
     color: white;
-    box-shadow: 0 10px 26px -12px color-mix(in oklab, var(--baba-blue) 55%, transparent);
-    transition: filter 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+    box-shadow: 0 12px 30px -12px color-mix(in oklab, var(--baba-blue) 60%, transparent);
+    transition: background-position 0.5s ease, filter 0.25s ease,
+      box-shadow 0.25s ease, transform 0.25s ease;
   }
   .baba-btn-primary:hover {
-    filter: brightness(1.05) saturate(1.08);
-    box-shadow: 0 14px 30px -12px color-mix(in oklab, var(--baba-copper) 50%, transparent);
+    background-position: 100% 50%;
+    transform: translateY(-2px);
+    filter: brightness(1.06) saturate(1.12);
+    box-shadow: 0 16px 34px -12px color-mix(in oklab, var(--baba-copper) 55%, transparent);
   }
 }
 
