@@ -172,7 +172,7 @@ function Directory() {
           Home <span className="mx-1">›</span> National Directory
         </p>
         <h1 className="mt-3 font-display text-4xl font-extrabold leading-tight text-baba-blue sm:text-5xl">
-          National Workforce &amp;
+          Directory &amp;
           <br />
           Professional Database
         </h1>
