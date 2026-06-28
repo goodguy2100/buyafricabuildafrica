@@ -160,12 +160,42 @@
 
 @layer components {
   .baba-card-hover {
+    position: relative;
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-      box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      border-color 0.3s ease;
+  }
+  /* Glowing ombré ring that lights up on hover */
+  .baba-card-hover::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 2px;
+    background: linear-gradient(
+      125deg,
+      var(--baba-blue),
+      var(--baba-blue-light) 35%,
+      var(--brand-yellow) 65%,
+      var(--baba-copper)
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
   }
   .baba-card-hover:hover {
     transform: translateY(-6px);
-    box-shadow: 0 18px 40px -16px color-mix(in oklab, var(--baba-blue) 35%, transparent);
+    box-shadow:
+      0 22px 48px -16px color-mix(in oklab, var(--baba-blue) 45%, transparent),
+      0 8px 24px -12px color-mix(in oklab, var(--baba-copper) 40%, transparent);
+  }
+  .baba-card-hover:hover::after {
+    opacity: 1;
   }
 
   /* Bubbly gradient text — blue to copper/gold */
