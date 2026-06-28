@@ -71,12 +71,26 @@ const strategicPillars = [
 
 
 const whoWeServe = [
-  "Governments", "Public Institutions", "Universities", "Development Partners",
-  "NGOs", "Financial Institutions", "Investors",
-  "Architects", "Engineers", "Quantity Surveyors", "Urban Planners",
-  "Project Managers", "Contractors", "Developers",
-  "Professionals", "Entrepreneurs", "SMEs", "Manufacturers", "Suppliers",
-  "Artisans", "Students", "Youth", "Communities", "Individuals",
+  {
+    group: "Individuals & Professionals",
+    items: [
+      "Architects", "Engineers", "Quantity Surveyors", "Interior Designers",
+      "Urban Planners", "Project Managers", "Contractors", "Plumbers",
+      "Electricians", "Carpenters", "Welders", "Artisans", "Entrepreneurs", "Youth",
+    ],
+  },
+  {
+    group: "Government Institutions",
+    items: ["Government Agencies", "Public Institutions", "NGOs", "Development Partners"],
+  },
+  {
+    group: "Private Sector",
+    items: ["Manufacturers", "Suppliers", "SMEs", "Financial Institutions", "Investors"],
+  },
+  {
+    group: "Academia & Community",
+    items: ["Universities", "Students", "Communities", "Individuals"],
+  },
 ];
 
 const ecosystemGroups = [
