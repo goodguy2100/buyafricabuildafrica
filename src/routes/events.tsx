@@ -67,7 +67,7 @@ export function Events() {
             {annualEvents.map((event) => (
               <div key={event.title} className="baba-card-hover overflow-hidden rounded-2xl border border-baba-copper/20 bg-white">
                 <div className="h-2 bg-gradient-to-r from-baba-blue to-baba-copper" />
-                <div className="p-6 md:p-8">
+                <div className="p-7 md:p-9">
                   <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-baba-copper/10">
                     <event.icon className="h-6 w-6 text-baba-copper-dark" />
                   </div>
@@ -83,10 +83,10 @@ export function Events() {
 
                   {event.highlights && (
                     <>
-                      <h4 className="mb-2 mt-5 text-xs font-bold uppercase tracking-wider text-baba-blue">Highlights</h4>
-                      <ul className="space-y-1.5">
+                      <h4 className="mb-3 mt-6 text-xs font-bold uppercase tracking-wider text-baba-blue">Highlights</h4>
+                      <ul className="space-y-2.5">
                         {event.highlights.map((item, i) => (
-                          <li key={i} className="flex items-start gap-2 text-xs text-baba-slate/75">
+                          <li key={i} className="flex items-start gap-2.5 text-sm leading-relaxed text-baba-slate/75">
                             <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-baba-copper/15 text-[9px] text-baba-copper-dark">✓</span>
                             {item}
                           </li>
@@ -98,21 +98,12 @@ export function Events() {
                   {event.categories && (
                     <div className="mt-4">
                       <h4 className="mb-2 text-xs font-bold uppercase tracking-wider text-baba-blue">Award Categories</h4>
-                      <div className="grid gap-2 sm:grid-cols-2">
-                        {event.categories.map((cat) => (
-                          <details key={cat.title} className="group rounded-lg border border-baba-blue/10 bg-baba-cream/30 transition-all hover:border-baba-copper/30">
-                            <summary className="flex cursor-pointer items-center justify-between px-3 py-2.5 text-[11px] font-bold uppercase tracking-wide text-baba-copper-dark list-none">
-                              {cat.title}
-                              <span className="text-baba-copper transition-transform group-open:rotate-180">▼</span>
-                            </summary>
-                            <div className="border-t border-baba-blue/10 px-3 py-2 text-[11px] text-baba-slate/75 space-y-1">
-                              {cat.awards.map((a) => (
-                                <p key={a} className="flex items-center gap-1.5">• {a}</p>
-                              ))}
-                            </div>
-                          </details>
-                        ))}
-                      </div>
+                      {event.categories.map((cat) => (
+                        <div key={cat.title} className="mb-2">
+                          <p className="text-[10px] font-bold uppercase tracking-wide text-baba-copper-dark">{cat.title}</p>
+                          <p className="text-[11px] text-baba-slate/70">{cat.awards.join(" · ")}</p>
+                        </div>
+                      ))}
                     </div>
                   )}
                 </div>
@@ -123,38 +114,30 @@ export function Events() {
       </section>
 
       <section className="mx-auto max-w-7xl px-5 pb-20 lg:px-8">
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-baba-blue via-baba-blue-dark to-baba-slate p-8 text-center md:p-12">
-          <div className="absolute -top-20 -right-20 h-72 w-72 rounded-full bg-baba-copper/15 blur-3xl" />
-          <div className="absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-baba-yellow/10 blur-3xl" />
+        <div className="relative overflow-hidden rounded-2xl border border-baba-blue/10 bg-gradient-to-br from-baba-blue via-baba-blue-dark to-baba-slate p-10 text-center text-white">
+          <div className="absolute -top-20 -right-20 h-64 w-64 rounded-full bg-baba-copper/20 blur-3xl" />
           <div className="relative">
-            <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-sm font-medium text-white backdrop-blur-sm">
-              <Calendar className="h-4 w-4" /> Get Involved
-            </span>
-            <h3 className="mt-5 font-display text-3xl font-extrabold text-white sm:text-4xl">Join the Movement</h3>
-            <p className="mx-auto mt-3 max-w-2xl text-sm text-white/80 md:text-base">
-              There's a place for everyone building Africa. Become a member, explore opportunities, list your profile, or partner with us.
-            </p>
-            <div className="mx-auto mt-8 grid max-w-4xl gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {[
-                { to: "/register", label: "Become a Member", desc: "Join the network" },
-                { to: "/opportunities", label: "Opportunities", desc: "Trainings & more" },
-                { to: "/directory", label: "Join the Directory", desc: "List your profile" },
-                { to: "/contact", label: "Partner With Us", desc: "Sponsor & collaborate" },
-              ].map((cta) => (
-                <Link
-                  key={cta.label}
-                  to={cta.to}
-                  className="group flex flex-col items-center rounded-2xl border border-white/15 bg-white/10 p-5 text-center backdrop-blur-sm transition-all hover:bg-white/20"
-                >
-                  <span className="font-display text-base font-bold text-white">{cta.label}</span>
-                  <span className="mt-1 text-xs text-white/70">{cta.desc}</span>
-                  <ArrowRight className="mt-3 h-4 w-4 text-baba-yellow transition-transform group-hover:translate-x-1" />
-                </Link>
-              ))}
+            <Calendar className="mx-auto h-8 w-8 text-white" />
+            <h3 className="mt-3 font-display text-2xl font-bold">Join the Movement</h3>
+            <p className="mx-auto mt-2 max-w-xl text-sm text-white/80">There's a place for everyone in BABA. Become a member, list your business in the directory, explore live opportunities, or partner with us on our flagship events.</p>
+            <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
+              <Link to="/register" className="inline-flex items-center gap-2 rounded-xl bg-white px-7 py-3.5 text-sm font-semibold text-baba-blue shadow-lg transition-transform hover:scale-[1.03]">
+                Become a Member <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link to="/opportunities" className="inline-flex items-center gap-2 rounded-xl bg-baba-copper px-7 py-3.5 text-sm font-semibold text-white shadow-lg transition-transform hover:scale-[1.03]">
+                View Opportunities <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link to="/directory" className="inline-flex items-center gap-2 rounded-xl border border-white/40 px-7 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-white/10">
+                Join the Directory
+              </Link>
+              <Link to="/contact" className="inline-flex items-center gap-2 rounded-xl border border-white/40 px-7 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-white/10">
+                Partner With Us
+              </Link>
             </div>
           </div>
         </div>
       </section>
+
     </PageShell>
   );
 }

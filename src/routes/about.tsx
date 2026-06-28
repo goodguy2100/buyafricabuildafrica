@@ -75,7 +75,7 @@ const whatWeDo = [
   {
     icon: GraduationCap,
     title: "Skills Development",
-    body: "Through the BABA Capacity Building Programme, we provide training programmes that strengthen technical competence, entrepreneurship, financial literacy, leadership, ethics, sustainability, and business growth. Our goal is to develop skilled, market-ready professionals capable of contributing meaningfully to Africa's growth.",
+    body: "Through the BABA Institute, we provide training programmes that strengthen technical competence, entrepreneurship, financial literacy, leadership, ethics, sustainability, and business growth. Our goal is to develop skilled, market-ready professionals capable of contributing meaningfully to Africa's growth.",
   },
   {
     icon: Briefcase,
@@ -91,79 +91,6 @@ const whatWeDo = [
     icon: Building,
     title: "Sustainable Cities",
     body: "As African cities continue to expand, there is increasing need for resilient, inclusive, and sustainable urban development. BABA promotes green building, climate resilience, sustainable design, and eco-friendly construction practices across the continent.",
-  },
-];
-
-
-const pillarDetails = [
-  {
-    key: "network",
-    name: "Membership & Industry Network",
-    tagline: "Connecting Africa's People, Skills and Opportunities",
-    description: "The BABA Membership & Industry Network is the foundation of our ecosystem and serves as a platform for collaboration, visibility, professional growth, enterprise development, and industry engagement.",
-    longDescription: "We bring together professionals, artisans, entrepreneurs, SMEs, manufacturers, suppliers, institutions, governments, development partners, investors, and communities into one interconnected network focused on building Africa's future.",
-    focusTitle: "Who Can Join",
-    focusAreas: [
-      { title: "Professionals", detail: "Architects, Engineers, Quantity Surveyors, Interior Designers, Urban Planners, Project Managers, Contractors, Developers" },
-      { title: "Business & Industry", detail: "Manufacturers, Suppliers, Entrepreneurs, SMEs" },
-      { title: "Artisans & Trades", detail: "Plumbers, Electricians, Carpenters, Welders, Masons" },
-      { title: "Institutions", detail: "Educational Institutions, Government Agencies, NGOs, Development Partners" },
-    ],
-  },
-  {
-    key: "capacity",
-    name: "Capacity Building Hub",
-    tagline: "Building Skills. Strengthening Enterprises. Empowering Communities.",
-    description: "The BABA Capacity Building Hub focuses on developing the skills, knowledge, leadership, and entrepreneurial capabilities needed to drive Africa's growth.",
-    longDescription: "Through strategic partnerships with governments, professional associations, manufacturers, educational institutions, financial institutions, and industry experts, BABA delivers practical and market-driven learning opportunities.",
-    focusTitle: "Focus Areas",
-    focusAreas: [
-      { title: "Skills Development", detail: "Technical Skills, Digital Skills, Sustainability Education" },
-      { title: "Enterprise Growth", detail: "Entrepreneurship Development, Business Growth, Financial Literacy" },
-      { title: "Leadership", detail: "Leadership Development, Professional Development, Ethics & Professionalism" },
-      { title: "Delivery Channels", detail: "Workshops, Online Learning, Masterclasses, Industry Forums, Mentorship, Certification" },
-    ],
-  },
-  {
-    key: "sustainability",
-    name: "Sustainability & Green Building Initiative",
-    tagline: "Building Resilient Cities and Communities for Future Generations",
-    description: "The BABA Sustainability & Green Building Initiative promotes practical solutions that support climate resilience, environmental stewardship, sustainable construction, and healthier communities.",
-    longDescription: "We work alongside governments, development partners, professional associations, researchers, manufacturers, and sustainability experts to advance implementation-focused initiatives that contribute to resilient cities and communities.",
-    focusTitle: "Focus Areas",
-    focusAreas: [
-      { title: "Green Building", detail: "Sustainable construction practices, green materials, and eco-friendly design" },
-      { title: "Climate Resilience", detail: "Climate-smart development and adaptation strategies" },
-      { title: "Urban Development", detail: "Sustainable urban planning and community sustainability projects" },
-      { title: "Resource Efficiency", detail: "Circular economy practices, environmental stewardship" },
-    ],
-  },
-  {
-    key: "events",
-    name: "Events & Recognition Platform",
-    tagline: "Connecting Ideas, Opportunities and Excellence",
-    description: "The BABA Events & Recognition Platform serves as our annual engagement framework, bringing together leaders, professionals, businesses, institutions, and communities to collaborate, learn, showcase, and celebrate excellence.",
-    longDescription: "Through our flagship events — the Corporate Strategy Summit (January), Expo & Conference (July-September), and Excellence Awards (December) — we create opportunities for visibility, partnerships, investment, networking, and industry advancement.",
-    focusTitle: "Key Platforms",
-    focusAreas: [
-      { title: "Corporate Strategy Summit", detail: "January — Government leaders, investors, development partners, and industry executives" },
-      { title: "Expo & Conference", detail: "July-September — Product exhibitions, industry showcases, business matching" },
-      { title: "Excellence Awards", detail: "December — Professional, Artisan, Business, Sustainability, Youth, and Community categories" },
-    ],
-  },
-  {
-    key: "research",
-    name: "Research, Innovation & Implementation Hub",
-    tagline: "Turning Ideas Into Action",
-    description: "The BABA Research, Innovation & Implementation Hub ensures that ideas, discussions, and recommendations translate into practical action and measurable impact.",
-    longDescription: "Working with governments, universities, professional bodies, development agencies, industry stakeholders, and communities, the Hub identifies opportunities, challenges, and emerging trends affecting Africa's development.",
-    focusTitle: "Focus Areas",
-    focusAreas: [
-      { title: "Urban Development", detail: "Sustainable Cities, Affordable Housing, Climate Resilience" },
-      { title: "Economic Growth", detail: "Youth Employment, SME Growth, Industrial Development" },
-      { title: "Innovation", detail: "Innovation Ecosystems, Community Development" },
-      { title: "Key Outputs", detail: "Research Reports, Policy Papers, Pilot Projects, Innovation Challenges" },
-    ],
   },
 ];
 
@@ -372,51 +299,6 @@ export function About() {
           </div>
         </div>
       </section>
-    
-      {/* ═══ STRATEGIC PILLARS ═══ */}
-      <section className="bg-baba-cream py-20">
-        <div className="mx-auto max-w-7xl px-5 lg:px-8">
-          <span className="text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">Our Framework</span>
-          <h2 className="mt-2 font-display text-3xl font-extrabold text-baba-slate sm:text-4xl">Our Strategic Pillars</h2>
-          <p className="mt-4 max-w-3xl text-baba-slate/70">Together, these five pillars form the BABA ecosystem — connecting people, building industries, and transforming Africa.</p>
-
-          {pillarDetails.map((pillar, i) => (
-            <div key={pillar.key} className="mt-10 rounded-2xl border border-baba-blue/10 bg-white p-8">
-              <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-baba-blue to-baba-copper text-white text-lg font-bold">{i + 1}</div>
-                <div>
-                  <h3 className="font-display text-2xl font-bold text-baba-slate">{pillar.name}</h3>
-                  <p className="text-sm font-semibold text-baba-copper-dark">{pillar.tagline}</p>
-                </div>
-              </div>
-              <p className="mt-4 text-baba-slate/80">{pillar.description}</p>
-              <p className="mt-3 text-baba-slate/80">{pillar.longDescription}</p>
-
-              <details className="group mt-5 rounded-lg border border-baba-blue/10">
-                <summary className="flex cursor-pointer items-center justify-between px-4 py-3 text-sm font-bold text-baba-blue list-none">
-                  View Details <span className="transition-transform group-open:rotate-180">▼</span>
-                </summary>
-                <div className="border-t border-baba-blue/10 px-4 py-4">
-                  {pillar.focusAreas && (
-                    <>
-                      <p className="text-xs font-bold uppercase tracking-wide text-baba-copper-dark mb-3">{pillar.focusTitle || "Focus Areas"}</p>
-                      <div className="grid gap-2 sm:grid-cols-2">
-                        {pillar.focusAreas.map((fa) => (
-                          <div key={fa.title} className="rounded-lg bg-baba-cream/50 p-3 border border-baba-blue/5">
-                            <p className="text-sm font-bold text-baba-slate">{fa.title}</p>
-                            <p className="text-xs text-baba-slate/65 mt-1">{fa.detail}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </>
-                  )}
-                </div>
-              </details>
-            </div>
-          ))}
-        </div>
-      </section>
-
     </PageShell>
   );
 }

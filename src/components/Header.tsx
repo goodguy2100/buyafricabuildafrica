@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
-import babaLogo from "@/assets/baba-logo-transparent.png";
+import babaLogo from "@/assets/baba-logo-vibrant.png";
 
 const navLinks = [
   { to: "/", label: "Home" },
-  { to: "/about", label: "About" },
+  { to: "/about", label: "About Us" },
+  { to: "/pillars", label: "Pillars" },
   { to: "/directory", label: "National Directory" },
   { to: "/opportunities", label: "Opportunities" },
-  { to: "/pillars", label: "Pillars" },
   { to: "/events", label: "Events" },
   { to: "/contact", label: "Contact" },
 ] as const;
@@ -27,12 +27,12 @@ export function Header() {
           />
         </Link>
 
-        <nav className="hidden items-center gap-5 lg:flex">
+        <nav className="hidden items-center gap-3 xl:flex">
           {navLinks.map((l) => (
             <Link
               key={l.to}
               to={l.to}
-              className="font-display text-[0.78rem] font-semibold uppercase tracking-wide text-baba-slate/70 transition-colors hover:text-baba-blue"
+              className="font-display text-[0.72rem] font-semibold uppercase tracking-wide text-baba-slate/70 transition-colors hover:text-baba-blue 2xl:text-[0.78rem]"
               activeProps={{ className: "text-baba-blue" }}
             >
               {l.label}
@@ -43,9 +43,9 @@ export function Header() {
         <div className="hidden items-center gap-2.5 xl:flex">
           <Link
             to="/register"
-            className="rounded-full baba-btn-primary px-4 py-2 text-sm font-semibold text-baba-cream transition-colors hover:bg-baba-blue-dark"
+            className="rounded-full baba-cta px-4 py-2 text-sm font-semibold text-white"
           >
-            Join as Worker
+            Join as Artisans
           </Link>
           <Link
             to="/register"
@@ -62,7 +62,7 @@ export function Header() {
         </div>
 
         <button
-          className="rounded-lg p-2 text-baba-blue lg:hidden"
+          className="rounded-lg p-2 text-baba-blue xl:hidden"
           onClick={() => setOpen((v) => !v)}
           aria-label="Toggle menu"
         >
@@ -71,7 +71,7 @@ export function Header() {
       </div>
 
       {open && (
-        <div className="border-t border-baba-blue/10 bg-baba-cream px-5 py-4 lg:hidden">
+        <div className="border-t border-baba-blue/10 bg-baba-cream px-5 py-4 xl:hidden">
           <nav className="flex flex-col gap-1">
             {navLinks.map((l) => (
               <Link
@@ -89,9 +89,9 @@ export function Header() {
             <Link
               to="/register"
               onClick={() => setOpen(false)}
-              className="rounded-full baba-btn-primary px-4 py-2.5 text-center text-sm font-semibold text-baba-cream"
+              className="rounded-full baba-cta px-4 py-2.5 text-center text-sm font-semibold text-white"
             >
-              Join as Worker
+              Join as Artisans
             </Link>
             <Link
               to="/register"

@@ -23,7 +23,7 @@ export const Route = createFileRoute("/register")({
       {
         name: "description",
         content:
-          "Join the Buy Africa Build Africa network. Register as a worker, student, professional, contractor or supplier with secure M-PESA or card checkout.",
+          "Join the Buy Africa Build Africa network. Register as an artisan, student, professional, contractor or supplier with secure M-PESA or card checkout.",
       },
     ],
     links: [{ rel: "canonical", href: "/register" }],
@@ -32,7 +32,7 @@ export const Route = createFileRoute("/register")({
 });
 
 const tiers = [
-  { key: "Worker", icon: HardHat, price: 100, note: "Annual commitment for skilled manual workforce." },
+  { key: "Artisans", icon: HardHat, price: 100, note: "Annual commitment for skilled manual workforce." },
   { key: "Student", icon: GraduationCap, price: 100, note: "Special rate for those currently in training." },
   { key: "Professional", icon: Briefcase, price: 500, note: "Standard tier for corporate & creative experts." },
   { key: "Contractor", icon: Building2, price: 500, note: "For registered builders and project managers." },
@@ -52,7 +52,7 @@ const steps = ["Profile Category", "Professional Details", "Secure Activation"];
 
 function Register() {
   const [step, setStep] = useState(0);
-  const [tier, setTier] = useState<(typeof tiers)[number]["key"]>("Worker");
+  const [tier, setTier] = useState<(typeof tiers)[number]["key"]>("Artisans");
   const [pay, setPay] = useState<"mpesa" | "card">("mpesa");
 
   const selectedTier = tiers.find((t) => t.key === tier)!;
@@ -222,7 +222,7 @@ function Register() {
               {step < 2 && (
                 <button
                   onClick={() => setStep((s) => Math.min(2, s + 1))}
-                  className="rounded-lg baba-btn-primary px-6 py-2.5 text-sm font-semibold text-baba-cream transition-colors hover:bg-baba-blue-dark"
+                  className="rounded-lg baba-cta px-6 py-2.5 text-sm font-semibold text-baba-cream transition-colors hover:bg-baba-blue-dark"
                 >
                   Continue
                 </button>

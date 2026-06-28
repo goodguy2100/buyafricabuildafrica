@@ -27,7 +27,7 @@ export const Route = createFileRoute("/directory")({
   component: Directory,
 });
 
-type Category = "Workers" | "Professionals" | "Contractors" | "Suppliers" | "Partners & Institutions" | "Students & Emerging Professionals";
+type Category = "Artisans" | "Professionals" | "Contractors" | "Suppliers" | "Partners & Institutions" | "Students & Emerging Professionals";
 type Experience = "Entry" | "Intermediate" | "Expert";
 
 interface Profile {
@@ -50,8 +50,8 @@ const profiles: Profile[] = [
     id: 1,
     name: "John Mwangi",
     initials: "JM",
-    role: "Worker · Master Tiler",
-    category: "Workers",
+    role: "Artisans · Master Tiler",
+    category: "Artisans",
     location: "Nairobi, Kenya",
     years: 12,
     experience: "Expert",
@@ -116,8 +116,8 @@ const profiles: Profile[] = [
     id: 6,
     name: "David Osei",
     initials: "DO",
-    role: "Worker · Plumber",
-    category: "Workers",
+    role: "Artisans · Plumber",
+    category: "Artisans",
     location: "Accra, Ghana",
     years: 9,
     experience: "Intermediate",
@@ -129,7 +129,7 @@ const profiles: Profile[] = [
 
 const categories: { name: Category; count: number }[] = [
   { name: "Professionals", count: 856 },
-  { name: "Workers", count: 1240 },
+  { name: "Artisans", count: 1240 },
   { name: "Contractors", count: 412 },
   { name: "Suppliers", count: 158 },
   { name: "Partners & Institutions", count: 80 },
@@ -172,7 +172,9 @@ function Directory() {
           Home <span className="mx-1">›</span> National Directory
         </p>
         <h1 className="mt-3 font-display text-4xl font-extrabold leading-tight text-baba-blue sm:text-5xl">
-          Directory &amp; professional Database{"\u00A0"}
+          National Workforce &amp;
+          <br />
+          Professional Database
         </h1>
         <p className="mt-4 max-w-2xl text-baba-slate/70">
           Search, filter, and connect with verified construction artisans, technical
@@ -190,7 +192,7 @@ function Directory() {
               className="w-full bg-transparent py-2 text-sm text-baba-slate placeholder:text-baba-slate/40 focus:outline-none"
             />
           </div>
-          <div className="rounded-lg baba-btn-primary px-6 py-3 text-center text-sm font-semibold text-baba-cream">
+          <div className="rounded-lg baba-cta px-6 py-3 text-center text-sm font-semibold text-baba-cream">
             Find Professionals
           </div>
         </div>
@@ -348,7 +350,7 @@ function Directory() {
                     </button>
                     <button
                       onClick={() => setActive(p)}
-                      className="rounded-lg baba-btn-primary px-4 py-2 text-xs font-semibold text-baba-cream transition-colors hover:bg-baba-blue-dark"
+                      className="rounded-lg baba-cta px-4 py-2 text-xs font-semibold text-baba-cream transition-colors hover:bg-baba-blue-dark"
                     >
                       Request Contact
                     </button>
@@ -379,7 +381,7 @@ function Directory() {
           <div className="flex flex-wrap gap-3">
             <a
               href="/register"
-              className="rounded-lg baba-btn-primary px-6 py-3 text-sm font-semibold text-baba-cream transition-colors hover:bg-baba-blue-light"
+              className="rounded-lg baba-cta px-6 py-3 text-sm font-semibold text-baba-cream transition-colors hover:bg-baba-blue-light"
             >
               Join Database
             </a>

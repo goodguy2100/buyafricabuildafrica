@@ -35,7 +35,7 @@ function Contact() {
             Contact BABA
           </h1>
           <p className="mt-4 max-w-2xl text-baba-slate/70">
-            Whether you're a worker, partner or institution, our team is ready to help you
+            Whether you're an artisan, partner or institution, our team is ready to help you
             build with us.
           </p>
         </div>
@@ -101,7 +101,7 @@ function Contact() {
               </div>
               <button
                 type="submit"
-                className="mt-6 rounded-lg baba-btn-primary px-6 py-3 text-sm font-semibold text-baba-cream transition-colors hover:bg-baba-blue-dark"
+                className="mt-6 rounded-lg baba-cta px-6 py-3 text-sm font-semibold text-white"
               >
                 Send Message
               </button>
@@ -110,7 +110,7 @@ function Contact() {
         </div>
 
         <aside className="space-y-4">
-          <InfoCard icon={Mail} title="Email" value="Hello@ buyafricabuildafrica" />
+          <InfoCard icon={Mail} title="Email" value="info@buyafricabuildafrica.org" />
           <InfoCard icon={Phone} title="Phone" value="+254 746216258" />
           <InfoCard icon={MapPin} title="Head Office" value="Nairobi, Kenya" />
           <div className="rounded-2xl bg-baba-slate p-6 text-baba-cream">

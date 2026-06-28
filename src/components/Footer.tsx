@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Globe, Mail, MapPin, Phone } from "lucide-react";
-import babaLogo from "@/assets/baba-logo-transparent.png";
+import babaLogo from "@/assets/baba-logo-vibrant.png";
 
 const columns = [
   {
@@ -72,7 +72,7 @@ export function Footer() {
 
         {columns.map((col) => (
           <div key={col.title} className="lg:col-span-2">
-            <h4 className="font-display text-sm font-bold uppercase tracking-wide text-baba-copper">
+            <h4 className="font-display text-sm font-bold uppercase tracking-wide bg-gradient-to-r from-yellow-200 via-baba-yellow to-amber-400 bg-clip-text text-transparent">
               {col.title}
             </h4>
             <ul className="mt-4 space-y-2.5">
@@ -91,7 +91,7 @@ export function Footer() {
         ))}
 
         <div className="lg:col-span-4">
-          <h4 className="font-display text-sm font-bold uppercase tracking-wide text-baba-copper">
+          <h4 className="font-display text-sm font-bold uppercase tracking-wide bg-gradient-to-r from-yellow-200 via-baba-yellow to-amber-400 bg-clip-text text-transparent">
             Newsletter
           </h4>
           <p className="mt-4 text-sm text-baba-cream/80">
@@ -119,7 +119,7 @@ export function Footer() {
               />
               <button
                 type="submit"
-                className="shrink-0 rounded-lg bg-baba-copper px-4 py-2.5 text-sm font-semibold text-baba-slate transition-colors hover:bg-baba-copper-dark"
+                className="shrink-0 rounded-lg baba-cta px-4 py-2.5 text-sm font-semibold text-white"
               >
                 Subscribe
               </button>
