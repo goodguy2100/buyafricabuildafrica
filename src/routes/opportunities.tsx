@@ -6,11 +6,11 @@ import { PageShell } from "@/components/PageShell";
 export const Route = createFileRoute("/opportunities")({
   head: () => ({
     meta: [
-      { title: "Opportunities | Buy Africa Build Africa (BABA)" },
+      { title: "Up & Coming | Buy Africa Build Africa (BABA)" },
       {
         name: "description",
         content:
-          "Browse jobs, apprenticeships, training masterclasses and project tenders across Africa on the BABA network.",
+          "Upcoming trainings, masterclasses and events you can sign up for across the BABA network.",
       },
     ],
     links: [{ rel: "canonical", href: "/opportunities" }],
