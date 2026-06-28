@@ -100,7 +100,7 @@ function Opportunities() {
                 <Clock className="h-3.5 w-3.5" /> {o.meta}
               </p>
               <button className="mt-5 inline-flex items-center gap-1.5 text-sm font-bold text-baba-copper-dark hover:underline">
-                View &amp; Apply <ArrowRight className="h-4 w-4" />
+                Sign Up <ArrowRight className="h-4 w-4" />
               </button>
             </article>
           ))}
