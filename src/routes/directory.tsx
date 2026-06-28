@@ -169,10 +169,10 @@ function Directory() {
     <PageShell>
       <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8">
         <p className="text-sm text-baba-slate/50">
-          Home <span className="mx-1">›</span> Directory &amp; Professional Database
+          Home <span className="mx-1">›</span> Directory and Professional Database
         </p>
         <h1 className="mt-3 font-display text-4xl font-extrabold leading-tight text-baba-blue sm:text-5xl">
-          Directory &amp;
+          Directory and
           <br />
           Professional Database
         </h1>
