@@ -54,11 +54,11 @@ function Opportunities() {
             Grow With Us
           </span>
           <h1 className="mt-2 font-display text-4xl font-extrabold text-baba-slate sm:text-5xl">
-            Opportunities
+            Up &amp; Coming
           </h1>
           <p className="mt-4 max-w-2xl text-baba-slate/70">
-            Jobs, apprenticeships, training masterclasses and project tenders — all in one
-            verified continental marketplace.
+            Upcoming trainings held every other month, masterclasses, and events you can
+            sign up for across the BABA network.
           </p>
         </div>
       </section>
