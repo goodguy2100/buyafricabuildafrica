@@ -61,19 +61,22 @@ const howBabaWorks = [
 ];
 
 const strategicPillars = [
-  { name: "BABA Membership Network", grad: "from-baba-blue to-baba-blue-light" },
-  { name: "BABA Capacity Building Initiative", grad: "from-baba-blue-light to-brand-green" },
-  { name: "BABA Sustainability & Green Building Initiative", grad: "from-brand-green to-baba-blue-light" },
-  { name: "BABA Corporate Strategy Summit", grad: "from-baba-blue to-brand-green" },
-  { name: "BABA Expo & Conference", grad: "from-baba-blue-light to-baba-copper" },
-  { name: "BABA Excellence Awards", grad: "from-brand-green to-baba-blue" },
+  { name: "Membership Network", grad: "from-baba-blue to-baba-blue-light" },
+  { name: "Capacity Building Initiative", grad: "from-baba-blue-light to-brand-green" },
+  { name: "Sustainability & Green Building Initiative", grad: "from-brand-green to-baba-blue-light" },
+  { name: "Corporate Strategy Summit", grad: "from-baba-blue to-brand-green" },
+  { name: "Expo & Conference", grad: "from-baba-blue-light to-baba-copper" },
+  { name: "Excellence Awards", grad: "from-brand-green to-baba-blue" },
 ];
 
 
 const whoWeServe = [
-  "Governments", "Development Partners", "NGOs", "Financial Institutions",
-  "Investors", "Universities", "Professionals", "Entrepreneurs",
-  "SMEs", "Manufacturers", "Suppliers", "Artisans", "Youth", "Communities",
+  "Governments", "Public Institutions", "Universities", "Development Partners",
+  "NGOs", "Financial Institutions", "Investors",
+  "Architects", "Engineers", "Quantity Surveyors", "Urban Planners",
+  "Project Managers", "Contractors", "Developers",
+  "Professionals", "Entrepreneurs", "SMEs", "Manufacturers", "Suppliers",
+  "Artisans", "Students", "Youth", "Communities", "Individuals",
 ];
 
 const ecosystemGroups = [
