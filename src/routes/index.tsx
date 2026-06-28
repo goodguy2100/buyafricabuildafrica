@@ -308,11 +308,20 @@ function Home() {
           <span className="text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">Our Community</span>
           <h2 className="mt-2 font-display text-3xl font-extrabold text-baba-slate sm:text-4xl">Who We Serve</h2>
         </div>
-        <div className="mt-10 flex flex-wrap justify-center gap-3">
-          {whoWeServe.map((item) => (
-            <span key={item} className="rounded-full border border-baba-blue/20 bg-white px-5 py-2.5 text-sm font-medium text-baba-slate shadow-sm transition-colors hover:border-baba-blue/40 hover:text-baba-blue">
-              {item}
-            </span>
+        <div className="mt-12 space-y-10">
+          {whoWeServe.map((cat) => (
+            <div key={cat.group}>
+              <h3 className="text-center text-sm font-bold uppercase tracking-[0.2em] text-baba-copper-dark">
+                {cat.group}
+              </h3>
+              <div className="mt-5 flex flex-wrap justify-center gap-3">
+                {cat.items.map((item) => (
+                  <span key={item} className="rounded-full border border-baba-blue/20 bg-white px-5 py-2.5 text-sm font-medium text-baba-slate shadow-sm transition-colors hover:border-baba-blue/40 hover:text-baba-blue">
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </div>
           ))}
         </div>
       </section>
