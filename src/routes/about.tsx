@@ -75,7 +75,7 @@ const whatWeDo = [
   {
     icon: GraduationCap,
     title: "Skills Development",
-    body: "Through the BABA Institute, we provide training programmes that strengthen technical competence, entrepreneurship, financial literacy, leadership, ethics, sustainability, and business growth. Our goal is to develop skilled, market-ready professionals capable of contributing meaningfully to Africa's growth.",
+    body: "Through the BABA Capacity Building Hub, we provide training programmes that strengthen technical competence, entrepreneurship, financial literacy, leadership, ethics, sustainability, and business growth. Our goal is to develop skilled, market-ready professionals capable of contributing meaningfully to Africa's growth.",
   },
   {
     icon: Briefcase,
