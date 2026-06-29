@@ -106,7 +106,7 @@ const pillarDetails: PillarDetail[] = [
   {
     key: "capacity",
     shortName: "Capacity Building",
-    name: "BABA Capacity Building Hub",
+    name: "\u00a0Capacity Building Hub",
     icon: BookOpen,
     tagline: "Building Skills. Strengthening Enterprises. Empowering Communities.",
     grad: "from-baba-blue-light to-brand-green",
