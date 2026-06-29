@@ -88,8 +88,8 @@ const whoWeServe = [
     items: ["Manufacturers", "Suppliers", "SMEs", "Financial Institutions", "Investors"],
   },
   {
-    group: "Academia & Community",
-    items: ["Universities", "Students", "Communities", "Individuals"],
+    group: "Universities",
+    items: ["Educational Institutions", "Students", "Researchers"],
   },
 ];
 
