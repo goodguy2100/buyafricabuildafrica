@@ -148,7 +148,7 @@ const pillarDetails: PillarDetail[] = [
   {
     key: "sustainability",
     shortName: "Sustainability & Green Building",
-    name: "BABA Sustainability & Green Building Initiative",
+    name: "\u00a0Sustainability & Green Building Initiative",
     icon: Leaf,
     tagline: "Building Resilient Cities and Communities for Future Generations",
     grad: "from-brand-green to-baba-copper",
