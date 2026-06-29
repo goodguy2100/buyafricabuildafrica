@@ -277,7 +277,7 @@ const pillarDetails: PillarDetail[] = [
   {
     key: "research",
     shortName: "Research & Innovation",
-    name: "BABA Research, Innovation & Implementation Hub",
+    name: "Research, Innovation & Implementation Hub",
     icon: Lightbulb,
     tagline: "Turning Ideas Into Action",
     grad: "from-baba-copper-dark to-brand-red",
