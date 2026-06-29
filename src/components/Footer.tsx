@@ -74,9 +74,12 @@ export function Footer() {
 
         {columns.map((col) => (
           <div key={col.title} className="lg:col-span-2">
-            <h4 className="font-display text-sm font-bold uppercase tracking-wide bg-gradient-to-r from-yellow-200 via-baba-yellow to-amber-400 bg-clip-text text-transparent">
+            <Link
+              to={col.to}
+              className="font-display text-sm font-bold uppercase tracking-wide bg-gradient-to-r from-yellow-200 via-baba-yellow to-amber-400 bg-clip-text text-transparent transition-opacity hover:opacity-80"
+            >
               {col.title}
-            </h4>
+            </Link>
             <ul className="mt-4 space-y-2.5">
               {col.links.map((l) => (
                 <li key={l.label}>
