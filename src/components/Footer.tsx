@@ -6,6 +6,7 @@ import babaLogo from "@/assets/baba-logo-vibrant.png";
 const columns = [
   {
     title: "Explore",
+    to: "/pillars",
     links: [
       { to: "/pillars", label: "The Five Pillars" },
       { to: "/directory", label: "National Directory" },
@@ -15,6 +16,7 @@ const columns = [
   },
   {
     title: "Get Involved",
+    to: "/register",
     links: [
       { to: "/register", label: "Become a Member" },
       { to: "/partners", label: "Become a Partner" },
