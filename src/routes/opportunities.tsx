@@ -31,8 +31,7 @@ interface Opp {
 
 const opportunities: Opp[] = [
   { id: 1, kind: "Trainings", title: "Advanced Masonry Training", org: "BABA Skills Academy", location: "Online + Nairobi", meta: "Runs every other month · Certificate" },
-  { id: 2, kind: "Trainings", title: "Green Building Fundamentals", org: "BABA Skills Academy", location: "Online", meta: "Next intake · Bi-monthly" },
-  { id: 3, kind: "Trainings", title: "Construction Project Management", org: "BABA Skills Academy", location: "Online", meta: "8 weeks · Diploma" },
+  { id: 2, kind: "Trainings", title: "Green Building Fundamentals", org: "BABA Skills Academy", location: "Online", meta: "Every other month · Bi-monthly" },
   { id: 4, kind: "Masterclasses", title: "Sustainable Design Masterclass", org: "BABA Capacity Building Hub", location: "Nairobi, Kenya", meta: "1 day · Sign up" },
   { id: 5, kind: "Masterclasses", title: "Entrepreneurship & Business Growth", org: "BABA Capacity Building Hub", location: "Online", meta: "Live session · Sign up" },
   { id: 6, kind: "Events", title: "BABA Industry Networking Meetup", org: "Buy Africa Build Africa", location: "Nairobi, Kenya", meta: "Free · Sign up to attend" },
