@@ -56,7 +56,7 @@ const pillarDetails: PillarDetail[] = [
   {
     key: "network",
     shortName: "Membership Network",
-    name: "BABA Membership & Industry Network",
+    name: "Membership & Industry Network",
     icon: Users,
     tagline: "Connecting Africa's People, Skills and Opportunities",
     grad: "from-baba-blue to-baba-blue-light",
