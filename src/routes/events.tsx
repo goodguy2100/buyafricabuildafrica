@@ -90,12 +90,8 @@ export function Events() {
           <div className="mt-12 grid gap-8 lg:grid-cols-3">
             {upcomingEvents.map((event) => (
               <div key={event.title} className="baba-card-hover group relative overflow-hidden rounded-2xl border border-baba-copper/20 bg-white">
-                <div className="relative h-44 overflow-hidden">
-                  <img
-                    src={event.image} alt={event.title} loading="lazy" width={800} height={600}
-                    className="absolute inset-0 h-full w-full scale-110 object-cover blur-[3px] brightness-95 transition-transform duration-500 group-hover:scale-125"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-baba-slate/80 via-baba-slate/30 to-transparent" />
+                <div className="relative h-44 overflow-hidden bg-gradient-to-br from-baba-blue via-baba-blue-dark to-baba-slate">
+                  <div className="absolute inset-0 bg-gradient-to-t from-baba-slate/70 via-transparent to-transparent" />
                   <div className="absolute left-5 top-5 flex h-11 w-11 items-center justify-center rounded-xl bg-white/90 backdrop-blur-sm">
                     <event.icon className="h-5 w-5 text-baba-copper-dark" />
                   </div>
