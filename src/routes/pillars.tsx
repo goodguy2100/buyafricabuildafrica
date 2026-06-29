@@ -56,7 +56,7 @@ const pillarDetails: PillarDetail[] = [
   {
     key: "network",
     shortName: "Membership Network",
-    name: "BABA Membership & Industry Network",
+    name: "Membership & Industry Network",
     icon: Users,
     tagline: "Connecting Africa's People, Skills and Opportunities",
     grad: "from-baba-blue to-baba-blue-light",
@@ -106,7 +106,7 @@ const pillarDetails: PillarDetail[] = [
   {
     key: "capacity",
     shortName: "Capacity Building",
-    name: "BABA Capacity Building Hub",
+    name: "\u00a0Capacity Building Hub",
     icon: BookOpen,
     tagline: "Building Skills. Strengthening Enterprises. Empowering Communities.",
     grad: "from-baba-blue-light to-brand-green",
@@ -148,7 +148,7 @@ const pillarDetails: PillarDetail[] = [
   {
     key: "sustainability",
     shortName: "Sustainability & Green Building",
-    name: "BABA Sustainability & Green Building Initiative",
+    name: "\u00a0Sustainability & Green Building Initiative",
     icon: Leaf,
     tagline: "Building Resilient Cities and Communities for Future Generations",
     grad: "from-brand-green to-baba-copper",
@@ -189,7 +189,7 @@ const pillarDetails: PillarDetail[] = [
   {
     key: "events",
     shortName: "Events & Recognition",
-    name: "BABA Events & Recognition Platform",
+    name: "\u00a0Events & Recognition Platform",
     icon: Award,
     tagline: "Connecting Ideas, Opportunities and Excellence",
     grad: "from-baba-copper to-baba-copper-dark",
@@ -277,7 +277,7 @@ const pillarDetails: PillarDetail[] = [
   {
     key: "research",
     shortName: "Research & Innovation",
-    name: "BABA Research, Innovation & Implementation Hub",
+    name: "Research, Innovation & Implementation Hub",
     icon: Lightbulb,
     tagline: "Turning Ideas Into Action",
     grad: "from-baba-copper-dark to-brand-red",

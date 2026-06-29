@@ -19,7 +19,7 @@ export interface Pillar {
 export const pillars: Pillar[] = [
   {
     key: "network",
-    name: "BABA Membership & Industry Network",
+    name: "Membership & Industry Network",
     tagline: "Connecting Africa's People, Skills and Opportunities",
     description: "A platform for collaboration, visibility, professional growth, enterprise development, and industry engagement across Africa.",
     icon: Users,
@@ -35,7 +35,7 @@ export const pillars: Pillar[] = [
   },
   {
     key: "capacity",
-    name: "BABA Capacity Building Hub",
+    name: "\u00a0Capacity Building Hub",
     tagline: "Building Skills. Strengthening Enterprises. Empowering Communities.",
     description: "Developing the skills, knowledge, leadership, and entrepreneurial capabilities needed to drive Africa's growth.",
     icon: BookOpen,
@@ -51,7 +51,7 @@ export const pillars: Pillar[] = [
   },
   {
     key: "sustainability",
-    name: "BABA Sustainability & Green Building Initiative",
+    name: "\u00a0Sustainability & Green Building Initiative",
     tagline: "Building Resilient Cities and Communities for Future Generations",
     description: "Promoting practical solutions that support climate resilience, environmental stewardship, sustainable construction, and healthier communities.",
     icon: Leaf,
@@ -67,7 +67,7 @@ export const pillars: Pillar[] = [
   },
   {
     key: "events",
-    name: "BABA Events & Recognition Platform",
+    name: "\u00a0Events & Recognition Platform",
     tagline: "Connecting Ideas, Opportunities and Excellence",
     description: "An annual engagement framework bringing together leaders, professionals, businesses, institutions, and communities to collaborate and celebrate excellence.",
     icon: Award,
@@ -82,7 +82,7 @@ export const pillars: Pillar[] = [
   },
   {
     key: "research",
-    name: "BABA Research, Innovation & Implementation Hub",
+    name: "Research, Innovation & Implementation Hub",
     tagline: "Turning Ideas Into Action",
     description: "Ensuring that ideas, discussions, and recommendations translate into practical action and measurable impact across Africa.",
     icon: Lightbulb,
