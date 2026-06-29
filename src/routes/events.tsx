@@ -1,9 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Calendar, Award, Globe, Building, ArrowRight, MapPin, Clock, Leaf, Sparkles } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
-import gardensExpoImg from "@/assets/event-gardens-expo.jpg";
-import babaLaunchImg from "@/assets/event-baba-launch.jpg";
-import awardsGalaImg from "@/assets/event-awards-gala.jpg";
+
 
 const upcomingEvents = [
   {
