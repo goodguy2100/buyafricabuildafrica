@@ -189,7 +189,7 @@ const pillarDetails: PillarDetail[] = [
   {
     key: "events",
     shortName: "Events & Recognition",
-    name: "BABA Events & Recognition Platform",
+    name: "\u00a0Events & Recognition Platform",
     icon: Award,
     tagline: "Connecting Ideas, Opportunities and Excellence",
     grad: "from-baba-copper to-baba-copper-dark",
