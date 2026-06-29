@@ -61,12 +61,11 @@ const howBabaWorks = [
 ];
 
 const strategicPillars = [
-  { name: "Membership Network", grad: "from-baba-blue to-baba-blue-light" },
-  { name: "Capacity Building Initiative", grad: "from-baba-blue-light to-brand-green" },
-  { name: "Sustainability & Green Building Initiative", grad: "from-brand-green to-baba-blue-light" },
-  { name: "Corporate Strategy Summit", grad: "from-baba-blue to-brand-green" },
-  { name: "Expo & Conference", grad: "from-baba-blue-light to-baba-copper" },
-  { name: "Excellence Awards", grad: "from-brand-green to-baba-blue" },
+  { key: "network", name: "BABA Membership & Industry Network", tagline: "Connecting Africa's People, Skills and Opportunities", grad: "from-baba-blue to-baba-blue-light" },
+  { key: "capacity", name: "BABA Capacity Building Hub", tagline: "Building Skills. Strengthening Enterprises. Empowering Communities.", grad: "from-baba-blue-light to-brand-green" },
+  { key: "sustainability", name: "BABA Sustainability & Green Building Initiative", tagline: "Building Resilient Cities and Communities for Future Generations", grad: "from-brand-green to-baba-blue-light" },
+  { key: "events", name: "BABA Events & Recognition Platform", tagline: "Connecting Ideas, Opportunities and Excellence", grad: "from-baba-blue-light to-baba-copper" },
+  { key: "research", name: "BABA Research, Innovation & Implementation Hub", tagline: "Turning Ideas Into Action", grad: "from-baba-copper to-baba-blue" },
 ];
 
 
