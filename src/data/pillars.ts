@@ -51,38 +51,11 @@ export const pillars: Pillar[] = [
   },
   {
     key: "sustainability",
-    name: "BABA Sustainability & Green Building Initiative",
-    tagline: "Building Resilient Cities and Communities for Future Generations",
-    description: "Promoting practical solutions that support climate resilience, environmental stewardship, sustainable construction, and healthier communities.",
-    icon: Leaf,
-    focus: [
-      "Green Building",
-      "Climate Resilience",
-      "Sustainable Urban Development",
-      "Circular Economy",
-      "Resource Efficiency",
-      "Green Skills Development",
-      "Community Sustainability",
-    ],
-  },
-  {
-    key: "events",
-    name: "BABA Events & Recognition Platform",
-    tagline: "Connecting Ideas, Opportunities and Excellence",
-    description: "An annual engagement framework bringing together leaders, professionals, businesses, institutions, and communities to collaborate and celebrate excellence.",
-    icon: Award,
-    focus: [
-      "Corporate Strategy Summit",
-      "Expo & Conference",
-      "Excellence Awards",
-      "Industry Showcases",
-      "Professional Recognition",
-      "Business Matching",
-    ],
-  },
-  {
-    key: "research",
-    name: "BABA Research, Innovation & Implementation Hub",
+    name: "\u00a0Sustainability & Green Building Initiative",
+...
+    name: "\u00a0Events & Recognition Platform",
+...
+    name: "Research, Innovation & Implementation Hub",
     tagline: "Turning Ideas Into Action",
     description: "Ensuring that ideas, discussions, and recommendations translate into practical action and measurable impact across Africa.",
     icon: Lightbulb,
