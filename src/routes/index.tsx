@@ -60,14 +60,6 @@ const howBabaWorks = [
   { title: "RESEARCH & IMPLEMENT", body: "Through the Research & Innovation Hub, we transform ideas, research, and policy discussions into practical solutions." },
 ];
 
-const strategicPillars = [
-  { name: "Membership Network", grad: "from-baba-blue to-baba-blue-light" },
-  { name: "Capacity Building Initiative", grad: "from-baba-blue-light to-brand-green" },
-  { name: "Sustainability & Green Building Initiative", grad: "from-brand-green to-baba-blue-light" },
-  { name: "Corporate Strategy Summit", grad: "from-baba-blue to-brand-green" },
-  { name: "Expo & Conference", grad: "from-baba-blue-light to-baba-copper" },
-  { name: "Excellence Awards", grad: "from-brand-green to-baba-blue" },
-];
 
 
 const whoWeServe = [
@@ -278,26 +270,44 @@ function Home() {
         <div className="pointer-events-none absolute -right-20 bottom-0 h-72 w-72 rounded-full bg-baba-copper/30 blur-3xl" />
         <div className="relative mx-auto max-w-7xl px-5 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
-            <span className="text-xs font-bold uppercase tracking-[0.25em] text-brand-yellow">The Main Agenda</span>
+            <span className="text-xs font-bold uppercase tracking-[0.25em] text-brand-yellow">Our Strategic Pillars</span>
             <h2 className="mt-2 font-display text-4xl font-extrabold text-white sm:text-5xl">
-              Our <span className="bg-gradient-to-r from-baba-blue-light via-brand-yellow to-baba-copper bg-clip-text text-transparent">Strategic Pillars</span>
+              <span className="bg-gradient-to-r from-baba-blue-light via-brand-yellow to-baba-copper bg-clip-text text-transparent">OUR STRATEGIC PILLARS</span>
             </h2>
             <p className="mt-3 text-white/70">Five interconnected pillars driving Africa's development — connecting people, building industries, transforming the continent.</p>
           </div>
           <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {strategicPillars.map((pillar, i) => (
-              <Link
-                key={pillar.name}
-                to="/pillars"
-                className={`group relative flex min-h-[150px] flex-col justify-between overflow-hidden rounded-2xl bg-gradient-to-br ${pillar.grad} p-6 text-white shadow-lg transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] hover:shadow-2xl`}
-              >
-                <span className="font-display text-5xl font-black text-white/25">{String(i + 1).padStart(2, "0")}</span>
-                <h3 className="font-display text-lg font-extrabold leading-tight">{pillar.name}</h3>
-                <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-bold text-white/90 transition-transform group-hover:translate-x-1">
-                  Explore pillar <ArrowRight className="h-4 w-4" />
-                </span>
-              </Link>
-            ))}
+            {pillars.map((pillar, i) => {
+              const grads = [
+                "from-baba-blue to-baba-blue-light",
+                "from-baba-blue-light to-brand-green",
+                "from-brand-green to-baba-blue-light",
+                "from-baba-blue-light to-baba-copper",
+                "from-baba-copper to-baba-blue",
+              ];
+              const Icon = pillar.icon;
+              return (
+                <Link
+                  key={pillar.key}
+                  to="/pillars"
+                  className={`group relative flex min-h-[200px] flex-col justify-between overflow-hidden rounded-2xl bg-gradient-to-br ${grads[i]} p-6 text-white shadow-lg transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] hover:shadow-2xl`}
+                >
+                  <div className="flex items-start justify-between">
+                    <span className="font-display text-5xl font-black text-white/25">{String(i + 1).padStart(2, "0")}</span>
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 backdrop-blur">
+                      <Icon className="h-5 w-5 text-white" />
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="font-display text-lg font-extrabold leading-tight">{pillar.name}</h3>
+                    <p className="mt-2 text-sm font-medium text-white/80">{pillar.tagline}</p>
+                    <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-bold text-white/90 transition-transform group-hover:translate-x-1">
+                      Explore pillar <ArrowRight className="h-4 w-4" />
+                    </span>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>
