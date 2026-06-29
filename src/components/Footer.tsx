@@ -96,9 +96,12 @@ export function Footer() {
         ))}
 
         <div className="lg:col-span-4">
-          <h4 className="font-display text-sm font-bold uppercase tracking-wide bg-gradient-to-r from-yellow-200 via-baba-yellow to-amber-400 bg-clip-text text-transparent">
+          <Link
+            to="/events"
+            className="font-display text-sm font-bold uppercase tracking-wide bg-gradient-to-r from-yellow-200 via-baba-yellow to-amber-400 bg-clip-text text-transparent transition-opacity hover:opacity-80"
+          >
             Newsletter
-          </h4>
+          </Link>
           <p className="mt-4 text-sm text-baba-cream/80">
             Stay updated on the latest industrial opportunities across Africa.
           </p>
