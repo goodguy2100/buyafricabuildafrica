@@ -35,7 +35,7 @@ export const pillars: Pillar[] = [
   },
   {
     key: "capacity",
-    name: "BABA Capacity Building Hub",
+    name: "\u00a0Capacity Building Hub",
     tagline: "Building Skills. Strengthening Enterprises. Empowering Communities.",
     description: "Developing the skills, knowledge, leadership, and entrepreneurial capabilities needed to drive Africa's growth.",
     icon: BookOpen,
