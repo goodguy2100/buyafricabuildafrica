@@ -1,6 +1,28 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Calendar, Award, Globe, Building, ArrowRight, MapPin, Clock } from "lucide-react";
+import { Calendar, Award, Globe, Building, ArrowRight, MapPin, Clock, Leaf, Sparkles } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
+import gardensExpoImg from "@/assets/event-gardens-expo.jpg";
+import babaLaunchImg from "@/assets/event-baba-launch.jpg";
+import awardsGalaImg from "@/assets/event-awards-gala.jpg";
+
+const upcomingEvents = [
+  {
+    icon: Leaf, image: gardensExpoImg, title: "Gardens Expo & Conference",
+    date: "August 2026", location: "Sarit Centre, Nairobi",
+    description: "A celebration of landscaping, garden design and sustainable green spaces — bringing together exhibitors, professionals and enthusiasts.",
+  },
+  {
+    icon: Sparkles, image: babaLaunchImg, title: "Official BABA Launch",
+    date: "End of September 2026", location: "Nairobi, Kenya",
+    description: "The official launch of Buy Africa Build Africa — unveiling our mission, pillars and the movement to build Africa's future.",
+  },
+  {
+    icon: Award, image: awardsGalaImg, title: "BABA Excellence Awards",
+    date: "1st December 2026 (to confirm)", location: "To be announced",
+    description: "An evening gala celebrating those building Africa across professional, artisan, business, sustainability and youth categories.",
+  },
+];
+
 
 export const Route = createFileRoute("/events")({
   head: () => ({
