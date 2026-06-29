@@ -19,7 +19,7 @@ export interface Pillar {
 export const pillars: Pillar[] = [
   {
     key: "network",
-    name: "BABA Membership & Industry Network",
+    name: "Membership & Industry Network",
     tagline: "Connecting Africa's People, Skills and Opportunities",
     description: "A platform for collaboration, visibility, professional growth, enterprise development, and industry engagement across Africa.",
     icon: Users,
