@@ -1,6 +1,28 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Calendar, Award, Globe, Building, ArrowRight, MapPin, Clock } from "lucide-react";
+import { Calendar, Award, Globe, Building, ArrowRight, MapPin, Clock, Leaf, Sparkles } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
+import gardensExpoImg from "@/assets/event-gardens-expo.jpg";
+import babaLaunchImg from "@/assets/event-baba-launch.jpg";
+import awardsGalaImg from "@/assets/event-awards-gala.jpg";
+
+const upcomingEvents = [
+  {
+    icon: Leaf, image: gardensExpoImg, title: "Gardens Expo & Conference",
+    date: "August 2026", location: "Sarit Centre, Nairobi",
+    description: "A celebration of landscaping, garden design and sustainable green spaces — bringing together exhibitors, professionals and enthusiasts.",
+  },
+  {
+    icon: Sparkles, image: babaLaunchImg, title: "Official BABA Launch",
+    date: "End of September 2026", location: "Nairobi, Kenya",
+    description: "The official launch of Buy Africa Build Africa — unveiling our mission, pillars and the movement to build Africa's future.",
+  },
+  {
+    icon: Award, image: awardsGalaImg, title: "BABA Excellence Awards",
+    date: "1st December 2026 (to confirm)", location: "To be announced",
+    description: "An evening gala celebrating those building Africa across professional, artisan, business, sustainability and youth categories.",
+  },
+];
+
 
 export const Route = createFileRoute("/events")({
   head: () => ({
@@ -61,7 +83,43 @@ export function Events() {
         <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-baba-cream to-transparent" />
       </section>
 
+      <section className="bg-baba-cream pt-16 md:pt-24">
+        <div className="mx-auto max-w-7xl px-5 lg:px-8">
+          <div className="text-center">
+            <span className="text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">Mark Your Calendar</span>
+            <h2 className="mt-2 font-display text-3xl font-extrabold text-baba-slate sm:text-4xl">Upcoming Events</h2>
+          </div>
+          <div className="mt-12 grid gap-8 lg:grid-cols-3">
+            {upcomingEvents.map((event) => (
+              <div key={event.title} className="baba-card-hover group relative overflow-hidden rounded-2xl border border-baba-copper/20 bg-white">
+                <div className="relative h-44 overflow-hidden">
+                  <img
+                    src={event.image} alt={event.title} loading="lazy" width={800} height={600}
+                    className="absolute inset-0 h-full w-full scale-110 object-cover blur-[3px] brightness-95 transition-transform duration-500 group-hover:scale-125"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-baba-slate/80 via-baba-slate/30 to-transparent" />
+                  <div className="absolute left-5 top-5 flex h-11 w-11 items-center justify-center rounded-xl bg-white/90 backdrop-blur-sm">
+                    <event.icon className="h-5 w-5 text-baba-copper-dark" />
+                  </div>
+                  <h3 className="absolute bottom-4 left-5 right-5 font-display text-xl font-bold text-white drop-shadow">{event.title}</h3>
+                </div>
+                <div className="p-6">
+                  <div className="flex flex-wrap gap-3 text-sm">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-baba-blue/10 px-3 py-1 text-xs font-semibold text-baba-blue">
+                      <Calendar className="h-3.5 w-3.5" /> {event.date}
+                    </span>
+                    <span className="inline-flex items-center gap-1.5 text-xs text-baba-slate/70"><MapPin className="h-3.5 w-3.5 text-baba-copper" /> {event.location}</span>
+                  </div>
+                  <p className="mt-4 text-sm leading-relaxed text-baba-slate/80">{event.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="bg-baba-cream py-16 md:py-24">
+
         <div className="mx-auto max-w-7xl px-5 lg:px-8">
           <div className="grid gap-8 lg:grid-cols-3">
             {annualEvents.map((event) => (
