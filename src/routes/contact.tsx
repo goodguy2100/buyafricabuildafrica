@@ -114,9 +114,9 @@ function Contact() {
           <InfoCard icon={Phone} title="Phone" value="+254 746216258" />
           <InfoCard icon={MapPin} title="Head Office" value="Nairobi, Kenya" />
           <div className="rounded-2xl bg-baba-slate p-6 text-baba-cream">
-            <h3 className="font-display text-lg font-bold">County Offices</h3>
+            <h3 className="font-display text-lg font-bold">HQ & Support</h3>
             <p className="mt-2 text-sm text-baba-cream/70">
-              BABA operates regional desks across 47 counties. Member support is available
+              BABA operates in Kenya,&nbsp;Head Office — Riara Road, Victoria Courts Building, HQ Offices. Member support is available
               Monday–Friday, 8am–5pm EAT.
             </p>
           </div>
