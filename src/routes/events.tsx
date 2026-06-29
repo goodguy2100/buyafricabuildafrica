@@ -1,23 +1,21 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Calendar, Award, Globe, Building, ArrowRight, MapPin, Clock, Leaf, Sparkles } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
-import gardensExpoImg from "@/assets/event-gardens-expo.jpg";
-import babaLaunchImg from "@/assets/event-baba-launch.jpg";
-import awardsGalaImg from "@/assets/event-awards-gala.jpg";
+
 
 const upcomingEvents = [
   {
-    icon: Leaf, image: gardensExpoImg, title: "Gardens Expo & Conference",
+    icon: Leaf, title: "Gardens Expo & Conference",
     date: "August 2026", location: "Sarit Centre, Nairobi",
     description: "A celebration of landscaping, garden design and sustainable green spaces — bringing together exhibitors, professionals and enthusiasts.",
   },
   {
-    icon: Sparkles, image: babaLaunchImg, title: "Official BABA Launch",
+    icon: Sparkles, title: "Official BABA Launch",
     date: "End of September 2026", location: "Nairobi, Kenya",
     description: "The official launch of Buy Africa Build Africa — unveiling our mission, pillars and the movement to build Africa's future.",
   },
   {
-    icon: Award, image: awardsGalaImg, title: "BABA Excellence Awards",
+    icon: Award, title: "BABA Excellence Awards",
     date: "1st December 2026 (to confirm)", location: "To be announced",
     description: "An evening gala celebrating those building Africa across professional, artisan, business, sustainability and youth categories.",
   },
@@ -92,12 +90,8 @@ export function Events() {
           <div className="mt-12 grid gap-8 lg:grid-cols-3">
             {upcomingEvents.map((event) => (
               <div key={event.title} className="baba-card-hover group relative overflow-hidden rounded-2xl border border-baba-copper/20 bg-white">
-                <div className="relative h-44 overflow-hidden">
-                  <img
-                    src={event.image} alt={event.title} loading="lazy" width={800} height={600}
-                    className="absolute inset-0 h-full w-full scale-110 object-cover blur-[3px] brightness-95 transition-transform duration-500 group-hover:scale-125"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-baba-slate/80 via-baba-slate/30 to-transparent" />
+                <div className="relative h-44 overflow-hidden bg-gradient-to-br from-baba-blue via-baba-blue-dark to-baba-slate">
+                  <div className="absolute inset-0 bg-gradient-to-t from-baba-slate/70 via-transparent to-transparent" />
                   <div className="absolute left-5 top-5 flex h-11 w-11 items-center justify-center rounded-xl bg-white/90 backdrop-blur-sm">
                     <event.icon className="h-5 w-5 text-baba-copper-dark" />
                   </div>
