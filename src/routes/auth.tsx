@@ -24,7 +24,7 @@ export const Route = createFileRoute("/auth")({
 });
 
 function sanitizeRedirect(value: string | null): string {
-  if (!value || !value.startsWith("/") || value.startsWith("//")) return "/register";
+  if (!value || !value.startsWith("/") || value.startsWith("//")) return "/dashboard";
   return value;
 }
 
