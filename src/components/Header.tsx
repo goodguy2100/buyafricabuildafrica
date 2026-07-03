@@ -168,6 +168,31 @@ export function Header() {
             >
               Register as Partner
             </Link>
+            {isAdmin && (
+              <Link
+                to="/admin"
+                onClick={() => setOpen(false)}
+                className="flex items-center justify-center gap-1.5 rounded-full border-2 border-baba-blue/20 px-4 py-2.5 text-center text-sm font-semibold text-baba-blue"
+              >
+                <LayoutDashboard className="h-4 w-4" /> Admin
+              </Link>
+            )}
+            {signedIn ? (
+              <button
+                onClick={signOut}
+                className="flex items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-center text-sm font-semibold text-baba-slate/70"
+              >
+                <LogOut className="h-4 w-4" /> Sign out
+              </button>
+            ) : (
+              <Link
+                to="/auth"
+                onClick={() => setOpen(false)}
+                className="flex items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-center text-sm font-semibold text-baba-slate/70"
+              >
+                <LogIn className="h-4 w-4" /> Sign in
+              </Link>
+            )}
           </div>
         </div>
       )}
