@@ -32,10 +32,16 @@ interface Opp {
 const opportunities: Opp[] = [
   { id: 1, kind: "Trainings", title: "Advanced Masonry Training", org: "BABA Skills Academy", location: "Online + Nairobi", meta: "Runs every other month · Certificate" },
   { id: 2, kind: "Trainings", title: "Green Building Fundamentals", org: "BABA Skills Academy", location: "Online", meta: "Every other month · Bi-monthly" },
-  { id: 4, kind: "Masterclasses", title: "Sustainable Design Masterclass", org: "BABA Capacity Building Hub", location: "Nairobi, Kenya", meta: "1 day · Sign up" },
-  { id: 5, kind: "Masterclasses", title: "Entrepreneurship & Business Growth", org: "BABA Capacity Building Hub", location: "Online", meta: "Live session · Sign up" },
-  { id: 6, kind: "Events", title: "BABA Industry Networking Meetup", org: "Buy Africa Build Africa", location: "Nairobi, Kenya", meta: "Free · Sign up to attend" },
-  { id: 7, kind: "Events", title: "Green Building & Innovation Expo", org: "Buy Africa Build Africa", location: "Nairobi, Kenya", meta: "Register your interest" },
+  { id: 3, kind: "Trainings", title: "Tiling & Finishing Workshop", org: "BABA Skills Academy", location: "Nairobi, Kenya", meta: "Every other month · Certificate" },
+  { id: 4, kind: "Trainings", title: "Electrical & Solar Installation", org: "BABA Skills Academy", location: "Online + Nairobi", meta: "Bi-monthly · Sign up" },
+  { id: 5, kind: "Trainings", title: "Plumbing & Pipe Fitting", org: "BABA Skills Academy", location: "Nairobi, Kenya", meta: "Every other month · Certificate" },
+  { id: 6, kind: "Trainings", title: "Welding & Metal Fabrication", org: "BABA Skills Academy", location: "Nairobi, Kenya", meta: "Bi-monthly · Sign up" },
+  { id: 7, kind: "Trainings", title: "Carpentry & Wood Finishing", org: "BABA Skills Academy", location: "Nairobi, Kenya", meta: "Every other month · Certificate" },
+  { id: 8, kind: "Trainings", title: "Gypsum & Drywall Installation", org: "BABA Skills Academy", location: "Nairobi, Kenya", meta: "Bi-monthly · Sign up" },
+  { id: 9, kind: "Masterclasses", title: "Sustainable Design Masterclass", org: "BABA Capacity Building Hub", location: "Nairobi, Kenya", meta: "1 day · Sign up" },
+  { id: 10, kind: "Masterclasses", title: "Entrepreneurship & Business Growth", org: "BABA Capacity Building Hub", location: "Online", meta: "Live session · Sign up" },
+  { id: 11, kind: "Events", title: "Gardens Expo & Conference", org: "Buy Africa Build Africa", location: "Sarit Centre, Nairobi", meta: "26–30 Aug 2026 · Register" },
+  { id: 12, kind: "Events", title: "BABA Industry Networking Meetup", org: "Buy Africa Build Africa", location: "Nairobi, Kenya", meta: "Free · Sign up to attend" },
 ];
 
 const kinds: ("All" | Kind)[] = ["All", "Trainings", "Masterclasses", "Events"];
