@@ -106,13 +106,17 @@ function Opportunities() {
               <p className="mt-1 flex items-center gap-1.5 text-sm text-baba-slate/60">
                 <Clock className="h-3.5 w-3.5" /> {o.meta}
               </p>
-              <button className="mt-5 inline-flex items-center gap-1.5 text-sm font-bold text-baba-copper-dark hover:underline">
+              <button
+                onClick={() => requireVerification("apply")}
+                className="mt-5 inline-flex items-center gap-1.5 text-sm font-bold text-baba-copper-dark hover:underline"
+              >
                 Sign Up <ArrowRight className="h-4 w-4" />
               </button>
             </article>
           ))}
         </div>
       </section>
+      {GateModal}
     </PageShell>
   );
 }
