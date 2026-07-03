@@ -49,6 +49,7 @@ const kinds: ("All" | Kind)[] = ["All", "Trainings", "Masterclasses", "Events"];
 
 function Opportunities() {
   const [filter, setFilter] = useState<"All" | Kind>("All");
+  const { requireVerification, GateModal } = useVerificationGate();
   const list =
     filter === "All" ? opportunities : opportunities.filter((o) => o.kind === filter);
 
