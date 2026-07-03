@@ -1,9 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Link } from "@tanstack/react-router";
-import { useState } from "react";
-import { User, Briefcase, Building2, Check, ArrowRight, PartyPopper } from "lucide-react";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { User, Briefcase, Building2, Check, ArrowRight, PartyPopper, Loader2, LogIn } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
-import { saveAccount, type AccountRole } from "@/lib/account";
+import { supabase } from "@/integrations/supabase/client";
+import { createRegistration } from "@/lib/registrations.functions";
+import type { AccountRole } from "@/lib/account";
 
 export const Route = createFileRoute("/register")({
   head: () => ({
@@ -55,10 +58,25 @@ const roleCards: { role: AccountRole; icon: typeof User; title: string; desc: st
 /* -------------------------------- component ------------------------------- */
 
 function GetStarted() {
+  const navigate = useNavigate();
+  const submitRegistration = useServerFn(createRegistration);
+  const [authState, setAuthState] = useState<"checking" | "in" | "out">("checking");
   const [step, setStep] = useState(0); // 0 role, 1 form, 2 welcome
   const [role, setRole] = useState<AccountRole | null>(null);
   const [form, setForm] = useState<FormState>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      setAuthState(data.session ? "in" : "out");
+    });
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
+      setAuthState(session ? "in" : "out");
+    });
+    return () => sub.subscription.unsubscribe();
+  }, []);
 
   const set = (key: string, value: string | string[]) => {
     setForm((f) => ({ ...f, [key]: value }));
@@ -98,13 +116,57 @@ function GetStarted() {
     return Object.keys(next).length === 0;
   };
 
-  const submit = () => {
+  const submit = async () => {
     if (!validate() || !role) return;
-    saveAccount({ role, data: { ...form } }); // verified: false is set inside
-    setStep(2);
+    setSubmitting(true);
+    setSubmitError("");
+    try {
+      await submitRegistration({ data: { role, data: { ...form } } });
+      setStep(2);
+    } catch (err) {
+      setSubmitError(
+        err instanceof Error ? err.message : "Could not save your registration. Please try again.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const totalSteps = 3;
+
+  if (authState === "checking") {
+    return (
+      <PageShell>
+        <div className="flex min-h-[40vh] items-center justify-center">
+          <Loader2 className="h-6 w-6 animate-spin text-baba-blue" />
+        </div>
+      </PageShell>
+    );
+  }
+
+  if (authState === "out") {
+    return (
+      <PageShell>
+        <section className="mx-auto max-w-md px-5 py-16 text-center lg:px-8">
+          <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-baba-blue/10 text-baba-blue">
+            <LogIn className="h-8 w-8" />
+          </span>
+          <h1 className="mt-6 font-display text-3xl font-extrabold text-baba-blue">Get Started</h1>
+          <p className="mt-3 text-baba-slate/70">
+            Create a free login or sign in first — this links your registration to your account so you
+            can track it anytime. Signing up is completely free.
+          </p>
+          <Link
+            to="/auth"
+            search={{ redirect: "/register" }}
+            className="mt-8 inline-flex items-center justify-center gap-2 rounded-full baba-cta px-8 py-3 text-sm font-semibold text-white shadow-lg shadow-baba-blue/25"
+          >
+            Sign in or create account <ArrowRight className="h-4 w-4" />
+          </Link>
+        </section>
+      </PageShell>
+    );
+  }
 
   return (
     <PageShell>
@@ -179,17 +241,23 @@ function GetStarted() {
               )}
             </div>
 
+            {submitError && (
+              <p className="mt-4 text-sm font-medium text-destructive">{submitError}</p>
+            )}
             <div className="mt-8 flex justify-between">
               <button
                 onClick={() => setStep(0)}
-                className="rounded-lg border-2 border-baba-blue/30 px-6 py-2.5 text-sm font-semibold text-baba-blue"
+                disabled={submitting}
+                className="rounded-lg border-2 border-baba-blue/30 px-6 py-2.5 text-sm font-semibold text-baba-blue disabled:opacity-60"
               >
                 Back
               </button>
               <button
                 onClick={submit}
-                className="rounded-lg baba-cta px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-baba-blue-dark"
+                disabled={submitting}
+                className="flex items-center gap-2 rounded-lg baba-cta px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-baba-blue-dark disabled:opacity-60"
               >
+                {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
                 Create Free Account
               </button>
             </div>

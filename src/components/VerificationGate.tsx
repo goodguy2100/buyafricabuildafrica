@@ -1,6 +1,8 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { ShieldCheck, Lock, X } from "lucide-react";
-import { getCurrentAccount } from "@/lib/account";
+import { useServerFn } from "@tanstack/react-start";
+import { supabase } from "@/integrations/supabase/client";
+import { getMyRegistrations } from "@/lib/registrations.functions";
 
 // Verification gate — shows a one-time payment prompt when a logged-in user
 // tries an action that requires a verified account. Payment integration is
@@ -23,20 +25,43 @@ const COPY: Record<GateVariant, { title: string; fee: string; body: string }> = 
 
 export function useVerificationGate() {
   const [variant, setVariant] = useState<GateVariant | null>(null);
+  const [verified, setVerified] = useState(false);
+  const fetchMine = useServerFn(getMyRegistrations);
+
+  useEffect(() => {
+    let active = true;
+    const load = async () => {
+      const { data } = await supabase.auth.getSession();
+      if (!data.session) {
+        if (active) setVerified(false);
+        return;
+      }
+      try {
+        const rows = await fetchMine();
+        if (active) setVerified(rows.some((r) => r.verified));
+      } catch {
+        if (active) setVerified(false);
+      }
+    };
+    load();
+    const { data: sub } = supabase.auth.onAuthStateChange(() => load());
+    return () => {
+      active = false;
+      sub.subscription.unsubscribe();
+    };
+  }, [fetchMine]);
 
   // Returns true if the action may proceed, false if the gate was shown.
   const requireVerification = useCallback(
     (v: GateVariant, onProceed?: () => void) => {
-      const account = getCurrentAccount();
-      // Verified users (future state) never see the gate again.
-      if (account?.verified) {
+      if (verified) {
         onProceed?.();
         return true;
       }
       setVariant(v);
       return false;
     },
-    [],
+    [verified],
   );
 
   const GateModal = variant ? (
