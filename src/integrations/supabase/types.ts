@@ -16,30 +16,46 @@ export type Database = {
     Tables: {
       profiles: {
         Row: {
+          bio: string | null
           created_at: string
+          cv_url: string | null
           email: string | null
+          extra: Json
           full_name: string | null
           id: string
+          location: string | null
+          phone: string | null
           updated_at: string
         }
         Insert: {
+          bio?: string | null
           created_at?: string
+          cv_url?: string | null
           email?: string | null
+          extra?: Json
           full_name?: string | null
           id: string
+          location?: string | null
+          phone?: string | null
           updated_at?: string
         }
         Update: {
+          bio?: string | null
           created_at?: string
+          cv_url?: string | null
           email?: string | null
+          extra?: Json
           full_name?: string | null
           id?: string
+          location?: string | null
+          phone?: string | null
           updated_at?: string
         }
         Relationships: []
       }
       registrations: {
         Row: {
+          artisan_type: string | null
           created_at: string
           data: Json
           id: string
@@ -49,6 +65,7 @@ export type Database = {
           verified: boolean
         }
         Insert: {
+          artisan_type?: string | null
           created_at?: string
           data?: Json
           id?: string
@@ -58,6 +75,7 @@ export type Database = {
           verified?: boolean
         }
         Update: {
+          artisan_type?: string | null
           created_at?: string
           data?: Json
           id?: string
