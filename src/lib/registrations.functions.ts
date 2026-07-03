@@ -4,8 +4,18 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 export type Json = string | number | boolean | null | { [key: string]: Json } | Json[];
 
+export const ROLE_VALUES = [
+  "individual",
+  "professional_young",
+  "professional_exp",
+  "artisan",
+  "corporate",
+] as const;
+export type RoleValue = (typeof ROLE_VALUES)[number];
+
 const registrationInput = z.object({
-  role: z.enum(["individual", "professional", "organization"]),
+  role: z.enum(ROLE_VALUES),
+  artisan_type: z.string().optional(),
   data: z.record(z.string(), z.any()),
 });
 
@@ -13,6 +23,7 @@ export interface RegistrationRow {
   id: string;
   user_id: string;
   role: string;
+  artisan_type: string | null;
   verified: boolean;
   data: Json;
   created_at: string;
@@ -24,7 +35,20 @@ export interface AdminRegistrationRow extends RegistrationRow {
   full_name: string | null;
 }
 
-/** Create (or replace) the signed-in user's registration submission. */
+export interface ProfileRow {
+  id: string;
+  email: string | null;
+  full_name: string | null;
+  phone: string | null;
+  location: string | null;
+  bio: string | null;
+  cv_url: string | null;
+  extra: Json;
+  created_at: string;
+  updated_at: string;
+}
+
+/** Create the signed-in user's registration submission. */
 export const createRegistration = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) => registrationInput.parse(input))
@@ -32,7 +56,12 @@ export const createRegistration = createServerFn({ method: "POST" })
     const { supabase, userId } = context;
     const { data: row, error } = await supabase
       .from("registrations")
-      .insert({ user_id: userId, role: data.role, data: data.data as Json })
+      .insert({
+        user_id: userId,
+        role: data.role,
+        artisan_type: data.artisan_type ?? null,
+        data: data.data as Json,
+      })
       .select("*")
       .single();
     if (error) throw new Error(error.message);
@@ -51,6 +80,53 @@ export const getMyRegistrations = createServerFn({ method: "GET" })
       .order("created_at", { ascending: false });
     if (error) throw new Error(error.message);
     return (data ?? []) as RegistrationRow[];
+  });
+
+/** Get the signed-in user's profile. */
+export const getMyProfile = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }): Promise<ProfileRow | null> => {
+    const { supabase, userId } = context;
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", userId)
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    return (data ?? null) as ProfileRow | null;
+  });
+
+const profileUpdateInput = z.object({
+  full_name: z.string().max(200).optional(),
+  phone: z.string().max(60).optional(),
+  location: z.string().max(200).optional(),
+  bio: z.string().max(4000).optional(),
+  cv_url: z.string().max(500).optional(),
+  extra: z.record(z.string(), z.any()).optional(),
+});
+
+/** Update the signed-in user's profile. */
+export const updateMyProfile = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) => profileUpdateInput.parse(input))
+  .handler(async ({ data, context }): Promise<ProfileRow> => {
+    const { supabase, userId } = context;
+    const patch: Record<string, unknown> = {};
+    if (data.full_name !== undefined) patch.full_name = data.full_name;
+    if (data.phone !== undefined) patch.phone = data.phone;
+    if (data.location !== undefined) patch.location = data.location;
+    if (data.bio !== undefined) patch.bio = data.bio;
+    if (data.cv_url !== undefined) patch.cv_url = data.cv_url;
+    if (data.extra !== undefined) patch.extra = data.extra as Json;
+
+    const { data: row, error } = await supabase
+      .from("profiles")
+      .update(patch)
+      .eq("id", userId)
+      .select("*")
+      .single();
+    if (error) throw new Error(error.message);
+    return row as ProfileRow;
   });
 
 /** Whether the signed-in user has the admin role. */
