@@ -47,7 +47,7 @@ const ORG_TYPES = [
 type FormState = Record<string, string | string[]>;
 
 const roleCards: { role: AccountRole; icon: typeof User; title: string; desc: string }[] = [
-  { role: "individual", icon: User, title: "Individual", desc: "Sign up as an individual looking to build skills and opportunities." },
+  { role: "individual", icon: User, title: "Architects", desc: "Sign up as an individual looking to build skills and opportunities." },
   { role: "professional", icon: Briefcase, title: "Professional", desc: "Sign up as a working professional or skilled tradesperson." },
   { role: "organization", icon: Building2, title: "Organization", desc: "Register your organization as a partner." },
 ];
