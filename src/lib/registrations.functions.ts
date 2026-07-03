@@ -111,7 +111,14 @@ export const updateMyProfile = createServerFn({ method: "POST" })
   .inputValidator((input) => profileUpdateInput.parse(input))
   .handler(async ({ data, context }): Promise<ProfileRow> => {
     const { supabase, userId } = context;
-    const patch: Record<string, unknown> = {};
+    const patch: {
+      full_name?: string;
+      phone?: string;
+      location?: string;
+      bio?: string;
+      cv_url?: string;
+      extra?: Json;
+    } = {};
     if (data.full_name !== undefined) patch.full_name = data.full_name;
     if (data.phone !== undefined) patch.phone = data.phone;
     if (data.location !== undefined) patch.location = data.location;
