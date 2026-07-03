@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { MapPin, Clock, ArrowRight } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
+import { useVerificationGate } from "@/components/VerificationGate";
 
 export const Route = createFileRoute("/opportunities")({
   head: () => ({
