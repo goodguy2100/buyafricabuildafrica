@@ -1,7 +1,10 @@
-import { useState } from "react";
-import { Link } from "@tanstack/react-router";
-import { Menu, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { Menu, X, LogOut, LayoutDashboard, LogIn } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
 import babaLogo from "@/assets/baba-logo-vibrant.png";
+import { supabase } from "@/integrations/supabase/client";
+import { getIsAdmin } from "@/lib/registrations.functions";
 
 const navLinks = [
   { to: "/", label: "Home" },
@@ -15,6 +18,41 @@ const navLinks = [
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  const [signedIn, setSignedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const navigate = useNavigate();
+  const checkAdmin = useServerFn(getIsAdmin);
+
+  useEffect(() => {
+    let active = true;
+    const sync = async () => {
+      const { data } = await supabase.auth.getSession();
+      if (!active) return;
+      setSignedIn(!!data.session);
+      if (data.session) {
+        try {
+          const admin = await checkAdmin();
+          if (active) setIsAdmin(!!admin);
+        } catch {
+          if (active) setIsAdmin(false);
+        }
+      } else {
+        setIsAdmin(false);
+      }
+    };
+    sync();
+    const { data: sub } = supabase.auth.onAuthStateChange(() => sync());
+    return () => {
+      active = false;
+      sub.subscription.unsubscribe();
+    };
+  }, [checkAdmin]);
+
+  const signOut = async () => {
+    await supabase.auth.signOut();
+    setOpen(false);
+    navigate({ to: "/" });
+  };
 
   return (
     <header className="sticky top-0 z-50 border-b border-baba-blue/10 bg-baba-cream/90 backdrop-blur-md">
@@ -59,6 +97,29 @@ export function Header() {
           >
             Register as Partner
           </Link>
+          {isAdmin && (
+            <Link
+              to="/admin"
+              className="flex items-center gap-1.5 rounded-full border-2 border-baba-blue/20 px-4 py-2 text-sm font-semibold text-baba-blue"
+            >
+              <LayoutDashboard className="h-4 w-4" /> Admin
+            </Link>
+          )}
+          {signedIn ? (
+            <button
+              onClick={signOut}
+              className="flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-semibold text-baba-slate/70 hover:text-baba-blue"
+            >
+              <LogOut className="h-4 w-4" /> Sign out
+            </button>
+          ) : (
+            <Link
+              to="/auth"
+              className="flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-semibold text-baba-slate/70 hover:text-baba-blue"
+            >
+              <LogIn className="h-4 w-4" /> Sign in
+            </Link>
+          )}
         </div>
 
         <button
@@ -107,6 +168,31 @@ export function Header() {
             >
               Register as Partner
             </Link>
+            {isAdmin && (
+              <Link
+                to="/admin"
+                onClick={() => setOpen(false)}
+                className="flex items-center justify-center gap-1.5 rounded-full border-2 border-baba-blue/20 px-4 py-2.5 text-center text-sm font-semibold text-baba-blue"
+              >
+                <LayoutDashboard className="h-4 w-4" /> Admin
+              </Link>
+            )}
+            {signedIn ? (
+              <button
+                onClick={signOut}
+                className="flex items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-center text-sm font-semibold text-baba-slate/70"
+              >
+                <LogOut className="h-4 w-4" /> Sign out
+              </button>
+            ) : (
+              <Link
+                to="/auth"
+                onClick={() => setOpen(false)}
+                className="flex items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-center text-sm font-semibold text-baba-slate/70"
+              >
+                <LogIn className="h-4 w-4" /> Sign in
+              </Link>
+            )}
           </div>
         </div>
       )}
