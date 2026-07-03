@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { MapPin, Clock, ArrowRight } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
+import { useVerificationGate } from "@/components/VerificationGate";
 
 export const Route = createFileRoute("/opportunities")({
   head: () => ({
@@ -48,6 +49,7 @@ const kinds: ("All" | Kind)[] = ["All", "Trainings", "Masterclasses", "Events"];
 
 function Opportunities() {
   const [filter, setFilter] = useState<"All" | Kind>("All");
+  const { requireVerification, GateModal } = useVerificationGate();
   const list =
     filter === "All" ? opportunities : opportunities.filter((o) => o.kind === filter);
 
@@ -104,13 +106,17 @@ function Opportunities() {
               <p className="mt-1 flex items-center gap-1.5 text-sm text-baba-slate/60">
                 <Clock className="h-3.5 w-3.5" /> {o.meta}
               </p>
-              <button className="mt-5 inline-flex items-center gap-1.5 text-sm font-bold text-baba-copper-dark hover:underline">
+              <button
+                onClick={() => requireVerification("apply")}
+                className="mt-5 inline-flex items-center gap-1.5 text-sm font-bold text-baba-copper-dark hover:underline"
+              >
                 Sign Up <ArrowRight className="h-4 w-4" />
               </button>
             </article>
           ))}
         </div>
       </section>
+      {GateModal}
     </PageShell>
   );
 }
