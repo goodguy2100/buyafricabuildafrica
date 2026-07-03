@@ -1,12 +1,27 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { User, Briefcase, Building2, Check, ArrowRight, PartyPopper, Loader2, LogIn } from "lucide-react";
+import {
+  User,
+  Briefcase,
+  Building2,
+  Wrench,
+  Check,
+  ArrowRight,
+  ArrowLeft,
+  PartyPopper,
+  Loader2,
+  LogIn,
+  Sparkles,
+  GraduationCap,
+} from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { supabase } from "@/integrations/supabase/client";
-import { createRegistration } from "@/lib/registrations.functions";
-import type { AccountRole } from "@/lib/account";
+import {
+  createRegistration,
+  updateMyProfile,
+  type RoleValue,
+} from "@/lib/registrations.functions";
 
 export const Route = createFileRoute("/register")({
   head: () => ({
@@ -15,7 +30,7 @@ export const Route = createFileRoute("/register")({
       {
         name: "description",
         content:
-          "Join the Buy Africa Build Africa network for free. Sign up as an individual, professional, or organization to access skills, opportunities and events.",
+          "Join the Buy Africa Build Africa network for free. Sign up as an individual, artisan, professional, or corporate partner to access skills, opportunities and events.",
       },
     ],
     links: [{ rel: "canonical", href: "/register" }],
@@ -27,42 +42,37 @@ export const Route = createFileRoute("/register")({
 
 const OCCUPATIONS = [
   "Architect", "Engineer", "Quantity Surveyor", "Interior Designer", "Urban Planner",
-  "Project Manager", "Contractor", "Mason", "Tiler", "Electrician", "Plumber",
-  "Painter", "Welder", "Carpenter", "Gypsum Installer", "General Artisan",
-  "Entrepreneur", "Youth (General)", "Researcher", "Student", "Other",
+  "Project Manager", "Contractor", "Entrepreneur", "Researcher", "Consultant", "Other",
 ];
 
-const EXPERIENCE = [
-  "Less than 1 year", "1-3 years", "3-5 years", "5-10 years", "10+ years",
+const TRADES = [
+  "Plumber", "Electrician", "Mason", "Carpenter", "Painter", "Welder", "Tiler",
+  "Gypsum Installer", "Other",
 ];
 
 const INDUSTRIES = [
-  "Construction", "Real Estate", "Manufacturing", "Education", "Government Projects",
-  "NGO/Development Work", "Private Sector", "Other",
+  "Construction", "Real Estate", "Manufacturing", "Education", "Government",
+  "NGO", "Private Sector", "Other",
 ];
 
-const ORG_TYPES = [
-  "Government Institution", "Government Agency", "Public Institution", "NGO",
-  "Development Partner", "Private Sector Company", "Manufacturer", "Supplier",
-  "SME", "Financial Institution", "Investor", "University", "Educational Institution",
+const CORPORATE_TYPES = [
+  "Government Institution", "Government Agency", "NGO", "Development Partner",
+  "Private Company", "Manufacturer", "Supplier", "SME", "Financial Institution",
+  "Investor", "University", "Educational Institution", "Other",
 ];
 
 type FormState = Record<string, string | string[]>;
-
-const roleCards: { role: AccountRole; icon: typeof User; title: string; desc: string }[] = [
-  { role: "individual", icon: User, title: "Architects", desc: "Sign up as an individual looking to build skills and opportunities." },
-  { role: "professional", icon: Briefcase, title: "Professional", desc: "Sign up as a working professional or skilled tradesperson." },
-  { role: "organization", icon: Building2, title: "Organization", desc: "Register your organization as a partner." },
-];
 
 /* -------------------------------- component ------------------------------- */
 
 function GetStarted() {
   const navigate = useNavigate();
   const submitRegistration = useServerFn(createRegistration);
+  const saveProfile = useServerFn(updateMyProfile);
   const [authState, setAuthState] = useState<"checking" | "in" | "out">("checking");
   const [step, setStep] = useState(0); // 0 role, 1 form, 2 welcome
-  const [role, setRole] = useState<AccountRole | null>(null);
+  const [proChoosing, setProChoosing] = useState(false);
+  const [role, setRole] = useState<RoleValue | null>(null);
   const [form, setForm] = useState<FormState>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
@@ -90,10 +100,11 @@ function GetStarted() {
     setErrors((e) => ({ ...e, [key]: "" }));
   };
 
-  const chooseRole = (r: AccountRole) => {
+  const chooseRole = (r: RoleValue) => {
     setRole(r);
     setForm({});
     setErrors({});
+    setProChoosing(false);
     setStep(1);
   };
 
@@ -107,8 +118,8 @@ function GetStarted() {
         next[key] = "This field is required.";
       }
     }
-    const email = (form.email || form.contactEmail) as string | undefined;
     const emailKey = form.email !== undefined ? "email" : "contactEmail";
+    const email = (form.email || form.contactEmail) as string | undefined;
     if (email && !next[emailKey] && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       next[emailKey] = "Enter a valid email address.";
     }
@@ -121,7 +132,28 @@ function GetStarted() {
     setSubmitting(true);
     setSubmitError("");
     try {
-      await submitRegistration({ data: { role, data: { ...form } } });
+      await submitRegistration({
+        data: {
+          role,
+          artisan_type: role === "artisan" ? (form.trade as string) : undefined,
+          data: { ...form },
+        },
+      });
+      // Keep the profile record in sync so the dashboard shows the basics.
+      const fullName = (form.fullName || form.contactPerson) as string | undefined;
+      const phone = (form.phone || form.contactPhone) as string | undefined;
+      const location = form.location as string | undefined;
+      try {
+        await saveProfile({
+          data: {
+            ...(fullName ? { full_name: fullName } : {}),
+            ...(phone ? { phone } : {}),
+            ...(location ? { location } : {}),
+          },
+        });
+      } catch {
+        // Non-fatal — registration already saved.
+      }
       setStep(2);
     } catch (err) {
       setSubmitError(
@@ -175,9 +207,7 @@ function GetStarted() {
         <div className="mx-auto mb-10 max-w-xl">
           <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wide text-baba-slate/60">
             <span>Step {step + 1} of {totalSteps}</span>
-            <span className="text-baba-blue">
-              {["Choose Path", "Your Details", "Welcome"][step]}
-            </span>
+            <span className="text-baba-blue">{["Choose Path", "Your Details", "Welcome"][step]}</span>
           </div>
           <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-baba-blue/10">
             <div
@@ -188,7 +218,7 @@ function GetStarted() {
         </div>
 
         {/* Step 1: role selection */}
-        {step === 0 && (
+        {step === 0 && !proChoosing && (
           <div>
             <div className="text-center">
               <h1 className="font-display text-3xl font-extrabold text-baba-blue">Get Started</h1>
@@ -196,23 +226,63 @@ function GetStarted() {
                 Signing up is completely free. Choose the path that fits you.
               </p>
             </div>
-            <div className="mt-8 grid gap-5 sm:grid-cols-3">
-              {roleCards.map((c) => (
-                <button
-                  key={c.role}
-                  onClick={() => chooseRole(c.role)}
-                  className="group flex flex-col items-center rounded-2xl border-2 border-baba-blue/10 bg-card p-6 text-center transition-colors hover:border-baba-blue"
-                >
-                  <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-baba-blue/10 text-baba-blue transition-colors group-hover:bg-baba-blue group-hover:text-white">
-                    <c.icon className="h-7 w-7" />
-                  </span>
-                  <h3 className="mt-4 font-display text-lg font-bold text-baba-slate">{c.title}</h3>
-                  <p className="mt-2 text-sm text-baba-slate/60">{c.desc}</p>
-                  <span className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-baba-copper-dark">
-                    Continue <ArrowRight className="h-4 w-4" />
-                  </span>
-                </button>
-              ))}
+            <div className="mt-8 grid gap-5 sm:grid-cols-2">
+              <RoleCard
+                icon={User}
+                title="Individual"
+                desc="General access to events and opportunities."
+                onClick={() => chooseRole("individual")}
+              />
+              <RoleCard
+                icon={Wrench}
+                title="Artisan"
+                desc="Skilled trades and specialized services."
+                onClick={() => chooseRole("artisan")}
+              />
+              <RoleCard
+                icon={Briefcase}
+                title="Professional"
+                desc="Career-focused — job and training access."
+                onClick={() => setProChoosing(true)}
+              />
+              <RoleCard
+                icon={Building2}
+                title="Corporate"
+                desc="Business registration and talent access."
+                onClick={() => chooseRole("corporate")}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Step 1b: professional branch */}
+        {step === 0 && proChoosing && (
+          <div>
+            <button
+              onClick={() => setProChoosing(false)}
+              className="mb-4 inline-flex items-center gap-1.5 text-sm font-semibold text-baba-blue"
+            >
+              <ArrowLeft className="h-4 w-4" /> Back
+            </button>
+            <div className="text-center">
+              <h1 className="font-display text-3xl font-extrabold text-baba-blue">
+                What kind of professional are you?
+              </h1>
+              <p className="mt-2 text-baba-slate/70">This helps us tailor your opportunities.</p>
+            </div>
+            <div className="mt-8 grid gap-5 sm:grid-cols-2">
+              <RoleCard
+                icon={Sparkles}
+                title="Young Professional"
+                desc="Less than 5 years in your field, still building experience."
+                onClick={() => chooseRole("professional_young")}
+              />
+              <RoleCard
+                icon={GraduationCap}
+                title="Experienced Professional"
+                desc="5+ years, an established career."
+                onClick={() => chooseRole("professional_exp")}
+              />
             </div>
           </div>
         )}
@@ -222,31 +292,30 @@ function GetStarted() {
           <div>
             <h1 className="font-display text-3xl font-extrabold text-baba-blue">
               {role === "individual" && "Individual Sign Up"}
-              {role === "professional" && "Professional Sign Up"}
-              {role === "organization" && "Organization Sign Up"}
+              {role === "professional_young" && "Young Professional Sign Up"}
+              {role === "professional_exp" && "Experienced Professional Sign Up"}
+              {role === "artisan" && "Artisan Sign Up"}
+              {role === "corporate" && "Corporate Sign Up"}
             </h1>
             <p className="mt-2 text-baba-slate/70">
               Fields marked with <span className="text-baba-copper-dark">*</span> are required. Signing up is free.
             </p>
 
             <div className="mt-6 grid gap-5 sm:grid-cols-2">
-              {role === "individual" && (
-                <IndividualFields form={form} errors={errors} set={set} toggle={toggle} />
-              )}
-              {role === "professional" && (
-                <ProfessionalFields form={form} errors={errors} set={set} toggle={toggle} />
-              )}
-              {role === "organization" && (
-                <OrganizationFields form={form} errors={errors} set={set} toggle={toggle} />
-              )}
+              {role === "individual" && <IndividualFields {...{ form, errors, set, toggle }} />}
+              {role === "professional_young" && <YoungProFields {...{ form, errors, set, toggle }} />}
+              {role === "professional_exp" && <ExpProFields {...{ form, errors, set, toggle }} />}
+              {role === "artisan" && <ArtisanFields {...{ form, errors, set, toggle }} />}
+              {role === "corporate" && <CorporateFields {...{ form, errors, set, toggle }} />}
             </div>
 
-            {submitError && (
-              <p className="mt-4 text-sm font-medium text-destructive">{submitError}</p>
-            )}
+            {submitError && <p className="mt-4 text-sm font-medium text-destructive">{submitError}</p>}
             <div className="mt-8 flex justify-between">
               <button
-                onClick={() => setStep(0)}
+                onClick={() => {
+                  setStep(0);
+                  setRole(null);
+                }}
                 disabled={submitting}
                 className="rounded-lg border-2 border-baba-blue/30 px-6 py-2.5 text-sm font-semibold text-baba-blue disabled:opacity-60"
               >
@@ -272,21 +341,21 @@ function GetStarted() {
             </span>
             <h1 className="mt-6 font-display text-3xl font-extrabold text-baba-blue">Welcome!</h1>
             <p className="mt-3 text-baba-slate/70">
-              Your account has been created. Explore courses, job listings, and events — verify
-              your account anytime you're ready to apply.
+              Your registration is saved. Head to your dashboard to manage your profile, explore
+              opportunities and track your registrations.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Link
-                to="/opportunities"
+                to="/dashboard"
                 className="rounded-full baba-cta px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-baba-blue/25"
               >
-                Explore Opportunities
+                Go to Dashboard
               </Link>
               <Link
-                to="/events"
+                to="/opportunities"
                 className="rounded-full border-2 border-baba-copper px-6 py-3 text-sm font-semibold text-baba-copper-dark transition-colors hover:bg-baba-copper hover:text-baba-slate"
               >
-                See Events
+                Explore Opportunities
               </Link>
             </div>
           </div>
@@ -296,18 +365,61 @@ function GetStarted() {
   );
 }
 
+function RoleCard({
+  icon: Icon,
+  title,
+  desc,
+  onClick,
+}: {
+  icon: typeof User;
+  title: string;
+  desc: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className="group flex flex-col items-center rounded-2xl border-2 border-baba-blue/10 bg-card p-6 text-center transition-colors hover:border-baba-blue"
+    >
+      <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-baba-blue/10 text-baba-blue transition-colors group-hover:bg-baba-blue group-hover:text-white">
+        <Icon className="h-7 w-7" />
+      </span>
+      <h3 className="mt-4 font-display text-lg font-bold text-baba-slate">{title}</h3>
+      <p className="mt-2 text-sm text-baba-slate/60">{desc}</p>
+      <span className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-baba-copper-dark">
+        Continue <ArrowRight className="h-4 w-4" />
+      </span>
+    </button>
+  );
+}
+
 /* --------------------------- required-field logic -------------------------- */
 
-function requiredFields(role: AccountRole, form: FormState): string[] {
+function requiredFields(role: RoleValue, form: FormState): string[] {
   if (role === "individual") {
-    return ["fullName", "email", "phone", "nationalId", "employmentStatus", "occupation", "yearsExperience", "location"];
+    return ["fullName", "email", "phone", "nationalId", "occupation", "location"];
   }
-  if (role === "professional") {
-    const base = ["fullName", "email", "phone", "nationalId", "employmentStatus", "occupation", "yearsExperience", "educationLevel", "institutionName", "fieldOfStudy", "location"];
-    if (form.employmentStatus === "Employed") base.push("organizationName", "jobTitle", "yearsAtOrganization");
+  if (role === "professional_young") {
+    return [
+      "fullName", "email", "phone", "nationalId", "occupation", "yearsField",
+      "education", "institutionName", "fieldOfStudy", "location",
+    ];
+  }
+  if (role === "professional_exp") {
+    const base = [
+      "fullName", "email", "phone", "nationalId", "occupation", "yearsField",
+      "employmentStatus", "education", "institutionName", "fieldOfStudy", "location",
+    ];
+    if (form.employmentStatus === "Employed") base.push("organizationName", "jobTitle", "yearsAtOrg");
     return base;
   }
-  return ["organizationName", "contactPerson", "contactEmail", "contactPhone", "yearsInOperation", "businessLicense", "organizationType", "staffSize", "location"];
+  if (role === "artisan") {
+    return ["fullName", "email", "phone", "nationalId", "trade", "yearsTrade", "areasServed", "canTravel"];
+  }
+  return [
+    "corporateName", "contactPerson", "contactEmail", "contactPhone", "yearsInOperation",
+    "businessLicense", "corporateType", "staffSize", "location",
+  ];
 }
 
 /* ------------------------------ field groups ------------------------------ */
@@ -326,74 +438,108 @@ function IndividualFields({ form, errors, set, toggle }: FieldProps) {
       <Field label="Email" name="email" type="email" required {...{ form, errors, set }} />
       <Field label="Phone Number" name="phone" required {...{ form, errors, set }} />
       <Field label="National ID Number" name="nationalId" required {...{ form, errors, set }} />
-      <SelectField label="Employment Status" name="employmentStatus" required
-        options={["Fundi/Artisan", "Freelancer", "Employed", "Unemployed", "Self-Employed"]}
-        {...{ form, errors, set }} />
-      <SelectField label="Primary Occupation / Skill Area" name="occupation" required
-        options={OCCUPATIONS} {...{ form, errors, set }} />
-      <SelectField label="Years of Experience" name="yearsExperience" required
-        options={EXPERIENCE} {...{ form, errors, set }} />
+      <SelectField label="Primary Occupation / Skill Area" name="occupation" required options={OCCUPATIONS} {...{ form, errors, set }} />
       <Field label="Location (City/Town)" name="location" required {...{ form, errors, set }} />
-      <MultiSelect label="Area of Interest" name="areasOfInterest"
+      <MultiSelect label="Industries Interested In" name="industries" options={INDUSTRIES} {...{ form, toggle }} />
+      <MultiSelect label="What are you looking for?" name="lookingFor"
         options={["Skills Training", "Job Opportunities", "Event Notifications", "Networking", "Other"]}
         {...{ form, toggle }} />
-      <MultiSelect label="Industries Interested In" name="industries"
-        options={INDUSTRIES} {...{ form, toggle }} />
     </>
   );
 }
 
-function ProfessionalFields({ form, errors, set, toggle }: FieldProps) {
+function YoungProFields({ form, errors, set, toggle }: FieldProps) {
   return (
     <>
       <Field label="Full Name" name="fullName" required {...{ form, errors, set }} />
       <Field label="Email" name="email" type="email" required {...{ form, errors, set }} />
       <Field label="Phone Number" name="phone" required {...{ form, errors, set }} />
       <Field label="National ID Number" name="nationalId" required {...{ form, errors, set }} />
-      <SelectField label="Employment Status" name="employmentStatus" required
-        options={["Employed", "Unemployed", "Self-Employed"]} {...{ form, errors, set }} />
-      {form.employmentStatus === "Employed" && (
-        <>
-          <Field label="Organization Name" name="organizationName" required {...{ form, errors, set }} />
-          <Field label="Job Title" name="jobTitle" required {...{ form, errors, set }} />
-          <Field label="Years at Organization" name="yearsAtOrganization" required {...{ form, errors, set }} />
-        </>
-      )}
-      <SelectField label="Primary Occupation / Skill Area" name="occupation" required
-        options={OCCUPATIONS} {...{ form, errors, set }} />
-      <SelectField label="Years of Experience" name="yearsExperience" required
-        options={EXPERIENCE} {...{ form, errors, set }} />
-      <SelectField label="Highest Education Level" name="educationLevel" required
-        options={["Primary", "Secondary", "Certificate", "Diploma", "Bachelor's Degree", "Master's Degree", "PhD", "Other"]}
-        {...{ form, errors, set }} />
+      <SelectField label="Primary Occupation" name="occupation" required options={OCCUPATIONS} {...{ form, errors, set }} />
+      <SelectField label="Years in field" name="yearsField" required
+        options={["Less than 1 year", "1-2 years", "2-3 years", "3-5 years"]} {...{ form, errors, set }} />
+      <SelectField label="Highest Education" name="education" required
+        options={["Secondary", "Certificate", "Diploma", "Bachelor's", "Master's", "Other"]} {...{ form, errors, set }} />
       <Field label="Institution Name" name="institutionName" required {...{ form, errors, set }} />
-      <Field label="Field of Study / Course" name="fieldOfStudy" required {...{ form, errors, set }} />
+      <Field label="Field of Study" name="fieldOfStudy" required {...{ form, errors, set }} />
       <Field label="Location (City/Town)" name="location" required {...{ form, errors, set }} />
-      <MultiSelect label="Area of Interest" name="areasOfInterest"
-        options={["Skills Training", "Job Placement", "Event Notifications", "Networking", "Consulting Opportunities"]}
+      <MultiSelect label="Industries Interested In" name="industries" options={INDUSTRIES} {...{ form, toggle }} />
+      <MultiSelect label="What are you looking for?" name="lookingFor"
+        options={["Job opportunities", "Training/courses", "Networking", "Mentorship", "Other"]}
         {...{ form, toggle }} />
-      <MultiSelect label="Industries Interested In" name="industries"
-        options={INDUSTRIES} {...{ form, toggle }} />
     </>
   );
 }
 
-function OrganizationFields({ form, errors, set, toggle }: FieldProps) {
+function ExpProFields({ form, errors, set, toggle }: FieldProps) {
   return (
     <>
-      <Field label="Organization Name" name="organizationName" required {...{ form, errors, set }} />
+      <Field label="Full Name" name="fullName" required {...{ form, errors, set }} />
+      <Field label="Email" name="email" type="email" required {...{ form, errors, set }} />
+      <Field label="Phone Number" name="phone" required {...{ form, errors, set }} />
+      <Field label="National ID Number" name="nationalId" required {...{ form, errors, set }} />
+      <SelectField label="Primary Occupation" name="occupation" required options={OCCUPATIONS} {...{ form, errors, set }} />
+      <SelectField label="Years in field" name="yearsField" required
+        options={["5-10 years", "10-15 years", "15-20 years", "20+ years"]} {...{ form, errors, set }} />
+      <SelectField label="Current Employment Status" name="employmentStatus" required
+        options={["Employed", "Unemployed", "Self-Employed", "Retired"]} {...{ form, errors, set }} />
+      {form.employmentStatus === "Employed" && (
+        <>
+          <Field label="Organization Name" name="organizationName" required {...{ form, errors, set }} />
+          <Field label="Job Title" name="jobTitle" required {...{ form, errors, set }} />
+          <Field label="Years at Organization" name="yearsAtOrg" required {...{ form, errors, set }} />
+        </>
+      )}
+      <SelectField label="Highest Education" name="education" required
+        options={["Bachelor's", "Master's", "PhD", "Professional Cert", "Other"]} {...{ form, errors, set }} />
+      <Field label="Institution Name" name="institutionName" required {...{ form, errors, set }} />
+      <Field label="Field of Study" name="fieldOfStudy" required {...{ form, errors, set }} />
+      <Field label="Professional Certifications (if any)" name="certifications" {...{ form, errors, set }} />
+      <Field label="Location (City/Town)" name="location" required {...{ form, errors, set }} />
+      <MultiSelect label="Industries Interested In" name="industries" options={INDUSTRIES} {...{ form, toggle }} />
+      <MultiSelect label="What are you looking for?" name="lookingFor"
+        options={["Senior roles", "Consulting work", "Training/mentorship", "Board positions", "Networking", "Other"]}
+        {...{ form, toggle }} />
+    </>
+  );
+}
+
+function ArtisanFields({ form, errors, set, toggle }: FieldProps) {
+  return (
+    <>
+      <Field label="Full Name" name="fullName" required {...{ form, errors, set }} />
+      <Field label="Email" name="email" type="email" required {...{ form, errors, set }} />
+      <Field label="Phone Number" name="phone" required {...{ form, errors, set }} />
+      <Field label="National ID Number" name="nationalId" required {...{ form, errors, set }} />
+      <SelectField label="Trade / Specialization" name="trade" required options={TRADES} {...{ form, errors, set }} />
+      <Field label="Years in trade" name="yearsTrade" required {...{ form, errors, set }} />
+      <Field label="Areas served (Location)" name="areasServed" required {...{ form, errors, set }} />
+      <SelectField label="Can travel for work?" name="canTravel" required options={["Yes", "No"]} {...{ form, errors, set }} />
+      <TextField label="Certifications / Training completed" name="trainingCompleted" {...{ form, set }} />
+      <TextField label="Services offered (brief description)" name="services" {...{ form, set }} />
+      <MultiSelect label="Interested in" name="lookingFor"
+        options={["Skills training", "Job opportunities", "Certification programs", "Networking"]}
+        {...{ form, toggle }} />
+    </>
+  );
+}
+
+function CorporateFields({ form, errors, set, toggle }: FieldProps) {
+  return (
+    <>
+      <Field label="Corporate Name" name="corporateName" required {...{ form, errors, set }} />
       <Field label="Contact Person Full Name" name="contactPerson" required {...{ form, errors, set }} />
       <Field label="Contact Email" name="contactEmail" type="email" required {...{ form, errors, set }} />
       <Field label="Contact Phone Number" name="contactPhone" required {...{ form, errors, set }} />
-      <Field label="Years in Operation" name="yearsInOperation" required {...{ form, errors, set }} />
+      <Field label="Years in operation" name="yearsInOperation" required {...{ form, errors, set }} />
       <Field label="Business License Number" name="businessLicense" required {...{ form, errors, set }} />
-      <SelectField label="Organization Type" name="organizationType" required
-        options={ORG_TYPES} {...{ form, errors, set }} />
-      <SelectField label="Number of People/Staff" name="staffSize" required
-        options={["1-10", "11-50", "51-200", "200+"]} {...{ form, errors, set }} />
-      <Field label="Location (City/Town)" name="location" required {...{ form, errors, set }} />
-      <MultiSelect label="Areas of Interest" name="areasOfInterest"
-        options={["Partnership Opportunities", "Bulk Skills Training", "Talent Sourcing", "Event Collaboration"]}
+      <SelectField label="Corporate Type" name="corporateType" required options={CORPORATE_TYPES} {...{ form, errors, set }} />
+      <SelectField label="Approximate staff size" name="staffSize" required
+        options={["1-10", "11-50", "51-200", "201-500", "500+"]} {...{ form, errors, set }} />
+      <Field label="Location (Headquarters)" name="location" required {...{ form, errors, set }} />
+      <MultiSelect label="Primary industries" name="industries" options={INDUSTRIES} {...{ form, toggle }} />
+      <MultiSelect label="What are you looking for?" name="lookingFor"
+        options={["Hire talent", "Partner for training", "Access talent network", "Event collaboration"]}
         {...{ form, toggle }} />
     </>
   );
@@ -432,6 +578,25 @@ function Field({
         }`}
       />
       <ErrorText msg={errors[name]} />
+    </div>
+  );
+}
+
+function TextField({
+  label, name, form, set,
+}: {
+  label: string; name: string;
+  form: FormState; set: (k: string, v: string | string[]) => void;
+}) {
+  return (
+    <div className="sm:col-span-2">
+      <Label>{label}</Label>
+      <textarea
+        rows={2}
+        value={(form[name] as string) ?? ""}
+        onChange={(e) => set(name, e.target.value)}
+        className="mt-1.5 w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate placeholder:text-baba-slate/40 focus:border-baba-blue focus:outline-none"
+      />
     </div>
   );
 }
