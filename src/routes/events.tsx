@@ -6,7 +6,7 @@ import { PageShell } from "@/components/PageShell";
 const upcomingEvents = [
   {
     icon: Leaf, title: "Gardens Expo & Conference",
-    date: "August 2026", location: "Sarit Centre, Nairobi",
+    date: "August 26–30, 2026", location: "Sarit Centre, Nairobi",
     description: "A celebration of landscaping, garden design and sustainable green spaces — bringing together exhibitors, professionals and enthusiasts.",
   },
   {

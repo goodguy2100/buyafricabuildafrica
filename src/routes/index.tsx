@@ -67,8 +67,9 @@ const whoWeServe = [
     group: "Individuals & Professionals",
     items: [
       "Architects", "Engineers", "Quantity Surveyors", "Interior Designers",
-      "Urban Planners", "Project Managers", "Contractors", "Plumbers",
-      "Electricians", "Carpenters", "Welders", "Artisans", "Entrepreneurs", "Youth",
+      "Urban Planners", "Project Managers", "Contractors", "Masons", "Tilers",
+      "Electricians", "Plumbers", "Painters", "Welders", "Carpenters", "Gypsum",
+      "Artisans", "Entrepreneurs", "Youth",
     ],
   },
   {
@@ -93,7 +94,7 @@ const ecosystemGroups = [
   },
   {
     group: "Artisans",
-    roles: "Plumbers, Electricians, Carpenters, Welders, Painters, Masons and Fabricators.",
+    roles: "Masons, Tilers, Electricians, Plumbers, Painters, Welders, Carpenters, Gypsum specialists and Fabricators.",
     benefits: ["Training", "Certification", "Market Access", "Mentorship", "Employment Opportunities"],
   },
   {
