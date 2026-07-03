@@ -1,400 +1,428 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-import {
-  HardHat,
-  GraduationCap,
-  Briefcase,
-  Building2,
-  Package,
-  Check,
-  Upload,
-  Camera,
-  Smartphone,
-  CreditCard,
-  ShieldCheck,
-  Lock,
-} from "lucide-react";
+import { User, Briefcase, Building2, Check, ArrowRight, PartyPopper } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
+import { saveAccount, type AccountRole } from "@/lib/account";
 
 export const Route = createFileRoute("/register")({
   head: () => ({
     meta: [
-      { title: "Secure Membership Registration | BABA" },
+      { title: "Get Started | Buy Africa Build Africa (BABA)" },
       {
         name: "description",
         content:
-          "Join the Buy Africa Build Africa network. Register as an artisan, student, professional, contractor or supplier with secure M-PESA or card checkout.",
+          "Join the Buy Africa Build Africa network for free. Sign up as an individual, professional, or organization to access skills, opportunities and events.",
       },
     ],
     links: [{ rel: "canonical", href: "/register" }],
   }),
-  component: Register,
+  component: GetStarted,
 });
 
-const tiers = [
-  { key: "Artisans", icon: HardHat, price: 100, note: "Annual commitment for skilled manual workforce." },
-  { key: "Student", icon: GraduationCap, price: 100, note: "Special rate for those currently in training." },
-  { key: "Professional", icon: Briefcase, price: 500, note: "Standard tier for corporate & creative experts." },
-  { key: "Contractor", icon: Building2, price: 500, note: "For registered builders and project managers." },
-  { key: "Supplier", icon: Package, price: 500, note: "Access to the continent's procurement grid." },
-] as const;
+/* ---------------------------------- data --------------------------------- */
 
-const counties = [
-  "Nairobi, Kenya",
-  "Mombasa, Kenya",
-  "Kisumu, Kenya",
-  "Nakuru, Kenya",
-  "Eldoret, Kenya",
-  "Kiambu, Kenya",
+const OCCUPATIONS = [
+  "Architect", "Engineer", "Quantity Surveyor", "Interior Designer", "Urban Planner",
+  "Project Manager", "Contractor", "Mason", "Tiler", "Electrician", "Plumber",
+  "Painter", "Welder", "Carpenter", "Gypsum Installer", "General Artisan",
+  "Entrepreneur", "Youth (General)", "Researcher", "Student", "Other",
 ];
 
-const steps = ["Profile Category", "Professional Details", "Secure Activation"];
+const EXPERIENCE = [
+  "Less than 1 year", "1-3 years", "3-5 years", "5-10 years", "10+ years",
+];
 
-function Register() {
-  const [step, setStep] = useState(0);
-  const [tier, setTier] = useState<(typeof tiers)[number]["key"]>("Artisans");
-  const [pay, setPay] = useState<"mpesa" | "card">("mpesa");
+const INDUSTRIES = [
+  "Construction", "Real Estate", "Manufacturing", "Education", "Government Projects",
+  "NGO/Development Work", "Private Sector", "Other",
+];
 
-  const selectedTier = tiers.find((t) => t.key === tier)!;
+const ORG_TYPES = [
+  "Government Institution", "Government Agency", "Public Institution", "NGO",
+  "Development Partner", "Private Sector Company", "Manufacturer", "Supplier",
+  "SME", "Financial Institution", "Investor", "University", "Educational Institution",
+];
+
+type FormState = Record<string, string | string[]>;
+
+const roleCards: { role: AccountRole; icon: typeof User; title: string; desc: string }[] = [
+  { role: "individual", icon: User, title: "Individual", desc: "Sign up as an individual looking to build skills and opportunities." },
+  { role: "professional", icon: Briefcase, title: "Professional", desc: "Sign up as a working professional or skilled tradesperson." },
+  { role: "organization", icon: Building2, title: "Organization", desc: "Register your organization as a partner." },
+];
+
+/* -------------------------------- component ------------------------------- */
+
+function GetStarted() {
+  const [step, setStep] = useState(0); // 0 role, 1 form, 2 welcome
+  const [role, setRole] = useState<AccountRole | null>(null);
+  const [form, setForm] = useState<FormState>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const set = (key: string, value: string | string[]) => {
+    setForm((f) => ({ ...f, [key]: value }));
+    setErrors((e) => ({ ...e, [key]: "" }));
+  };
+  const toggle = (key: string, value: string) => {
+    setForm((f) => {
+      const arr = Array.isArray(f[key]) ? (f[key] as string[]) : [];
+      return { ...f, [key]: arr.includes(value) ? arr.filter((v) => v !== value) : [...arr, value] };
+    });
+    setErrors((e) => ({ ...e, [key]: "" }));
+  };
+
+  const chooseRole = (r: AccountRole) => {
+    setRole(r);
+    setForm({});
+    setErrors({});
+    setStep(1);
+  };
+
+  const validate = (): boolean => {
+    if (!role) return false;
+    const required = requiredFields(role, form);
+    const next: Record<string, string> = {};
+    for (const key of required) {
+      const v = form[key];
+      if (Array.isArray(v) ? v.length === 0 : !String(v ?? "").trim()) {
+        next[key] = "This field is required.";
+      }
+    }
+    const email = (form.email || form.contactEmail) as string | undefined;
+    const emailKey = form.email !== undefined ? "email" : "contactEmail";
+    if (email && !next[emailKey] && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      next[emailKey] = "Enter a valid email address.";
+    }
+    setErrors(next);
+    return Object.keys(next).length === 0;
+  };
+
+  const submit = () => {
+    if (!validate() || !role) return;
+    saveAccount({ role, data: { ...form } }); // verified: false is set inside
+    setStep(2);
+  };
+
+  const totalSteps = 3;
 
   return (
     <PageShell>
-      <section className="mx-auto max-w-6xl px-5 py-12 lg:px-8">
-        {/* Stepper */}
-        <div className="mx-auto flex max-w-3xl items-center justify-between">
-          {steps.map((s, i) => (
-            <div key={s} className="flex flex-1 items-center last:flex-none">
-              <div className="flex flex-col items-center">
-                <div
-                  className={`flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold ${
-                    i <= step
-                      ? "bg-baba-blue text-baba-cream"
-                      : "border-2 border-baba-slate/20 text-baba-slate/40"
-                  }`}
-                >
-                  {i < step ? <Check className="h-4 w-4" /> : i + 1}
-                </div>
-                <span
-                  className={`mt-2 hidden text-[0.65rem] font-bold uppercase tracking-wide sm:block ${
-                    i <= step ? "text-baba-blue" : "text-baba-slate/40"
-                  }`}
-                >
-                  {s}
-                </span>
-              </div>
-              {i < steps.length - 1 && (
-                <div
-                  className={`mx-2 h-0.5 flex-1 ${
-                    i < step ? "bg-baba-blue" : "bg-baba-slate/15"
-                  }`}
-                />
-              )}
-            </div>
-          ))}
+      <section className="mx-auto max-w-4xl px-5 py-12 lg:px-8">
+        {/* Progress */}
+        <div className="mx-auto mb-10 max-w-xl">
+          <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wide text-baba-slate/60">
+            <span>Step {step + 1} of {totalSteps}</span>
+            <span className="text-baba-blue">
+              {["Choose Path", "Your Details", "Welcome"][step]}
+            </span>
+          </div>
+          <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-baba-blue/10">
+            <div
+              className="h-full rounded-full bg-baba-blue transition-all"
+              style={{ width: `${((step + 1) / totalSteps) * 100}%` }}
+            />
+          </div>
         </div>
 
-        <div className="mt-12 grid gap-8 lg:grid-cols-[1fr_360px]">
-          <div className="space-y-10">
-            {/* Step 1: Category */}
-            {step === 0 && (
-              <div>
-                <h1 className="font-display text-3xl font-extrabold text-baba-blue">
-                  Select Your Path
-                </h1>
-                <p className="mt-2 text-baba-slate/70">
-                  Choose the membership tier that aligns with your professional standing.
-                </p>
-                <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                  {tiers.map((t) => {
-                    const sel = tier === t.key;
-                    return (
-                      <button
-                        key={t.key}
-                        onClick={() => setTier(t.key)}
-                        className={`relative rounded-2xl border-2 p-5 text-left transition-colors ${
-                          sel
-                            ? "border-baba-blue bg-baba-blue/5"
-                            : "border-baba-blue/10 bg-card hover:border-baba-blue/30"
-                        }`}
-                      >
-                        {sel && (
-                          <Check className="absolute right-4 top-4 h-5 w-5 text-baba-blue" />
-                        )}
-                        <t.icon className="h-6 w-6 text-baba-copper-dark" />
-                        <h3 className="mt-4 font-display text-lg font-bold text-baba-slate">
-                          {t.key}
-                        </h3>
-                        <p className="mt-1 font-display text-lg font-bold text-baba-copper-dark">
-                          KES {t.price}
-                        </p>
-                        <p className="mt-2 text-xs text-baba-slate/60">{t.note}</p>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
+        {/* Step 1: role selection */}
+        {step === 0 && (
+          <div>
+            <div className="text-center">
+              <h1 className="font-display text-3xl font-extrabold text-baba-blue">Get Started</h1>
+              <p className="mt-2 text-baba-slate/70">
+                Signing up is completely free. Choose the path that fits you.
+              </p>
+            </div>
+            <div className="mt-8 grid gap-5 sm:grid-cols-3">
+              {roleCards.map((c) => (
+                <button
+                  key={c.role}
+                  onClick={() => chooseRole(c.role)}
+                  className="group flex flex-col items-center rounded-2xl border-2 border-baba-blue/10 bg-card p-6 text-center transition-colors hover:border-baba-blue"
+                >
+                  <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-baba-blue/10 text-baba-blue transition-colors group-hover:bg-baba-blue group-hover:text-white">
+                    <c.icon className="h-7 w-7" />
+                  </span>
+                  <h3 className="mt-4 font-display text-lg font-bold text-baba-slate">{c.title}</h3>
+                  <p className="mt-2 text-sm text-baba-slate/60">{c.desc}</p>
+                  <span className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-baba-copper-dark">
+                    Continue <ArrowRight className="h-4 w-4" />
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
-            {/* Step 2: Details */}
-            {step === 1 && (
-              <div>
-                <h1 className="font-display text-3xl font-extrabold text-baba-blue">
-                  Professional Details
-                </h1>
-                <p className="mt-2 text-baba-slate/70">
-                  Help us forge your professional identity within the BABA network.
-                </p>
-                <div className="mt-6 grid gap-5 sm:grid-cols-2">
-                  <Field label="Full Name" placeholder="John Doe" />
-                  <Field label="Phone Number" placeholder="+254 746216258" />
-                  <Field label="Email Address" placeholder="john@example.com" type="email" />
-                  <div>
-                    <Label>Primary Location</Label>
-                    <select className="mt-1.5 w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none">
-                      {counties.map((c) => (
-                        <option key={c}>{c}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <Field label="Profession / Skill" placeholder="e.g. Civil Engineer" />
-                  <div>
-                    <Label>Years of Experience</Label>
-                    <div className="mt-1.5 grid grid-cols-3 gap-2">
-                      {["0–2 yrs", "3–5 yrs", "5+ yrs"].map((y, i) => (
-                        <YearChip key={y} label={y} defaultActive={i === 1} />
-                      ))}
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-5 grid gap-5 sm:grid-cols-2">
-                  <UploadBox
-                    icon={Camera}
-                    title="Profile Photo"
-                    hint="Drag and drop or click to upload"
-                  />
-                  <UploadBox
-                    icon={Upload}
-                    title="Portfolio / Credentials"
-                    hint="Upload PDF, DOCX or ZIP (Max 10MB)"
-                  />
-                </div>
-              </div>
-            )}
+        {/* Step 2: form */}
+        {step === 1 && role && (
+          <div>
+            <h1 className="font-display text-3xl font-extrabold text-baba-blue">
+              {role === "individual" && "Individual Sign Up"}
+              {role === "professional" && "Professional Sign Up"}
+              {role === "organization" && "Organization Sign Up"}
+            </h1>
+            <p className="mt-2 text-baba-slate/70">
+              Fields marked with <span className="text-baba-copper-dark">*</span> are required. Signing up is free.
+            </p>
 
-            {/* Step 3 */}
-            {step === 2 && (
-              <div>
-                <h1 className="font-display text-3xl font-extrabold text-baba-blue">
-                  Almost There
-                </h1>
-                <p className="mt-2 text-baba-slate/70">
-                  Review your membership and complete secure activation using the panel.
-                </p>
-                <div className="mt-6 rounded-2xl border border-baba-blue/10 bg-card p-6">
-                  <h3 className="font-display text-lg font-bold text-baba-slate">
-                    What you get
-                  </h3>
-                  <ul className="mt-4 space-y-3 text-sm text-baba-slate/70">
-                    {[
-                      "Verified profile in the National Directory",
-                      "Access to the pan-African talent database",
-                      "Industry-standard legal advocacy & protection",
-                      "Priority access to opportunities and tenders",
-                    ].map((b) => (
-                      <li key={b} className="flex gap-2.5">
-                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-baba-blue" />
-                        {b}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            )}
+            <div className="mt-6 grid gap-5 sm:grid-cols-2">
+              {role === "individual" && (
+                <IndividualFields form={form} errors={errors} set={set} toggle={toggle} />
+              )}
+              {role === "professional" && (
+                <ProfessionalFields form={form} errors={errors} set={set} toggle={toggle} />
+              )}
+              {role === "organization" && (
+                <OrganizationFields form={form} errors={errors} set={set} toggle={toggle} />
+              )}
+            </div>
 
-            <div className="flex justify-between">
+            <div className="mt-8 flex justify-between">
               <button
-                onClick={() => setStep((s) => Math.max(0, s - 1))}
-                disabled={step === 0}
-                className="rounded-lg border-2 border-baba-blue/30 px-6 py-2.5 text-sm font-semibold text-baba-blue disabled:opacity-40"
+                onClick={() => setStep(0)}
+                className="rounded-lg border-2 border-baba-blue/30 px-6 py-2.5 text-sm font-semibold text-baba-blue"
               >
                 Back
               </button>
-              {step < 2 && (
-                <button
-                  onClick={() => setStep((s) => Math.min(2, s + 1))}
-                  className="rounded-lg baba-cta px-6 py-2.5 text-sm font-semibold text-baba-cream transition-colors hover:bg-baba-blue-dark"
-                >
-                  Continue
-                </button>
-              )}
+              <button
+                onClick={submit}
+                className="rounded-lg baba-cta px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-baba-blue-dark"
+              >
+                Create Free Account
+              </button>
             </div>
           </div>
+        )}
 
-          {/* Checkout panel */}
-          <aside className="lg:sticky lg:top-24 lg:self-start">
-            <div className="overflow-hidden rounded-2xl border border-baba-blue/10 bg-card shadow-sm">
-              <div className="bg-baba-blue p-5 text-baba-cream">
-                <h2 className="font-display text-lg font-bold">Secure Activation</h2>
-                <p className="text-xs text-baba-cream/70">
-                  Finalize your professional entry
-                </p>
-              </div>
-              <div className="space-y-4 p-5">
-                <Row label="Member Tier" value={selectedTier.key} />
-                <Row label="Subscription" value="Annual" />
-                <div className="flex items-center justify-between border-t border-baba-blue/10 pt-4">
-                  <span className="font-display font-bold text-baba-slate">Total Due</span>
-                  <span className="font-display text-xl font-extrabold text-baba-copper-dark">
-                    KES {selectedTier.price}.00
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-2 gap-2 rounded-lg bg-secondary p-1">
-                  <button
-                    onClick={() => setPay("mpesa")}
-                    className={`flex items-center justify-center gap-1.5 rounded-md py-2 text-sm font-semibold transition-colors ${
-                      pay === "mpesa" ? "bg-card text-baba-blue shadow-sm" : "text-baba-slate/60"
-                    }`}
-                  >
-                    <Smartphone className="h-4 w-4" /> M-PESA
-                  </button>
-                  <button
-                    onClick={() => setPay("card")}
-                    className={`flex items-center justify-center gap-1.5 rounded-md py-2 text-sm font-semibold transition-colors ${
-                      pay === "card" ? "bg-card text-baba-blue shadow-sm" : "text-baba-slate/60"
-                    }`}
-                  >
-                    <CreditCard className="h-4 w-4" /> Card
-                  </button>
-                </div>
-
-                {pay === "mpesa" ? (
-                  <div>
-                    <Label>M-PESA Number</Label>
-                    <input
-                      placeholder="+254 712345678"
-                      className="mt-1.5 w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm focus:border-baba-blue focus:outline-none"
-                    />
-                    <p className="mt-2 text-xs italic text-baba-slate/50">
-                      You will receive an STK push on your phone to authorize the
-                      transaction.
-                    </p>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    <div className="rounded-lg border border-baba-blue/10 bg-secondary/60 p-4 text-sm text-baba-slate/70">
-                      <p className="flex items-center gap-2 font-semibold text-baba-slate">
-                        <CreditCard className="h-4 w-4 text-baba-blue" /> Card payments
-                      </p>
-                      <p className="mt-1.5 text-xs leading-relaxed">
-                        You'll be redirected to our certified payment partner to
-                        enter your card details securely. Your card information is
-                        handled entirely by the processor and never touches our
-                        servers.
-                      </p>
-                    </div>
-                  </div>
-                )}
-
-                <button className="flex w-full items-center justify-center gap-2 rounded-lg bg-baba-blue py-3 text-sm font-bold text-baba-cream transition-colors hover:bg-baba-blue-dark">
-                  Continue to Secure Payment <ShieldCheck className="h-4 w-4" />
-                </button>
-                <p className="flex items-center justify-center gap-1.5 text-[0.7rem] font-semibold uppercase tracking-wide text-baba-copper-dark">
-                  <Lock className="h-3.5 w-3.5" /> Processed by a PCI-compliant payment partner
-                </p>
-              </div>
+        {/* Step 3: welcome */}
+        {step === 2 && (
+          <div className="mx-auto max-w-xl text-center">
+            <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-baba-blue/10 text-baba-blue">
+              <PartyPopper className="h-8 w-8" />
+            </span>
+            <h1 className="mt-6 font-display text-3xl font-extrabold text-baba-blue">Welcome!</h1>
+            <p className="mt-3 text-baba-slate/70">
+              Your account has been created. Explore courses, job listings, and events — verify
+              your account anytime you're ready to apply.
+            </p>
+            <div className="mt-8 flex flex-wrap justify-center gap-3">
+              <Link
+                to="/opportunities"
+                className="rounded-full baba-cta px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-baba-blue/25"
+              >
+                Explore Opportunities
+              </Link>
+              <Link
+                to="/events"
+                className="rounded-full border-2 border-baba-copper px-6 py-3 text-sm font-semibold text-baba-copper-dark transition-colors hover:bg-baba-copper hover:text-baba-slate"
+              >
+                See Events
+              </Link>
             </div>
-
-            <div className="mt-4 flex gap-3 rounded-xl border border-baba-copper/30 bg-baba-copper/5 p-4">
-              <ShieldCheck className="h-5 w-5 shrink-0 text-baba-copper-dark" />
-              <div>
-                <p className="font-display text-sm font-bold text-baba-slate">
-                  BABA Protection
-                </p>
-                <p className="mt-0.5 text-xs text-baba-slate/60">
-                  Your membership includes professional verification, access to the
-                  pan-African talent database, and industry-standard legal advocacy.
-                </p>
-              </div>
-            </div>
-          </aside>
-        </div>
+          </div>
+        )}
       </section>
     </PageShell>
   );
 }
 
-function Label({ children }: { children: React.ReactNode }) {
+/* --------------------------- required-field logic -------------------------- */
+
+function requiredFields(role: AccountRole, form: FormState): string[] {
+  if (role === "individual") {
+    return ["fullName", "email", "phone", "nationalId", "employmentStatus", "occupation", "yearsExperience", "location"];
+  }
+  if (role === "professional") {
+    const base = ["fullName", "email", "phone", "nationalId", "employmentStatus", "occupation", "yearsExperience", "educationLevel", "institutionName", "fieldOfStudy", "location"];
+    if (form.employmentStatus === "Employed") base.push("organizationName", "jobTitle", "yearsAtOrganization");
+    return base;
+  }
+  return ["organizationName", "contactPerson", "contactEmail", "contactPhone", "yearsInOperation", "businessLicense", "organizationType", "staffSize", "location"];
+}
+
+/* ------------------------------ field groups ------------------------------ */
+
+type FieldProps = {
+  form: FormState;
+  errors: Record<string, string>;
+  set: (k: string, v: string | string[]) => void;
+  toggle: (k: string, v: string) => void;
+};
+
+function IndividualFields({ form, errors, set, toggle }: FieldProps) {
+  return (
+    <>
+      <Field label="Full Name" name="fullName" required {...{ form, errors, set }} />
+      <Field label="Email" name="email" type="email" required {...{ form, errors, set }} />
+      <Field label="Phone Number" name="phone" required {...{ form, errors, set }} />
+      <Field label="National ID Number" name="nationalId" required {...{ form, errors, set }} />
+      <SelectField label="Employment Status" name="employmentStatus" required
+        options={["Fundi/Artisan", "Freelancer", "Employed", "Unemployed", "Self-Employed"]}
+        {...{ form, errors, set }} />
+      <SelectField label="Primary Occupation / Skill Area" name="occupation" required
+        options={OCCUPATIONS} {...{ form, errors, set }} />
+      <SelectField label="Years of Experience" name="yearsExperience" required
+        options={EXPERIENCE} {...{ form, errors, set }} />
+      <Field label="Location (City/Town)" name="location" required {...{ form, errors, set }} />
+      <MultiSelect label="Area of Interest" name="areasOfInterest"
+        options={["Skills Training", "Job Opportunities", "Event Notifications", "Networking", "Other"]}
+        {...{ form, toggle }} />
+      <MultiSelect label="Industries Interested In" name="industries"
+        options={INDUSTRIES} {...{ form, toggle }} />
+    </>
+  );
+}
+
+function ProfessionalFields({ form, errors, set, toggle }: FieldProps) {
+  return (
+    <>
+      <Field label="Full Name" name="fullName" required {...{ form, errors, set }} />
+      <Field label="Email" name="email" type="email" required {...{ form, errors, set }} />
+      <Field label="Phone Number" name="phone" required {...{ form, errors, set }} />
+      <Field label="National ID Number" name="nationalId" required {...{ form, errors, set }} />
+      <SelectField label="Employment Status" name="employmentStatus" required
+        options={["Employed", "Unemployed", "Self-Employed"]} {...{ form, errors, set }} />
+      {form.employmentStatus === "Employed" && (
+        <>
+          <Field label="Organization Name" name="organizationName" required {...{ form, errors, set }} />
+          <Field label="Job Title" name="jobTitle" required {...{ form, errors, set }} />
+          <Field label="Years at Organization" name="yearsAtOrganization" required {...{ form, errors, set }} />
+        </>
+      )}
+      <SelectField label="Primary Occupation / Skill Area" name="occupation" required
+        options={OCCUPATIONS} {...{ form, errors, set }} />
+      <SelectField label="Years of Experience" name="yearsExperience" required
+        options={EXPERIENCE} {...{ form, errors, set }} />
+      <SelectField label="Highest Education Level" name="educationLevel" required
+        options={["Primary", "Secondary", "Certificate", "Diploma", "Bachelor's Degree", "Master's Degree", "PhD", "Other"]}
+        {...{ form, errors, set }} />
+      <Field label="Institution Name" name="institutionName" required {...{ form, errors, set }} />
+      <Field label="Field of Study / Course" name="fieldOfStudy" required {...{ form, errors, set }} />
+      <Field label="Location (City/Town)" name="location" required {...{ form, errors, set }} />
+      <MultiSelect label="Area of Interest" name="areasOfInterest"
+        options={["Skills Training", "Job Placement", "Event Notifications", "Networking", "Consulting Opportunities"]}
+        {...{ form, toggle }} />
+      <MultiSelect label="Industries Interested In" name="industries"
+        options={INDUSTRIES} {...{ form, toggle }} />
+    </>
+  );
+}
+
+function OrganizationFields({ form, errors, set, toggle }: FieldProps) {
+  return (
+    <>
+      <Field label="Organization Name" name="organizationName" required {...{ form, errors, set }} />
+      <Field label="Contact Person Full Name" name="contactPerson" required {...{ form, errors, set }} />
+      <Field label="Contact Email" name="contactEmail" type="email" required {...{ form, errors, set }} />
+      <Field label="Contact Phone Number" name="contactPhone" required {...{ form, errors, set }} />
+      <Field label="Years in Operation" name="yearsInOperation" required {...{ form, errors, set }} />
+      <Field label="Business License Number" name="businessLicense" required {...{ form, errors, set }} />
+      <SelectField label="Organization Type" name="organizationType" required
+        options={ORG_TYPES} {...{ form, errors, set }} />
+      <SelectField label="Number of People/Staff" name="staffSize" required
+        options={["1-10", "11-50", "51-200", "200+"]} {...{ form, errors, set }} />
+      <Field label="Location (City/Town)" name="location" required {...{ form, errors, set }} />
+      <MultiSelect label="Areas of Interest" name="areasOfInterest"
+        options={["Partnership Opportunities", "Bulk Skills Training", "Talent Sourcing", "Event Collaboration"]}
+        {...{ form, toggle }} />
+    </>
+  );
+}
+
+/* ----------------------------- shared inputs ------------------------------ */
+
+function Label({ children, required }: { children: React.ReactNode; required?: boolean }) {
   return (
     <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
-      {children}
+      {children} {required && <span className="text-baba-copper-dark">*</span>}
     </span>
   );
 }
 
+function ErrorText({ msg }: { msg?: string }) {
+  if (!msg) return null;
+  return <p className="mt-1 text-xs font-medium text-destructive">{msg}</p>;
+}
+
 function Field({
-  label,
-  placeholder,
-  type = "text",
+  label, name, type = "text", required, form, errors, set,
 }: {
-  label: string;
-  placeholder: string;
-  type?: string;
+  label: string; name: string; type?: string; required?: boolean;
+  form: FormState; errors: Record<string, string>; set: (k: string, v: string | string[]) => void;
 }) {
   return (
     <div>
-      <Label>{label}</Label>
+      <Label required={required}>{label}</Label>
       <input
         type={type}
-        placeholder={placeholder}
-        className="mt-1.5 w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate placeholder:text-baba-slate/40 focus:border-baba-blue focus:outline-none"
+        value={(form[name] as string) ?? ""}
+        onChange={(e) => set(name, e.target.value)}
+        className={`mt-1.5 w-full rounded-lg border bg-card px-3.5 py-2.5 text-sm text-baba-slate placeholder:text-baba-slate/40 focus:border-baba-blue focus:outline-none ${
+          errors[name] ? "border-destructive" : "border-input"
+        }`}
       />
+      <ErrorText msg={errors[name]} />
     </div>
   );
 }
 
-function YearChip({ label, defaultActive }: { label: string; defaultActive?: boolean }) {
-  const [active, setActive] = useState(defaultActive);
-  return (
-    <button
-      onClick={() => setActive((v) => !v)}
-      className={`rounded-lg border-2 py-2 text-sm font-semibold transition-colors ${
-        active
-          ? "border-baba-blue bg-baba-blue/5 text-baba-blue"
-          : "border-input text-baba-slate/60"
-      }`}
-    >
-      {label}
-    </button>
-  );
-}
-
-function UploadBox({
-  icon: Icon,
-  title,
-  hint,
+function SelectField({
+  label, name, options, required, form, errors, set,
 }: {
-  icon: typeof Upload;
-  title: string;
-  hint: string;
+  label: string; name: string; options: string[]; required?: boolean;
+  form: FormState; errors: Record<string, string>; set: (k: string, v: string | string[]) => void;
 }) {
   return (
     <div>
-      <Label>{title}</Label>
-      <label className="mt-1.5 flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-input py-8 text-center transition-colors hover:border-baba-blue/40">
-        <Icon className="h-7 w-7 text-baba-blue/60" />
-        <span className="text-xs text-baba-slate/55">{hint}</span>
-        <input type="file" className="hidden" />
-      </label>
+      <Label required={required}>{label}</Label>
+      <select
+        value={(form[name] as string) ?? ""}
+        onChange={(e) => set(name, e.target.value)}
+        className={`mt-1.5 w-full rounded-lg border bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none ${
+          errors[name] ? "border-destructive" : "border-input"
+        }`}
+      >
+        <option value="">Select…</option>
+        {options.map((o) => (
+          <option key={o} value={o}>{o}</option>
+        ))}
+      </select>
+      <ErrorText msg={errors[name]} />
     </div>
   );
 }
 
-function Row({ label, value }: { label: string; value: string }) {
+function MultiSelect({
+  label, name, options, form, toggle,
+}: {
+  label: string; name: string; options: string[];
+  form: FormState; toggle: (k: string, v: string) => void;
+}) {
+  const selected = Array.isArray(form[name]) ? (form[name] as string[]) : [];
   return (
-    <div className="flex items-center justify-between text-sm">
-      <span className="text-baba-slate/60">{label}</span>
-      <span className="font-display font-bold text-baba-blue">{value}</span>
+    <div className="sm:col-span-2">
+      <Label>{label}</Label>
+      <div className="mt-1.5 flex flex-wrap gap-2">
+        {options.map((o) => {
+          const active = selected.includes(o);
+          return (
+            <button
+              key={o}
+              type="button"
+              onClick={() => toggle(name, o)}
+              className={`inline-flex items-center gap-1.5 rounded-full border-2 px-3.5 py-1.5 text-sm font-semibold transition-colors ${
+                active
+                  ? "border-baba-blue bg-baba-blue/5 text-baba-blue"
+                  : "border-input text-baba-slate/60 hover:border-baba-blue/30"
+              }`}
+            >
+              {active && <Check className="h-3.5 w-3.5" />} {o}
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }
