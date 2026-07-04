@@ -328,13 +328,28 @@ interface Opp {
   desc: string;
 }
 
+type Audience = RoleValue;
+interface Opp {
+  kind: OppKind;
+  title: string;
+  meta: string;
+  desc: string;
+  /** Roles this is most relevant to. Empty = open to everyone. */
+  roles: Audience[];
+  /** Keywords matched against the user's trade, skills and industries. */
+  tags: string[];
+}
+
 const OPPORTUNITIES: Opp[] = [
-  { kind: "event", title: "BABA National Skills Expo", meta: "Nairobi · Upcoming", desc: "Connect with builders, artisans and partners across the country." },
-  { kind: "event", title: "Youth in Construction Forum", meta: "Regional · Upcoming", desc: "A day of mentorship, panels and networking for young talent." },
-  { kind: "job", title: "Site Supervisor", meta: "BuildCo · Nairobi", desc: "Oversee residential construction projects on active sites." },
-  { kind: "job", title: "Certified Electrician", meta: "PowerLine Ltd · Mombasa", desc: "Installation and maintenance for commercial buildings." },
-  { kind: "course", title: "Advanced Masonry Techniques", meta: "6 weeks", desc: "Hands-on training toward a recognized certification." },
-  { kind: "course", title: "Project Management Fundamentals", meta: "4 weeks", desc: "Core skills for leading construction and trade projects." },
+  { kind: "event", title: "BABA National Skills Expo", meta: "Nairobi · Upcoming", desc: "Connect with builders, artisans and partners across the country.", roles: [], tags: ["construction", "building", "networking", "trade"] },
+  { kind: "event", title: "Youth in Construction Forum", meta: "Regional · Upcoming", desc: "A day of mentorship, panels and networking for young talent.", roles: ["professional_young", "individual"], tags: ["construction", "mentorship", "youth", "career"] },
+  { kind: "event", title: "Corporate Procurement Summit", meta: "Nairobi · Upcoming", desc: "Meet suppliers and win construction supply contracts.", roles: ["corporate"], tags: ["procurement", "supply", "business", "manufacturing"] },
+  { kind: "job", title: "Site Supervisor", meta: "BuildCo · Nairobi", desc: "Oversee residential construction projects on active sites.", roles: ["professional_exp", "professional_young"], tags: ["construction", "supervision", "management", "masonry"] },
+  { kind: "job", title: "Certified Electrician", meta: "PowerLine Ltd · Mombasa", desc: "Installation and maintenance for commercial buildings.", roles: ["artisan"], tags: ["electrical", "electrician", "solar", "wiring"] },
+  { kind: "job", title: "Plumbing Technician", meta: "AquaFix · Nakuru", desc: "Pipe fitting and maintenance for new developments.", roles: ["artisan"], tags: ["plumbing", "pipe", "plumber", "fitting"] },
+  { kind: "course", title: "Advanced Masonry Techniques", meta: "6 weeks", desc: "Hands-on training toward a recognized certification.", roles: ["artisan"], tags: ["masonry", "mason", "bricklaying", "construction"] },
+  { kind: "course", title: "Solar & Electrical Installation", meta: "5 weeks", desc: "Certified training in solar and electrical systems.", roles: ["artisan"], tags: ["electrical", "solar", "electrician", "wiring"] },
+  { kind: "course", title: "Project Management Fundamentals", meta: "4 weeks", desc: "Core skills for leading construction and trade projects.", roles: ["professional_young", "professional_exp"], tags: ["management", "leadership", "projects", "business"] },
 ];
 
 const OPP_ICON: Record<OppKind, typeof Calendar> = {
@@ -348,62 +363,141 @@ const OPP_CTA: Record<OppKind, string> = {
   course: "Enroll",
 };
 
-function OpportunitiesTab({ verified, fee }: { verified: boolean; fee: number }) {
-  const [filter, setFilter] = useState<"all" | OppKind>("all");
+/** Split free-text fields into normalized keyword tokens. */
+function tokenize(...values: (string | null | undefined)[]): string[] {
+  return values
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase()
+    .split(/[^a-z0-9]+/)
+    .filter((t) => t.length > 2);
+}
+
+/** Relevance score for an opportunity against the current user's profile. */
+function scoreOpp(o: Opp, role: RoleValue, userTokens: string[]): number {
+  let score = 0;
+  if (o.roles.includes(role)) score += 3;
+  for (const tag of o.tags) {
+    if (userTokens.some((t) => t === tag || t.includes(tag) || tag.includes(t))) {
+      score += 1;
+    }
+  }
+  return score;
+}
+
+function OpportunitiesTab({
+  verified,
+  fee,
+  role,
+  artisanType,
+  profile,
+}: {
+  verified: boolean;
+  fee: number;
+  role: RoleValue;
+  artisanType: string | null;
+  profile: ProfileRow | null;
+}) {
+  const [filter, setFilter] = useState<"foryou" | "all" | OppKind>("foryou");
   const [gate, setGate] = useState<OppKind | null>(null);
 
-  const items = OPPORTUNITIES.filter((o) => filter === "all" || o.kind === filter);
+  const extra = (profile?.extra ?? {}) as Record<string, unknown>;
+  const userTokens = tokenize(
+    role,
+    artisanType,
+    extra.skills as string,
+    extra.industries as string,
+  );
+
+  const scored = OPPORTUNITIES.map((o) => ({ o, score: scoreOpp(o, role, userTokens) }));
+
+  const items =
+    filter === "foryou"
+      ? scored
+          .filter((s) => s.score > 0)
+          .sort((a, b) => b.score - a.score)
+          .map((s) => s.o)
+      : scored.filter((s) => filter === "all" || s.o.kind === filter).map((s) => s.o);
+
+  const scoreMap = new Map(scored.map((s) => [s.o, s.score]));
+
+  const FILTERS: { id: "foryou" | "all" | OppKind; label: string }[] = [
+    { id: "foryou", label: "For You" },
+    { id: "all", label: "All" },
+    { id: "event", label: "Events" },
+    { id: "job", label: "Jobs" },
+    { id: "course", label: "Courses" },
+  ];
 
   return (
     <div className="rounded-2xl border border-baba-blue/10 bg-card p-6">
       <h2 className="font-display text-lg font-bold text-baba-slate">Opportunities</h2>
+      <p className="mt-1 text-sm text-baba-slate/60">
+        Matched to your role{artisanType ? `, ${artisanType}` : ""}, skills and industries.
+      </p>
       <div className="mt-4 flex flex-wrap gap-2">
-        {(["all", "event", "job", "course"] as const).map((f) => (
+        {FILTERS.map((f) => (
           <button
-            key={f}
-            onClick={() => setFilter(f)}
-            className={`rounded-full border-2 px-4 py-1.5 text-sm font-semibold capitalize transition-colors ${
-              filter === f
+            key={f.id}
+            onClick={() => setFilter(f.id)}
+            className={`rounded-full border-2 px-4 py-1.5 text-sm font-semibold transition-colors ${
+              filter === f.id
                 ? "border-baba-blue bg-baba-blue/5 text-baba-blue"
                 : "border-input text-baba-slate/60 hover:border-baba-blue/30"
             }`}
           >
-            {f === "all" ? "All" : f === "event" ? "Events" : f === "job" ? "Jobs" : "Courses"}
+            {f.label}
           </button>
         ))}
       </div>
 
-      <div className="mt-5 grid gap-4">
-        {items.map((o, i) => {
-          const Icon = OPP_ICON[o.kind];
-          return (
-            <div key={i} className="flex flex-wrap items-start justify-between gap-4 rounded-xl border border-baba-blue/10 p-4">
-              <div className="flex gap-3">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-baba-blue/10 text-baba-blue">
-                  <Icon className="h-5 w-5" />
-                </span>
-                <div>
-                  <h3 className="font-display font-bold text-baba-slate">{o.title}</h3>
-                  <p className="text-xs font-semibold uppercase tracking-wide text-baba-copper-dark">{o.meta}</p>
-                  <p className="mt-1 text-sm text-baba-slate/60">{o.desc}</p>
+      {items.length === 0 ? (
+        <div className="mt-5 rounded-xl border border-dashed border-baba-blue/20 p-10 text-center text-sm text-baba-slate/60">
+          {filter === "foryou"
+            ? "No matches yet — add your skills and industries in My Profile to get personalized opportunities."
+            : "Nothing here right now. Check back soon."}
+        </div>
+      ) : (
+        <div className="mt-5 grid gap-4">
+          {items.map((o, i) => {
+            const Icon = OPP_ICON[o.kind];
+            const matched = (scoreMap.get(o) ?? 0) > 0;
+            return (
+              <div key={i} className="flex flex-wrap items-start justify-between gap-4 rounded-xl border border-baba-blue/10 p-4">
+                <div className="flex gap-3">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-baba-blue/10 text-baba-blue">
+                    <Icon className="h-5 w-5" />
+                  </span>
+                  <div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h3 className="font-display font-bold text-baba-slate">{o.title}</h3>
+                      {matched && filter !== "foryou" && (
+                        <span className="rounded-full bg-baba-copper/15 px-2 py-0.5 text-[0.65rem] font-bold uppercase tracking-wide text-baba-copper-dark">
+                          Match
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-baba-copper-dark">{o.meta}</p>
+                    <p className="mt-1 text-sm text-baba-slate/60">{o.desc}</p>
+                  </div>
                 </div>
+                <button
+                  onClick={() => (verified ? undefined : setGate(o.kind))}
+                  disabled={verified}
+                  className={`shrink-0 rounded-lg px-4 py-2 text-sm font-semibold ${
+                    verified
+                      ? "cursor-not-allowed bg-baba-slate/15 text-baba-slate/50"
+                      : "baba-cta text-white"
+                  }`}
+                  title={verified ? "Coming soon" : "Verify to continue"}
+                >
+                  {OPP_CTA[o.kind]}
+                </button>
               </div>
-              <button
-                onClick={() => (verified ? undefined : setGate(o.kind))}
-                disabled={verified}
-                className={`shrink-0 rounded-lg px-4 py-2 text-sm font-semibold ${
-                  verified
-                    ? "cursor-not-allowed bg-baba-slate/15 text-baba-slate/50"
-                    : "baba-cta text-white"
-                }`}
-                title={verified ? "Coming soon" : "Verify to continue"}
-              >
-                {OPP_CTA[o.kind]}
-              </button>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
 
       {gate && (
         <GateModal kind={gate} fee={fee} onClose={() => setGate(null)} />
