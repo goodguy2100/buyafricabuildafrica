@@ -592,6 +592,19 @@ function SettingsTab({ profile }: { profile: ProfileRow | null }) {
   const [pwBusy, setPwBusy] = useState(false);
   const [emailBusy, setEmailBusy] = useState(false);
 
+  const saveFn = useServerFn(updateMyProfile);
+  const queryClient = useQueryClient();
+  const extra = (profile?.extra ?? {}) as Record<string, unknown>;
+  const [skills, setSkills] = useState((extra.skills as string) ?? "");
+  const [industries, setIndustries] = useState((extra.industries as string) ?? "");
+
+  const prefsMutation = useMutation({
+    mutationFn: () =>
+      saveFn({ data: { extra: { ...extra, skills, industries } } }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["my-profile"] }),
+  });
+
+
   const changePassword = async () => {
     setPwMsg("");
     if (password.length < 6) {
