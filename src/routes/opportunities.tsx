@@ -85,14 +85,13 @@ function Opportunities() {
       </section>
 
       <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8">
-        <div className="flex flex-wrap gap-2.5">
+        <div className="flex flex-wrap gap-2.5" role="tablist" aria-label="Filter opportunities">
           {kinds.map((k) => (
             <button
               key={k}
-              onClick={() => {
-                setFilter(k);
-                setVisibleCount(3);
-              }}
+              role="tab"
+              aria-selected={filter === k}
+              onClick={() => resetPaging(k)}
               className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
                 filter === k
                   ? "bg-baba-blue text-baba-cream"
@@ -104,7 +103,11 @@ function Opportunities() {
           ))}
         </div>
 
-        <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div
+          ref={gridRef}
+          className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
+          aria-busy={loading}
+        >
           {visible.map((o) => (
             <article
               key={o.id}
@@ -113,9 +116,14 @@ function Opportunities() {
               <span className="inline-flex w-fit rounded-full bg-baba-copper/15 px-3 py-1 text-[0.65rem] font-bold uppercase tracking-wide text-baba-copper-dark">
                 {o.kind}
               </span>
-              <h3 className="mt-4 font-display text-lg font-bold text-baba-slate">
+              <Link
+                to="/opportunities/$id"
+                params={{ id: String(o.id) }}
+                data-opp-card
+                className="mt-4 rounded-sm font-display text-lg font-bold text-baba-slate outline-none hover:text-baba-blue focus-visible:ring-2 focus-visible:ring-baba-blue focus-visible:ring-offset-2"
+              >
                 {o.title}
-              </h3>
+              </Link>
               <p className="mt-1 text-sm font-semibold text-baba-blue">{o.org}</p>
               <p className="mt-3 flex items-center gap-1.5 text-sm text-baba-slate/60">
                 <MapPin className="h-3.5 w-3.5" /> {o.location}
@@ -123,26 +131,46 @@ function Opportunities() {
               <p className="mt-1 flex items-center gap-1.5 text-sm text-baba-slate/60">
                 <Clock className="h-3.5 w-3.5" /> {o.meta}
               </p>
-              <button
-                onClick={() => requireVerification("apply")}
+              <Link
+                to="/opportunities/$id"
+                params={{ id: String(o.id) }}
                 className="mt-5 inline-flex items-center gap-1.5 text-sm font-bold text-baba-copper-dark hover:underline"
               >
-                Sign Up <ArrowRight className="h-4 w-4" />
-              </button>
+                View details <ArrowRight className="h-4 w-4" />
+              </Link>
             </article>
           ))}
         </div>
 
-        {hasMore && (
-          <div className="mt-10 flex justify-center">
+        <div aria-live="polite" className="mt-10 flex flex-col items-center gap-3">
+          {error && (
+            <p role="alert" className="flex items-center gap-2 text-sm font-semibold text-destructive">
+              <AlertCircle className="h-4 w-4" /> Something went wrong loading more. Please try again.
+            </p>
+          )}
+          {hasMore && (
             <button
-              onClick={() => setVisibleCount((c) => c + 3)}
-              className="inline-flex items-center gap-2 rounded-full border border-baba-blue/20 bg-white px-6 py-2.5 text-sm font-semibold text-baba-blue shadow-sm transition-colors hover:bg-baba-blue hover:text-white"
+              onClick={loadMore}
+              disabled={loading}
+              aria-busy={loading}
+              className="inline-flex items-center gap-2 rounded-full border border-baba-blue/20 bg-white px-6 py-2.5 text-sm font-semibold text-baba-blue shadow-sm outline-none transition-colors hover:bg-baba-blue hover:text-white focus-visible:ring-2 focus-visible:ring-baba-blue focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              Show more <ChevronDown className="h-4 w-4" />
+              {loading ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" /> Loading…
+                </>
+              ) : error ? (
+                <>
+                  Try again <ChevronDown className="h-4 w-4" />
+                </>
+              ) : (
+                <>
+                  Show more <ChevronDown className="h-4 w-4" />
+                </>
+              )}
             </button>
-          </div>
-        )}
+          )}
+        </div>
       </section>
       {GateModal}
     </PageShell>
