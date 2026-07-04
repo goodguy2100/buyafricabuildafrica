@@ -58,6 +58,7 @@ function AuthPage() {
   const [email, setEmail] = useState("");
   const [category, setCategory] = useState<RoleValue>("artisan");
   const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
   const [loading, setLoading] = useState(false);
 
   const redirectTo = () =>
