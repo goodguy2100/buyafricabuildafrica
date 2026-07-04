@@ -500,29 +500,17 @@ function Home() {
       {/* ═══ IMPACT DASHBOARD ═══ */}
       <section className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
         <div className="rounded-3xl bg-gradient-to-r from-baba-blue/90 via-baba-blue/75 to-baba-blue/60 px-6 py-12 text-white lg:px-12">
-          <p className="text-center text-xs font-bold uppercase tracking-[0.3em] text-baba-copper">Our Growth Targets</p>
-          <h2 className="mt-2 text-center font-display text-2xl font-extrabold sm:text-3xl">Scaling Modern African Industry</h2>
-          <p className="mx-auto mt-2 max-w-xl text-center text-sm text-white/70">The numbers we're working towards as the BABA ecosystem grows.</p>
-          <div className="mt-10 grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-6">
-            <Counter target={50000} label="Members" suffix="+" />
-            <Counter target={30000} label="Artisans" suffix="+" />
-            <Counter target={9000} label="Professionals" suffix="+" />
-            <Counter target={3500} label="Contractors" suffix="+" />
-            <Counter target={1000} label="Suppliers" suffix="+" />
-            <Counter target={100} label="Partners" suffix="+" />
+          <div className="flex flex-col items-center gap-2">
+            <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-bold uppercase tracking-widest text-baba-copper backdrop-blur">
+              🎯 Our Impact Targets
+            </span>
+            <p className="text-xs text-white/70">Where we're headed as we grow — goals, not yet achieved.</p>
           </div>
-          <div className="mt-10 grid gap-6 border-t border-white/20 pt-8 sm:grid-cols-2 lg:grid-cols-4">
-            {impactStats.map((s) => (
-              <div key={s.label} className="flex items-center gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/20">
-                  <s.icon className="h-5 w-5 text-baba-copper" />
-                </div>
-                <div>
-                  <p className="font-display text-lg font-bold">{s.value}</p>
-                  <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-white/80">{s.label}</p>
-                </div>
-              </div>
-            ))}
+          <div className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-4">
+            <Counter target={10000} label="Members Target" suffix="+" />
+            <Counter target={800} label="Jobs Target" suffix="+" />
+            <Counter target={1200} label="Trainings Target" suffix="+" />
+            <Counter target={18} label="COUNTRIES" suffix="+" />
           </div>
         </div>
       </section>
