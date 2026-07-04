@@ -81,7 +81,6 @@ const pillarDetails: PillarDetail[] = [
           "Suppliers",
           "Entrepreneurs",
           "SMEs",
-          "Artisans",
           "Educational Institutions",
           "Government Agencies",
           "NGOs",
