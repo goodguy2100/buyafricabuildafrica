@@ -321,13 +321,6 @@ function ProfileTab({ profile, role }: { profile: ProfileRow | null; role: RoleV
 /* --------------------------- Opportunities tab ---------------------------- */
 
 type OppKind = "event" | "job" | "course";
-interface Opp {
-  kind: OppKind;
-  title: string;
-  meta: string;
-  desc: string;
-}
-
 type Audience = RoleValue;
 interface Opp {
   kind: OppKind;
