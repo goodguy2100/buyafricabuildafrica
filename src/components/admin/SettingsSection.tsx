@@ -106,7 +106,7 @@ function AdminManagement() {
         <EmptyState>No admins found.</EmptyState>
       ) : (
         <ul className="space-y-2">
-          {(q.data ?? []).map((a) => (
+          {(q.data ?? []).map((a: { user_id: string; email: string | null; full_name: string | null }) => (
             <li
               key={a.user_id}
               className="flex items-center justify-between rounded-lg border border-baba-blue/10 px-3 py-2 text-sm"
