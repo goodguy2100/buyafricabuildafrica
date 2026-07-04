@@ -18,10 +18,8 @@ export const Route = createFileRoute("/contact")({
   component: Contact,
 });
 
-const categories = ["General", "Partnership", "Government", "Media", "Support"];
-
 function Contact() {
-  const [category, setCategory] = useState("General");
+  const [category, setCategory] = useState("");
   const [sent, setSent] = useState(false);
 
   return (
