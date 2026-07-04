@@ -62,25 +62,21 @@ function Contact() {
                 setSent(true);
               }}
             >
-              <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
+              <label htmlFor="query-type" className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
                 Query Type
-              </span>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {categories.map((c) => (
-                  <button
-                    key={c}
-                    type="button"
-                    onClick={() => setCategory(c)}
-                    className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
-                      category === c
-                        ? "bg-baba-blue text-baba-cream"
-                        : "bg-secondary text-baba-slate/70 hover:bg-baba-blue/10"
-                    }`}
-                  >
-                    {c}
-                  </button>
-                ))}
-              </div>
+              </label>
+              <input
+                id="query-type"
+                type="text"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                placeholder="Tell us what your message is about"
+                className="mt-1.5 w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate placeholder:text-baba-slate/40 focus:border-baba-blue focus:outline-none"
+              />
+              <p className="mt-1.5 text-xs text-baba-slate/50">
+                General, partnership, government, media, support — or anything else.
+              </p>
+
 
               <div className="mt-6 grid gap-5 sm:grid-cols-2">
                 <Field label="Full Name" placeholder="John Doe" required />
