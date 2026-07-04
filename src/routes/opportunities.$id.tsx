@@ -131,7 +131,7 @@ function OpportunityDetail() {
                   : "Register to attend. We'll confirm your spot by email."}
               </p>
               <button
-                onClick={() => requireVerification(opp.cta)}
+                onClick={() => requireVerification("apply")}
                 className="mt-5 inline-flex w-full items-center justify-center gap-1.5 rounded-full bg-baba-blue px-5 py-2.5 text-sm font-bold text-baba-cream transition-colors hover:bg-baba-blue/90"
               >
                 {opp.cta === "apply" ? "Apply Now" : "Register Now"}
