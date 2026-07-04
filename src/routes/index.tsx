@@ -130,7 +130,7 @@ const kenyaRegions = [
 const impactStats = [
   { icon: Briefcase, value: "12,500+", label: "Jobs Created" },
   { icon: Users, value: "350+", label: "Trainings" },
-  { icon: MapPin, value: "4", label: "Countries" },
+  { icon: MapPin, value: "18+", label: "Countries" },
   { icon: Building, value: "120+", label: "Projects" },
 ];
 
