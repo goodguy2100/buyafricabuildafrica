@@ -13,7 +13,6 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as PillarsRouteImport } from './routes/pillars'
 import { Route as PartnersRouteImport } from './routes/partners'
-import { Route as OpportunitiesRouteImport } from './routes/opportunities'
 import { Route as ImpactRouteImport } from './routes/impact'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as DirectoryRouteImport } from './routes/directory'
@@ -22,6 +21,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as OpportunitiesIndexRouteImport } from './routes/opportunities.index'
 import { Route as OpportunitiesIdRouteImport } from './routes/opportunities.$id'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
@@ -44,11 +44,6 @@ const PillarsRoute = PillarsRouteImport.update({
 const PartnersRoute = PartnersRouteImport.update({
   id: '/partners',
   path: '/partners',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OpportunitiesRoute = OpportunitiesRouteImport.update({
-  id: '/opportunities',
-  path: '/opportunities',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ImpactRoute = ImpactRouteImport.update({
@@ -90,10 +85,15 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OpportunitiesIndexRoute = OpportunitiesIndexRouteImport.update({
+  id: '/opportunities/',
+  path: '/opportunities/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OpportunitiesIdRoute = OpportunitiesIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => OpportunitiesRoute,
+  id: '/opportunities/$id',
+  path: '/opportunities/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
@@ -114,7 +114,6 @@ export interface FileRoutesByFullPath {
   '/directory': typeof DirectoryRoute
   '/events': typeof EventsRoute
   '/impact': typeof ImpactRoute
-  '/opportunities': typeof OpportunitiesRouteWithChildren
   '/partners': typeof PartnersRoute
   '/pillars': typeof PillarsRoute
   '/register': typeof RegisterRoute
@@ -122,6 +121,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/opportunities/$id': typeof OpportunitiesIdRoute
+  '/opportunities/': typeof OpportunitiesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -131,7 +131,6 @@ export interface FileRoutesByTo {
   '/directory': typeof DirectoryRoute
   '/events': typeof EventsRoute
   '/impact': typeof ImpactRoute
-  '/opportunities': typeof OpportunitiesRouteWithChildren
   '/partners': typeof PartnersRoute
   '/pillars': typeof PillarsRoute
   '/register': typeof RegisterRoute
@@ -139,6 +138,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/opportunities/$id': typeof OpportunitiesIdRoute
+  '/opportunities': typeof OpportunitiesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -150,7 +150,6 @@ export interface FileRoutesById {
   '/directory': typeof DirectoryRoute
   '/events': typeof EventsRoute
   '/impact': typeof ImpactRoute
-  '/opportunities': typeof OpportunitiesRouteWithChildren
   '/partners': typeof PartnersRoute
   '/pillars': typeof PillarsRoute
   '/register': typeof RegisterRoute
@@ -158,6 +157,7 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/opportunities/$id': typeof OpportunitiesIdRoute
+  '/opportunities/': typeof OpportunitiesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -169,7 +169,6 @@ export interface FileRouteTypes {
     | '/directory'
     | '/events'
     | '/impact'
-    | '/opportunities'
     | '/partners'
     | '/pillars'
     | '/register'
@@ -177,6 +176,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/dashboard'
     | '/opportunities/$id'
+    | '/opportunities/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -186,7 +186,6 @@ export interface FileRouteTypes {
     | '/directory'
     | '/events'
     | '/impact'
-    | '/opportunities'
     | '/partners'
     | '/pillars'
     | '/register'
@@ -194,6 +193,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/dashboard'
     | '/opportunities/$id'
+    | '/opportunities'
   id:
     | '__root__'
     | '/'
@@ -204,7 +204,6 @@ export interface FileRouteTypes {
     | '/directory'
     | '/events'
     | '/impact'
-    | '/opportunities'
     | '/partners'
     | '/pillars'
     | '/register'
@@ -212,6 +211,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/_authenticated/dashboard'
     | '/opportunities/$id'
+    | '/opportunities/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -223,11 +223,12 @@ export interface RootRouteChildren {
   DirectoryRoute: typeof DirectoryRoute
   EventsRoute: typeof EventsRoute
   ImpactRoute: typeof ImpactRoute
-  OpportunitiesRoute: typeof OpportunitiesRouteWithChildren
   PartnersRoute: typeof PartnersRoute
   PillarsRoute: typeof PillarsRoute
   RegisterRoute: typeof RegisterRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  OpportunitiesIdRoute: typeof OpportunitiesIdRoute
+  OpportunitiesIndexRoute: typeof OpportunitiesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -258,13 +259,6 @@ declare module '@tanstack/react-router' {
       path: '/partners'
       fullPath: '/partners'
       preLoaderRoute: typeof PartnersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/opportunities': {
-      id: '/opportunities'
-      path: '/opportunities'
-      fullPath: '/opportunities'
-      preLoaderRoute: typeof OpportunitiesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/impact': {
@@ -323,12 +317,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/opportunities/': {
+      id: '/opportunities/'
+      path: '/opportunities'
+      fullPath: '/opportunities/'
+      preLoaderRoute: typeof OpportunitiesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/opportunities/$id': {
       id: '/opportunities/$id'
-      path: '/$id'
+      path: '/opportunities/$id'
       fullPath: '/opportunities/$id'
       preLoaderRoute: typeof OpportunitiesIdRouteImport
-      parentRoute: typeof OpportunitiesRoute
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
@@ -360,18 +361,6 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
-interface OpportunitiesRouteChildren {
-  OpportunitiesIdRoute: typeof OpportunitiesIdRoute
-}
-
-const OpportunitiesRouteChildren: OpportunitiesRouteChildren = {
-  OpportunitiesIdRoute: OpportunitiesIdRoute,
-}
-
-const OpportunitiesRouteWithChildren = OpportunitiesRoute._addFileChildren(
-  OpportunitiesRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
@@ -381,11 +370,12 @@ const rootRouteChildren: RootRouteChildren = {
   DirectoryRoute: DirectoryRoute,
   EventsRoute: EventsRoute,
   ImpactRoute: ImpactRoute,
-  OpportunitiesRoute: OpportunitiesRouteWithChildren,
   PartnersRoute: PartnersRoute,
   PillarsRoute: PillarsRoute,
   RegisterRoute: RegisterRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  OpportunitiesIdRoute: OpportunitiesIdRoute,
+  OpportunitiesIndexRoute: OpportunitiesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
