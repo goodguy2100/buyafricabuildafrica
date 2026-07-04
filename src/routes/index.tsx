@@ -81,8 +81,8 @@ const whoWeServe = [
     items: ["Manufacturers", "Suppliers", "SMEs", "Financial Institutions", "Investors"],
   },
   {
-    group: "Universities",
-    items: ["Educational Institutions", "Researchers"],
+    group: "LEARNING INSTITUTIONS\u00a0",
+    items: ["Learning Institutions", "Researchers"],
   },
 ];
 
