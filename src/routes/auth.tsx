@@ -74,6 +74,7 @@ function AuthPage() {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setNotice("");
 
     const name = fullName.trim();
     const id = idNumber.trim();
