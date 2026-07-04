@@ -228,12 +228,6 @@ function GetStarted() {
             </div>
             <div className="mt-8 grid gap-5 sm:grid-cols-2">
               <RoleCard
-                icon={User}
-                title="Individual"
-                desc="General access to events and opportunities."
-                onClick={() => chooseRole("individual")}
-              />
-              <RoleCard
                 icon={Wrench}
                 title="Artisan"
                 desc="Skilled trades and specialized services."

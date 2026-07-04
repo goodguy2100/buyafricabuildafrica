@@ -1,20 +1,32 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Menu, X, LogOut, LayoutDashboard, LogIn } from "lucide-react";
+import { Menu, X, LogOut, LayoutDashboard, LogIn, ChevronDown } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import babaLogo from "@/assets/baba-logo-vibrant.png";
 import { supabase } from "@/integrations/supabase/client";
 import { getIsAdmin } from "@/lib/registrations.functions";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
-const navLinks = [
+// Primary links stay inline; the rest live in the "More" menu to reduce clutter.
+const primaryLinks = [
   { to: "/", label: "Home" },
   { to: "/about", label: "About Us" },
   { to: "/pillars", label: "Pillars" },
+  { to: "/events", label: "Events" },
+] as const;
+
+const moreLinks = [
   { to: "/directory", label: "National Directory" },
   { to: "/opportunities", label: "Opportunities" },
-  { to: "/events", label: "Events" },
   { to: "/contact", label: "Contact" },
 ] as const;
+
+const navLinks = [...primaryLinks, ...moreLinks] as const;
 
 export function Header() {
   const [open, setOpen] = useState(false);
@@ -66,7 +78,7 @@ export function Header() {
         </Link>
 
         <nav className="hidden items-center gap-3 xl:flex">
-          {navLinks.map((l) => (
+          {primaryLinks.map((l) => (
             <Link
               key={l.to}
               to={l.to}
@@ -76,6 +88,24 @@ export function Header() {
               {l.label}
             </Link>
           ))}
+          <DropdownMenu>
+            <DropdownMenuTrigger className="flex items-center gap-1 font-display text-[0.72rem] font-semibold uppercase tracking-wide text-baba-slate/70 outline-none transition-colors hover:text-baba-blue 2xl:text-[0.78rem]">
+              More <ChevronDown className="h-3.5 w-3.5" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="min-w-44">
+              {moreLinks.map((l) => (
+                <DropdownMenuItem key={l.to} asChild>
+                  <Link
+                    to={l.to}
+                    className="font-display text-sm font-semibold text-baba-slate/80"
+                    activeProps={{ className: "text-baba-blue" }}
+                  >
+                    {l.label}
+                  </Link>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </nav>
 
         <div className="hidden items-center gap-2.5 xl:flex">
