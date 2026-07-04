@@ -1,7 +1,7 @@
 import type { RoleValue } from "@/lib/registrations.functions";
 
 export const ROLE_LABELS: Record<RoleValue, string> = {
-  individual: "Individual",
+  individual: "Artisan",
   professional_young: "Young Professional",
   professional_exp: "Experienced Professional",
   artisan: "Artisan",
