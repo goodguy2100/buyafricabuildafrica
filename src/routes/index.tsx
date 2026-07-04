@@ -80,10 +80,6 @@ const whoWeServe = [
     group: "Private Sector",
     items: ["Manufacturers", "Suppliers", "SMEs", "Financial Institutions", "Investors", "Universities"],
   },
-  {
-    group: "LEARNING INSTITUTIONS\u00a0",
-    items: ["Learning Institutions", "Researchers"],
-  },
 ];
 
 const ecosystemGroups = [
