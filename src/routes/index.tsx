@@ -178,7 +178,7 @@ function Home() {
                 <Counter target={10000} label="Members Target" suffix="+" tone="dark" />
                 <Counter target={800} label="Jobs Target" suffix="+" tone="dark" />
                 <Counter target={1200} label="Trainings Target" suffix="+" tone="dark" />
-                <Counter target={5} label="Regions" tone="dark" />
+                <Counter target={18} label="COUNTRIES" suffix="+" tone="dark" />
               </div>
             </div>
 
