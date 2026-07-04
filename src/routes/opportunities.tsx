@@ -1,8 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { MapPin, Clock, ArrowRight, ChevronDown } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useCallback, useRef, useState } from "react";
+import { MapPin, Clock, ArrowRight, ChevronDown, Loader2, AlertCircle } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { useVerificationGate } from "@/components/VerificationGate";
+import { opportunities, kinds, type Kind } from "@/data/opportunities";
 
 export const Route = createFileRoute("/opportunities")({
   head: () => ({
@@ -19,42 +20,52 @@ export const Route = createFileRoute("/opportunities")({
   component: Opportunities,
 });
 
-type Kind = "Trainings" | "Masterclasses" | "Events";
-
-interface Opp {
-  id: number;
-  kind: Kind;
-  title: string;
-  org: string;
-  location: string;
-  meta: string;
-}
-
-const opportunities: Opp[] = [
-  { id: 1, kind: "Trainings", title: "Advanced Masonry Training", org: "BABA Skills Academy", location: "Online + Nairobi", meta: "Runs every other month · Certificate" },
-  { id: 2, kind: "Trainings", title: "Green Building Fundamentals", org: "BABA Skills Academy", location: "Online", meta: "Every other month · Bi-monthly" },
-  { id: 3, kind: "Trainings", title: "Tiling & Finishing Workshop", org: "BABA Skills Academy", location: "Nairobi, Kenya", meta: "Every other month · Certificate" },
-  { id: 4, kind: "Trainings", title: "Electrical & Solar Installation", org: "BABA Skills Academy", location: "Online + Nairobi", meta: "Bi-monthly · Sign up" },
-  { id: 5, kind: "Trainings", title: "Plumbing & Pipe Fitting", org: "BABA Skills Academy", location: "Nairobi, Kenya", meta: "Every other month · Certificate" },
-  { id: 6, kind: "Trainings", title: "Welding & Metal Fabrication", org: "BABA Skills Academy", location: "Nairobi, Kenya", meta: "Bi-monthly · Sign up" },
-  { id: 7, kind: "Trainings", title: "Carpentry & Wood Finishing", org: "BABA Skills Academy", location: "Nairobi, Kenya", meta: "Every other month · Certificate" },
-  { id: 8, kind: "Trainings", title: "Gypsum & Drywall Installation", org: "BABA Skills Academy", location: "Nairobi, Kenya", meta: "Bi-monthly · Sign up" },
-  { id: 9, kind: "Masterclasses", title: "Sustainable Design Masterclass", org: "BABA Capacity Building Hub", location: "Nairobi, Kenya", meta: "1 day · Sign up" },
-  { id: 10, kind: "Masterclasses", title: "Entrepreneurship & Business Growth", org: "BABA Capacity Building Hub", location: "Online", meta: "Live session · Sign up" },
-  { id: 11, kind: "Events", title: "Gardens Expo & Conference", org: "Buy Africa Build Africa", location: "Sarit Centre, Nairobi", meta: "26–30 Aug 2026 · Register" },
-  { id: 12, kind: "Events", title: "BABA Industry Networking Meetup", org: "Buy Africa Build Africa", location: "Nairobi, Kenya", meta: "Free · Sign up to attend" },
-];
-
-const kinds: ("All" | Kind)[] = ["All", "Trainings", "Masterclasses", "Events"];
+const PAGE_SIZE = 3;
 
 function Opportunities() {
   const [filter, setFilter] = useState<"All" | Kind>("All");
-  const [visibleCount, setVisibleCount] = useState(3);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
   const { requireVerification, GateModal } = useVerificationGate();
+  const gridRef = useRef<HTMLDivElement>(null);
+
   const list =
     filter === "All" ? opportunities : opportunities.filter((o) => o.kind === filter);
   const visible = list.slice(0, visibleCount);
   const hasMore = visibleCount < list.length;
+
+  const resetPaging = (k: "All" | Kind) => {
+    setFilter(k);
+    setVisibleCount(PAGE_SIZE);
+    setLoading(false);
+    setError(false);
+  };
+
+  const loadMore = useCallback(() => {
+    if (loading) return;
+    setError(false);
+    setLoading(true);
+    const prevCount = visibleCount;
+    // Simulate an async fetch so loading / error states are meaningful.
+    window.setTimeout(() => {
+      // Deterministic "failure" hook kept off by default; flip to simulate errors.
+      const failed = false;
+      if (failed) {
+        setLoading(false);
+        setError(true);
+        return;
+      }
+      setVisibleCount((c) => c + PAGE_SIZE);
+      setLoading(false);
+      // Move focus to the first newly revealed card for keyboard users.
+      requestAnimationFrame(() => {
+        const cards = gridRef.current?.querySelectorAll<HTMLElement>("[data-opp-card]");
+        cards?.[prevCount]?.focus();
+      });
+    }, 500);
+  }, [loading, visibleCount]);
+
 
   return (
     <PageShell>
