@@ -73,6 +73,15 @@ export const createRegistration = createServerFn({ method: "POST" })
   .inputValidator((input) => registrationInput.parse(input))
   .handler(async ({ data, context }): Promise<RegistrationRow> => {
     const { supabase, userId } = context;
+
+    // Denormalize commonly-filtered fields from the raw form so the admin
+    // panel can query/filter them directly instead of digging into JSON.
+    const form = (data.data ?? {}) as Record<string, unknown>;
+    const str = (v: unknown): string | null =>
+      typeof v === "string" && v.trim() ? v.trim() : null;
+    const arr = (v: unknown): string[] =>
+      Array.isArray(v) ? v.filter((x): x is string => typeof x === "string") : [];
+
     const { data: row, error } = await supabase
       .from("registrations")
       .insert({
@@ -80,6 +89,25 @@ export const createRegistration = createServerFn({ method: "POST" })
         role: data.role,
         artisan_type: data.artisan_type ?? null,
         data: data.data as Json,
+        full_name: str(form.fullName) ?? str(form.contactPerson),
+        email: str(form.email) ?? str(form.contactEmail),
+        phone: str(form.phone) ?? str(form.contactPhone),
+        national_id: str(form.nationalId),
+        location: str(form.location),
+        occupation: str(form.occupation),
+        trade: str(form.trade),
+        years_experience:
+          str(form.yearsField) ?? str(form.yearsTrade) ?? str(form.yearsInOperation),
+        employment_status: str(form.employmentStatus),
+        education_level: str(form.education),
+        institution_name: str(form.institutionName),
+        field_of_study: str(form.fieldOfStudy),
+        corporate_name: str(form.corporateName),
+        corporate_type: str(form.corporateType),
+        staff_size: str(form.staffSize),
+        business_license: str(form.businessLicense),
+        industries: arr(form.industries),
+        looking_for: arr(form.lookingFor),
       })
       .select("*")
       .single();
