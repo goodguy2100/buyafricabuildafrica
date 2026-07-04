@@ -88,11 +88,6 @@ const ecosystemGroups = [
     benefits: ["Visibility", "Networking", "Business Opportunities", "Professional Development", "Industry Recognition"],
   },
   {
-    group: "Artisans",
-    roles: "Masons, Tilers, Electricians, Plumbers, Painters, Welders, Carpenters, Gypsum specialists and Fabricators.",
-    benefits: ["Training", "Certification", "Market Access", "Mentorship", "Employment Opportunities"],
-  },
-  {
     group: "Private sector",
     roles: "",
     benefits: ["Business Development Support", "Investment Readiness", "Market Access", "Growth Opportunities", "Strategic Partnerships"],
