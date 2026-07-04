@@ -49,9 +49,12 @@ const kinds: ("All" | Kind)[] = ["All", "Trainings", "Masterclasses", "Events"];
 
 function Opportunities() {
   const [filter, setFilter] = useState<"All" | Kind>("All");
+  const [visibleCount, setVisibleCount] = useState(3);
   const { requireVerification, GateModal } = useVerificationGate();
   const list =
     filter === "All" ? opportunities : opportunities.filter((o) => o.kind === filter);
+  const visible = list.slice(0, visibleCount);
+  const hasMore = visibleCount < list.length;
 
   return (
     <PageShell>
