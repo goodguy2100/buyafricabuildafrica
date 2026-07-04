@@ -88,11 +88,6 @@ const ecosystemGroups = [
     benefits: ["Visibility", "Networking", "Business Opportunities", "Professional Development", "Industry Recognition"],
   },
   {
-    group: "Artisans",
-    roles: "Masons, Tilers, Electricians, Plumbers, Painters, Welders, Carpenters, Gypsum specialists and Fabricators.",
-    benefits: ["Training", "Certification", "Market Access", "Mentorship", "Employment Opportunities"],
-  },
-  {
     group: "Private sector",
     roles: "",
     benefits: ["Business Development Support", "Investment Readiness", "Market Access", "Growth Opportunities", "Strategic Partnerships"],
@@ -171,7 +166,7 @@ function Home() {
               </div>
               <div className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-3">
                 <Counter target={50000} label="Members" suffix="+" tone="dark" />
-                <Counter target={30000} label="Artisans" suffix="+" tone="dark" />
+                <Counter target={30000} label="Tradespeople" suffix="+" tone="dark" />
                 <Counter target={9000} label="Professionals" suffix="+" tone="dark" />
                 <Counter target={3500} label="Contractors" suffix="+" tone="dark" />
                 <Counter target={1000} label="Suppliers" suffix="+" tone="dark" />
