@@ -24,33 +24,6 @@ const COPY: Record<GateVariant, { title: string; fee: string; body: string }> = 
 };
 
 export function useVerificationGate() {
-  const [variant, setVariant] = useState<GateVariant | null>(null);
-  const [verified, setVerified] = useState(false);
-  const fetchMine = useServerFn(getMyRegistrations);
-
-  useEffect(() => {
-    let active = true;
-    const load = async () => {
-      const { data } = await supabase.auth.getSession();
-      if (!data.session) {
-        if (active) setVerified(false);
-        return;
-      }
-      try {
-        const rows = await fetchMine();
-        if (active) setVerified(rows.some((r) => r.verified));
-      } catch {
-        if (active) setVerified(false);
-      }
-    };
-    load();
-    const { data: sub } = supabase.auth.onAuthStateChange(() => load());
-    return () => {
-      active = false;
-      sub.subscription.unsubscribe();
-    };
-  }, [fetchMine]);
-
   // Free access for everyone for now — no payment/verification required.
   const requireVerification = useCallback(
     (_v: GateVariant, onProceed?: () => void) => {
@@ -60,12 +33,9 @@ export function useVerificationGate() {
     [],
   );
 
-  const GateModal = variant ? (
-    <VerificationGateModal variant={variant} onClose={() => setVariant(null)} />
-  ) : null;
-
-  return { requireVerification, GateModal };
+  return { requireVerification, GateModal: null as React.ReactNode };
 }
+
 
 function VerificationGateModal({
   variant,
