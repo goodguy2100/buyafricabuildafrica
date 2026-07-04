@@ -25,7 +25,26 @@ export interface RegistrationRow {
   role: string;
   artisan_type: string | null;
   verified: boolean;
+  status: string;
   data: Json;
+  full_name: string | null;
+  email: string | null;
+  phone: string | null;
+  national_id: string | null;
+  location: string | null;
+  occupation: string | null;
+  trade: string | null;
+  years_experience: string | null;
+  employment_status: string | null;
+  education_level: string | null;
+  institution_name: string | null;
+  field_of_study: string | null;
+  corporate_name: string | null;
+  corporate_type: string | null;
+  staff_size: string | null;
+  business_license: string | null;
+  industries: string[];
+  looking_for: string[];
   created_at: string;
   updated_at: string;
 }
