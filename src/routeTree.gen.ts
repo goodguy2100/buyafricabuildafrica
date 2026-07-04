@@ -22,6 +22,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as OpportunitiesIdRouteImport } from './routes/opportunities.$id'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 
@@ -89,6 +90,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OpportunitiesIdRoute = OpportunitiesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => OpportunitiesRoute,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -108,13 +114,14 @@ export interface FileRoutesByFullPath {
   '/directory': typeof DirectoryRoute
   '/events': typeof EventsRoute
   '/impact': typeof ImpactRoute
-  '/opportunities': typeof OpportunitiesRoute
+  '/opportunities': typeof OpportunitiesRouteWithChildren
   '/partners': typeof PartnersRoute
   '/pillars': typeof PillarsRoute
   '/register': typeof RegisterRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/opportunities/$id': typeof OpportunitiesIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -124,13 +131,14 @@ export interface FileRoutesByTo {
   '/directory': typeof DirectoryRoute
   '/events': typeof EventsRoute
   '/impact': typeof ImpactRoute
-  '/opportunities': typeof OpportunitiesRoute
+  '/opportunities': typeof OpportunitiesRouteWithChildren
   '/partners': typeof PartnersRoute
   '/pillars': typeof PillarsRoute
   '/register': typeof RegisterRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/opportunities/$id': typeof OpportunitiesIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -142,13 +150,14 @@ export interface FileRoutesById {
   '/directory': typeof DirectoryRoute
   '/events': typeof EventsRoute
   '/impact': typeof ImpactRoute
-  '/opportunities': typeof OpportunitiesRoute
+  '/opportunities': typeof OpportunitiesRouteWithChildren
   '/partners': typeof PartnersRoute
   '/pillars': typeof PillarsRoute
   '/register': typeof RegisterRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/opportunities/$id': typeof OpportunitiesIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -167,6 +176,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/admin'
     | '/dashboard'
+    | '/opportunities/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -183,6 +193,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/admin'
     | '/dashboard'
+    | '/opportunities/$id'
   id:
     | '__root__'
     | '/'
@@ -200,6 +211,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/_authenticated/admin'
     | '/_authenticated/dashboard'
+    | '/opportunities/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -211,7 +223,7 @@ export interface RootRouteChildren {
   DirectoryRoute: typeof DirectoryRoute
   EventsRoute: typeof EventsRoute
   ImpactRoute: typeof ImpactRoute
-  OpportunitiesRoute: typeof OpportunitiesRoute
+  OpportunitiesRoute: typeof OpportunitiesRouteWithChildren
   PartnersRoute: typeof PartnersRoute
   PillarsRoute: typeof PillarsRoute
   RegisterRoute: typeof RegisterRoute
@@ -311,6 +323,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/opportunities/$id': {
+      id: '/opportunities/$id'
+      path: '/$id'
+      fullPath: '/opportunities/$id'
+      preLoaderRoute: typeof OpportunitiesIdRouteImport
+      parentRoute: typeof OpportunitiesRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -341,6 +360,18 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
+interface OpportunitiesRouteChildren {
+  OpportunitiesIdRoute: typeof OpportunitiesIdRoute
+}
+
+const OpportunitiesRouteChildren: OpportunitiesRouteChildren = {
+  OpportunitiesIdRoute: OpportunitiesIdRoute,
+}
+
+const OpportunitiesRouteWithChildren = OpportunitiesRoute._addFileChildren(
+  OpportunitiesRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
@@ -350,7 +381,7 @@ const rootRouteChildren: RootRouteChildren = {
   DirectoryRoute: DirectoryRoute,
   EventsRoute: EventsRoute,
   ImpactRoute: ImpactRoute,
-  OpportunitiesRoute: OpportunitiesRoute,
+  OpportunitiesRoute: OpportunitiesRouteWithChildren,
   PartnersRoute: PartnersRoute,
   PillarsRoute: PillarsRoute,
   RegisterRoute: RegisterRoute,
