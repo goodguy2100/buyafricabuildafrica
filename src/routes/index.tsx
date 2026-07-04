@@ -88,7 +88,7 @@ const whoWeServe = [
 
 const ecosystemGroups = [
   {
-    group: "Professionals",
+    group: "Professionals & Young Professionals",
     roles: "Architects, Engineers, Quantity Surveyors, Interior Designers, Urban Planners, Project Managers, Contractors and Consultants.",
     benefits: ["Visibility", "Networking", "Business Opportunities", "Professional Development", "Industry Recognition"],
   },
