@@ -91,7 +91,14 @@ export const createRegistration = createServerFn({ method: "POST" })
       .insert({
         user_id: userId,
         role: data.role,
+        user_role: data.role,
         artisan_type: data.artisan_type ?? null,
+        professional_experience:
+          data.role === "professional_young"
+            ? "young"
+            : data.role === "professional_exp"
+              ? "experienced"
+              : null,
         data: data.data as Json,
         full_name: str(form.fullName) ?? str(form.contactPerson),
         email: str(form.email) ?? str(form.contactEmail),
