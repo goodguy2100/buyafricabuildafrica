@@ -68,7 +68,7 @@ const whoWeServe = [
     items: [
       "Engineers", "Quantity Surveyors", "Interior Designers",
       "Urban Planners", "Project Managers", "Contractors", "Masons", "Tilers",
-      "Electricians", "Plumbers", "Painters", "Welders", "Carpenters", "Gypsum",
+      "Electricians", "Plumbers", "Painters", "Welders", "Carpenters", "Gypsum Installers",
       "Artisans",
     ],
   },
@@ -78,7 +78,7 @@ const whoWeServe = [
   },
   {
     group: "Private Sector",
-    items: ["Manufacturers", "Suppliers", "SMEs", "Financial Institutions", "Investors", "Universities"],
+    items: ["Manufacturers", "Suppliers", "SMEs", "Financial Institutions", "Investors", "learning institutions\u00a0"],
   },
 ];
 
