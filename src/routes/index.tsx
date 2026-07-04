@@ -66,7 +66,7 @@ const whoWeServe = [
   {
     group: "\u00a0PROFESSIONALS & ARTISANS",
     items: [
-      "Architects", "Engineers", "Quantity Surveyors", "Interior Designers",
+      "Engineers", "Quantity Surveyors", "Interior Designers",
       "Urban Planners", "Project Managers", "Contractors", "Masons", "Tilers",
       "Electricians", "Plumbers", "Painters", "Welders", "Carpenters", "Gypsum",
       "Artisans",
