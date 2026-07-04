@@ -14,6 +14,114 @@ export type Database = {
   }
   public: {
     Tables: {
+      contact_messages: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          message: string
+          name: string
+          organization: string | null
+          phone: string | null
+          query_type: string | null
+          status: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          message: string
+          name: string
+          organization?: string | null
+          phone?: string | null
+          query_type?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string
+          name?: string
+          organization?: string | null
+          phone?: string | null
+          query_type?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      newsletter_subscribers: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          source: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          source?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          source?: string | null
+        }
+        Relationships: []
+      }
+      opportunity_applications: {
+        Row: {
+          applicant_email: string | null
+          applicant_name: string | null
+          applicant_phone: string | null
+          created_at: string
+          id: string
+          note: string | null
+          opportunity_id: number
+          opportunity_kind: string
+          opportunity_title: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          applicant_email?: string | null
+          applicant_name?: string | null
+          applicant_phone?: string | null
+          created_at?: string
+          id?: string
+          note?: string | null
+          opportunity_id: number
+          opportunity_kind: string
+          opportunity_title: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          applicant_email?: string | null
+          applicant_name?: string | null
+          applicant_phone?: string | null
+          created_at?: string
+          id?: string
+          note?: string | null
+          opportunity_id?: number
+          opportunity_kind?: string
+          opportunity_title?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           bio: string | null
@@ -56,33 +164,90 @@ export type Database = {
       registrations: {
         Row: {
           artisan_type: string | null
+          business_license: string | null
+          corporate_name: string | null
+          corporate_type: string | null
           created_at: string
           data: Json
+          education_level: string | null
+          email: string | null
+          employment_status: string | null
+          field_of_study: string | null
+          full_name: string | null
           id: string
+          industries: string[]
+          institution_name: string | null
+          location: string | null
+          looking_for: string[]
+          national_id: string | null
+          occupation: string | null
+          phone: string | null
           role: string
+          staff_size: string | null
+          status: string
+          trade: string | null
           updated_at: string
           user_id: string
           verified: boolean
+          years_experience: string | null
         }
         Insert: {
           artisan_type?: string | null
+          business_license?: string | null
+          corporate_name?: string | null
+          corporate_type?: string | null
           created_at?: string
           data?: Json
+          education_level?: string | null
+          email?: string | null
+          employment_status?: string | null
+          field_of_study?: string | null
+          full_name?: string | null
           id?: string
+          industries?: string[]
+          institution_name?: string | null
+          location?: string | null
+          looking_for?: string[]
+          national_id?: string | null
+          occupation?: string | null
+          phone?: string | null
           role: string
+          staff_size?: string | null
+          status?: string
+          trade?: string | null
           updated_at?: string
           user_id: string
           verified?: boolean
+          years_experience?: string | null
         }
         Update: {
           artisan_type?: string | null
+          business_license?: string | null
+          corporate_name?: string | null
+          corporate_type?: string | null
           created_at?: string
           data?: Json
+          education_level?: string | null
+          email?: string | null
+          employment_status?: string | null
+          field_of_study?: string | null
+          full_name?: string | null
           id?: string
+          industries?: string[]
+          institution_name?: string | null
+          location?: string | null
+          looking_for?: string[]
+          national_id?: string | null
+          occupation?: string | null
+          phone?: string | null
           role?: string
+          staff_size?: string | null
+          status?: string
+          trade?: string | null
           updated_at?: string
           user_id?: string
           verified?: boolean
+          years_experience?: string | null
         }
         Relationships: []
       }
