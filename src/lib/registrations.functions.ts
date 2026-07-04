@@ -23,8 +23,12 @@ export interface RegistrationRow {
   id: string;
   user_id: string;
   role: string;
+  user_role: string | null;
   artisan_type: string | null;
+  professional_experience: string | null;
   verified: boolean;
+  verification_fee_paid: boolean;
+  last_login: string | null;
   status: string;
   data: Json;
   full_name: string | null;
