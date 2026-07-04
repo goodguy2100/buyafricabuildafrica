@@ -78,7 +78,10 @@ function Opportunities() {
           {kinds.map((k) => (
             <button
               key={k}
-              onClick={() => setFilter(k)}
+              onClick={() => {
+                setFilter(k);
+                setVisibleCount(3);
+              }}
               className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
                 filter === k
                   ? "bg-baba-blue text-baba-cream"
