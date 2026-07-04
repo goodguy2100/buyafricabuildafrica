@@ -171,7 +171,15 @@ function DashboardPage() {
             </div>
 
             {tab === "profile" && <ProfileTab profile={profile} role={role} />}
-            {tab === "opportunities" && <OpportunitiesTab verified={verified} fee={fee} />}
+            {tab === "opportunities" && (
+              <OpportunitiesTab
+                verified={verified}
+                fee={fee}
+                role={role}
+                artisanType={registrations[0]?.artisan_type ?? null}
+                profile={profile}
+              />
+            )}
             {tab === "registrations" && <RegistrationsTab registrations={registrations} />}
             {tab === "settings" && <SettingsTab profile={profile} />}
           </div>
