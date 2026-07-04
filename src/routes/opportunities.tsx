@@ -94,7 +94,7 @@ function Opportunities() {
         </div>
 
         <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {list.map((o) => (
+          {visible.map((o) => (
             <article
               key={o.id}
               className="baba-card-hover flex flex-col rounded-2xl border border-baba-blue/10 bg-card p-6"
@@ -121,6 +121,17 @@ function Opportunities() {
             </article>
           ))}
         </div>
+
+        {hasMore && (
+          <div className="mt-10 flex justify-center">
+            <button
+              onClick={() => setVisibleCount((c) => c + 3)}
+              className="inline-flex items-center gap-2 rounded-full border border-baba-blue/20 bg-white px-6 py-2.5 text-sm font-semibold text-baba-blue shadow-sm transition-colors hover:bg-baba-blue hover:text-white"
+            >
+              Show more <ChevronDown className="h-4 w-4" />
+            </button>
+          </div>
+        )}
       </section>
       {GateModal}
     </PageShell>
