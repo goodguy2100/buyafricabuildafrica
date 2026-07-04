@@ -64,7 +64,7 @@ const howBabaWorks = [
 
 const whoWeServe = [
   {
-    group: "Individuals & Professionals",
+    group: "INDIVIDUALS, PROFESSIONALS & Artisans",
     items: [
       "Architects", "Engineers", "Quantity Surveyors", "Interior Designers",
       "Urban Planners", "Project Managers", "Contractors", "Masons", "Tilers",
