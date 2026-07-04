@@ -64,7 +64,7 @@ const howBabaWorks = [
 
 const whoWeServe = [
   {
-    group: "INDIVIDUALS, PROFESSIONALS & Artisans",
+    group: "YOUNG PROFESSIONALS, PROFESSIONALS & ARTISANS",
     items: [
       "Architects", "Engineers", "Quantity Surveyors", "Interior Designers",
       "Urban Planners", "Project Managers", "Contractors", "Masons", "Tilers",
@@ -98,12 +98,12 @@ const ecosystemGroups = [
     benefits: ["Training", "Certification", "Market Access", "Mentorship", "Employment Opportunities"],
   },
   {
-    group: "Built Environment Entrepreneurs & SMEs",
+    group: "Private sector",
     roles: "",
     benefits: ["Business Development Support", "Investment Readiness", "Market Access", "Growth Opportunities", "Strategic Partnerships"],
   },
   {
-    group: "Manufacturers & Suppliers",
+    group: "Educational institutions",
     roles: "",
     benefits: ["Product Visibility", "Access to Professionals", "Market Expansion", "Expo Participation", "Industry Partnerships"],
   },
