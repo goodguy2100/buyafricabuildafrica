@@ -69,12 +69,12 @@ const whoWeServe = [
       "Architects", "Engineers", "Quantity Surveyors", "Interior Designers",
       "Urban Planners", "Project Managers", "Contractors", "Masons", "Tilers",
       "Electricians", "Plumbers", "Painters", "Welders", "Carpenters", "Gypsum",
-      "Artisans", "Entrepreneurs", "Students",
+      "Artisans",
     ],
   },
   {
     group: "Government Institutions",
-    items: ["Government Agencies", "Public Institutions", "NGOs", "Development Partners"],
+    items: ["Government Agencies", "NGOs", "Development Partners"],
   },
   {
     group: "Private Sector",
@@ -82,7 +82,7 @@ const whoWeServe = [
   },
   {
     group: "Universities",
-    items: ["Educational Institutions", "Students", "Researchers"],
+    items: ["Educational Institutions", "Researchers"],
   },
 ];
 
