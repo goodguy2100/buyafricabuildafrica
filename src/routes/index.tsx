@@ -170,15 +170,30 @@ function Home() {
             <div className="mx-auto mt-14 max-w-4xl rounded-3xl border border-baba-blue/10 bg-white/70 p-6 shadow-xl shadow-baba-blue/10 backdrop-blur sm:p-8">
               <div className="flex flex-col items-center gap-2">
                 <span className="inline-flex items-center gap-2 rounded-full border border-baba-blue/20 bg-white/80 px-3 py-1 text-xs font-bold uppercase tracking-widest text-baba-blue shadow-sm backdrop-blur">
-                  🎯 Our Impact Targets
+                  Our Growth Targets
                 </span>
-                <p className="text-xs text-baba-slate/60">Where we're headed as we grow — goals, not yet achieved.</p>
+                <p className="text-xs text-baba-slate/60">The numbers we're working towards as the BABA ecosystem grows.</p>
               </div>
-              <div className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-4">
-                <Counter target={10000} label="Members Target" suffix="+" tone="dark" />
-                <Counter target={800} label="Jobs Target" suffix="+" tone="dark" />
-                <Counter target={1200} label="Trainings Target" suffix="+" tone="dark" />
-                <Counter target={18} label="COUNTRIES" suffix="+" tone="dark" />
+              <div className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-3">
+                <Counter target={50000} label="Members" suffix="+" tone="dark" />
+                <Counter target={30000} label="Artisans" suffix="+" tone="dark" />
+                <Counter target={9000} label="Professionals" suffix="+" tone="dark" />
+                <Counter target={3500} label="Contractors" suffix="+" tone="dark" />
+                <Counter target={1000} label="Suppliers" suffix="+" tone="dark" />
+                <Counter target={100} label="Partners" suffix="+" tone="dark" />
+              </div>
+              <div className="mt-6 grid gap-6 border-t border-baba-blue/10 pt-6 sm:grid-cols-2">
+                {impactStats.map((s) => (
+                  <div key={s.label} className="flex items-center gap-3">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-baba-blue/10">
+                      <s.icon className="h-5 w-5 text-baba-blue" />
+                    </div>
+                    <div>
+                      <p className="font-display text-lg font-bold text-baba-slate">{s.value}</p>
+                      <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-baba-slate/70">{s.label}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
 
