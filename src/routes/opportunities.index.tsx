@@ -5,7 +5,7 @@ import { PageShell } from "@/components/PageShell";
 import { useVerificationGate } from "@/components/VerificationGate";
 import { opportunities, kinds, type Kind } from "@/data/opportunities";
 
-export const Route = createFileRoute("/opportunities")({
+export const Route = createFileRoute("/opportunities/")({
   head: () => ({
     meta: [
       { title: "Up & Coming | Buy Africa Build Africa (BABA)" },
