@@ -177,17 +177,21 @@ export type Database = {
           id: string
           industries: string[]
           institution_name: string | null
+          last_login: string | null
           location: string | null
           looking_for: string[]
           national_id: string | null
           occupation: string | null
           phone: string | null
+          professional_experience: string | null
           role: string
           staff_size: string | null
           status: string
           trade: string | null
           updated_at: string
           user_id: string
+          user_role: string | null
+          verification_fee_paid: boolean
           verified: boolean
           years_experience: string | null
         }
@@ -206,17 +210,21 @@ export type Database = {
           id?: string
           industries?: string[]
           institution_name?: string | null
+          last_login?: string | null
           location?: string | null
           looking_for?: string[]
           national_id?: string | null
           occupation?: string | null
           phone?: string | null
+          professional_experience?: string | null
           role: string
           staff_size?: string | null
           status?: string
           trade?: string | null
           updated_at?: string
           user_id: string
+          user_role?: string | null
+          verification_fee_paid?: boolean
           verified?: boolean
           years_experience?: string | null
         }
@@ -235,21 +243,78 @@ export type Database = {
           id?: string
           industries?: string[]
           institution_name?: string | null
+          last_login?: string | null
           location?: string | null
           looking_for?: string[]
           national_id?: string | null
           occupation?: string | null
           phone?: string | null
+          professional_experience?: string | null
           role?: string
           staff_size?: string | null
           status?: string
           trade?: string | null
           updated_at?: string
           user_id?: string
+          user_role?: string | null
+          verification_fee_paid?: boolean
           verified?: boolean
           years_experience?: string | null
         }
         Relationships: []
+      }
+      role_containers: {
+        Row: {
+          container_id: string
+          container_type: string
+          created_at: string
+          display_name: string
+          member_count: number
+        }
+        Insert: {
+          container_id?: string
+          container_type: string
+          created_at?: string
+          display_name: string
+          member_count?: number
+        }
+        Update: {
+          container_id?: string
+          container_type?: string
+          created_at?: string
+          display_name?: string
+          member_count?: number
+        }
+        Relationships: []
+      }
+      user_container_memberships: {
+        Row: {
+          container_id: string
+          joined_at: string
+          membership_id: string
+          user_id: string
+        }
+        Insert: {
+          container_id: string
+          joined_at?: string
+          membership_id?: string
+          user_id: string
+        }
+        Update: {
+          container_id?: string
+          joined_at?: string
+          membership_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_container_memberships_container_id_fkey"
+            columns: ["container_id"]
+            isOneToOne: false
+            referencedRelation: "role_containers"
+            referencedColumns: ["container_id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
@@ -277,6 +342,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      container_type_for: {
+        Args: { _artisan_type: string; _user_role: string }
+        Returns: string
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
