@@ -27,7 +27,7 @@ function Opportunities() {
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
-  const { requireVerification, GateModal } = useVerificationGate();
+  const { GateModal } = useVerificationGate();
   const gridRef = useRef<HTMLDivElement>(null);
 
   const list =
