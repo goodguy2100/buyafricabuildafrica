@@ -51,17 +51,13 @@ export function useVerificationGate() {
     };
   }, [fetchMine]);
 
-  // Returns true if the action may proceed, false if the gate was shown.
+  // Free access for everyone for now — no payment/verification required.
   const requireVerification = useCallback(
-    (v: GateVariant, onProceed?: () => void) => {
-      if (verified) {
-        onProceed?.();
-        return true;
-      }
-      setVariant(v);
-      return false;
+    (_v: GateVariant, onProceed?: () => void) => {
+      onProceed?.();
+      return true;
     },
-    [verified],
+    [],
   );
 
   const GateModal = variant ? (
