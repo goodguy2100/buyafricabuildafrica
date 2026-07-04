@@ -1,20 +1,32 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Menu, X, LogOut, LayoutDashboard, LogIn } from "lucide-react";
+import { Menu, X, LogOut, LayoutDashboard, LogIn, ChevronDown } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import babaLogo from "@/assets/baba-logo-vibrant.png";
 import { supabase } from "@/integrations/supabase/client";
 import { getIsAdmin } from "@/lib/registrations.functions";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
-const navLinks = [
+// Primary links stay inline; the rest live in the "More" menu to reduce clutter.
+const primaryLinks = [
   { to: "/", label: "Home" },
   { to: "/about", label: "About Us" },
   { to: "/pillars", label: "Pillars" },
+  { to: "/events", label: "Events" },
+] as const;
+
+const moreLinks = [
   { to: "/directory", label: "National Directory" },
   { to: "/opportunities", label: "Opportunities" },
-  { to: "/events", label: "Events" },
   { to: "/contact", label: "Contact" },
 ] as const;
+
+const navLinks = [...primaryLinks, ...moreLinks] as const;
 
 export function Header() {
   const [open, setOpen] = useState(false);
