@@ -166,7 +166,7 @@ function Home() {
               </div>
               <div className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-3">
                 <Counter target={50000} label="Members" suffix="+" tone="dark" />
-                <Counter target={30000} label="Artisans" suffix="+" tone="dark" />
+                <Counter target={30000} label="Tradespeople" suffix="+" tone="dark" />
                 <Counter target={9000} label="Professionals" suffix="+" tone="dark" />
                 <Counter target={3500} label="Contractors" suffix="+" tone="dark" />
                 <Counter target={1000} label="Suppliers" suffix="+" tone="dark" />
