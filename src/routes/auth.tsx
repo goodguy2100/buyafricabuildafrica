@@ -281,6 +281,7 @@ function AuthPage() {
             onClick={() => {
               setMode(mode === "join" ? "signin" : "join");
               setError("");
+              setNotice("");
             }}
             className="font-bold text-baba-copper-dark hover:underline"
           >
