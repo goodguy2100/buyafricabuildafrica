@@ -629,6 +629,34 @@ function SettingsTab({ profile }: { profile: ProfileRow | null }) {
   return (
     <div className="grid gap-6">
       <div className="rounded-2xl border border-baba-blue/10 bg-card p-6">
+        <h2 className="font-display text-lg font-bold text-baba-slate">Opportunity Preferences</h2>
+        <p className="mt-1 text-sm text-baba-slate/60">
+          Edit your skills and industries to instantly re-rank your “For You” opportunities.
+        </p>
+        <div className="mt-4 grid gap-4">
+          <Editable label="Skills / Interests" value={skills} onChange={setSkills} />
+          <Editable label="Industries" value={industries} onChange={setIndustries} />
+        </div>
+        <div className="mt-4 flex items-center gap-3">
+          <button
+            onClick={() => prefsMutation.mutate()}
+            disabled={prefsMutation.isPending}
+            className="flex items-center gap-2 rounded-lg baba-cta px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
+          >
+            {prefsMutation.isPending && <Loader2 className="h-4 w-4 animate-spin" />} Save Preferences
+          </button>
+          {prefsMutation.isSuccess && !prefsMutation.isPending && (
+            <span className="flex items-center gap-1 text-sm font-semibold text-green-600">
+              <Check className="h-4 w-4" /> Saved — rankings updated
+            </span>
+          )}
+          {prefsMutation.isError && (
+            <span className="text-sm font-semibold text-destructive">Could not save.</span>
+          )}
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-baba-blue/10 bg-card p-6">
         <h2 className="font-display text-lg font-bold text-baba-slate">Change Password</h2>
         <div className="mt-4 flex flex-wrap items-end gap-3">
           <label className="grid flex-1 gap-1.5">
