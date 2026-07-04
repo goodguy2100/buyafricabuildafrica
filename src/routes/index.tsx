@@ -99,7 +99,7 @@ const ecosystemGroups = [
     benefits: ["Business Development Support", "Investment Readiness", "Market Access", "Growth Opportunities", "Strategic Partnerships"],
   },
   {
-    group: "Educational institutions",
+    group: "Learning institutions",
     roles: "",
     benefits: ["Product Visibility", "Access to Professionals", "Market Expansion", "Expo Participation", "Industry Partnerships"],
   },
