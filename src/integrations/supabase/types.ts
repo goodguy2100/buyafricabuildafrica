@@ -56,6 +56,56 @@ export type Database = {
         }
         Relationships: []
       }
+      gallery_media: {
+        Row: {
+          caption: string | null
+          created_at: string
+          created_by: string | null
+          date_taken: string | null
+          id: string
+          media_type: string
+          media_url: string
+          opportunity_id: string | null
+          published: boolean
+          sort_order: number
+          title: string | null
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string
+          created_by?: string | null
+          date_taken?: string | null
+          id?: string
+          media_type?: string
+          media_url: string
+          opportunity_id?: string | null
+          published?: boolean
+          sort_order?: number
+          title?: string | null
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string
+          created_by?: string | null
+          date_taken?: string | null
+          id?: string
+          media_type?: string
+          media_url?: string
+          opportunity_id?: string | null
+          published?: boolean
+          sort_order?: number
+          title?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gallery_media_opportunity_id_fkey"
+            columns: ["opportunity_id"]
+            isOneToOne: false
+            referencedRelation: "opportunities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       newsletter_subscribers: {
         Row: {
           created_at: string
@@ -74,6 +124,131 @@ export type Database = {
           email?: string
           id?: string
           source?: string | null
+        }
+        Relationships: []
+      }
+      notifications_sent: {
+        Row: {
+          active: boolean
+          banner_url: string | null
+          body: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          is_popup: boolean
+          link_url: string | null
+          message_type: string
+          opportunity_id: string | null
+          recipient_container: string | null
+          recipient_type: string
+          scheduled_for: string | null
+          sent_count: number
+          show_from: string | null
+          show_until: string | null
+          status: string
+          title: string
+        }
+        Insert: {
+          active?: boolean
+          banner_url?: string | null
+          body?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_popup?: boolean
+          link_url?: string | null
+          message_type?: string
+          opportunity_id?: string | null
+          recipient_container?: string | null
+          recipient_type?: string
+          scheduled_for?: string | null
+          sent_count?: number
+          show_from?: string | null
+          show_until?: string | null
+          status?: string
+          title: string
+        }
+        Update: {
+          active?: boolean
+          banner_url?: string | null
+          body?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_popup?: boolean
+          link_url?: string | null
+          message_type?: string
+          opportunity_id?: string | null
+          recipient_container?: string | null
+          recipient_type?: string
+          scheduled_for?: string | null
+          sent_count?: number
+          show_from?: string | null
+          show_until?: string | null
+          status?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_sent_opportunity_id_fkey"
+            columns: ["opportunity_id"]
+            isOneToOne: false
+            referencedRelation: "opportunities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      opportunities: {
+        Row: {
+          applicants_count: number
+          attachments: Json
+          completed: boolean
+          created_at: string
+          created_by: string | null
+          deadline: string | null
+          description: string | null
+          event_date: string | null
+          id: string
+          kind: string
+          location: string | null
+          status: string
+          target_containers: string[]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          applicants_count?: number
+          attachments?: Json
+          completed?: boolean
+          created_at?: string
+          created_by?: string | null
+          deadline?: string | null
+          description?: string | null
+          event_date?: string | null
+          id?: string
+          kind?: string
+          location?: string | null
+          status?: string
+          target_containers?: string[]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          applicants_count?: number
+          attachments?: Json
+          completed?: boolean
+          created_at?: string
+          created_by?: string | null
+          deadline?: string | null
+          description?: string | null
+          event_date?: string | null
+          id?: string
+          kind?: string
+          location?: string | null
+          status?: string
+          target_containers?: string[]
+          title?: string
+          updated_at?: string
         }
         Relationships: []
       }
