@@ -69,7 +69,7 @@ const whoWeServe = [
       "Architects", "Engineers", "Quantity Surveyors", "Interior Designers",
       "Urban Planners", "Project Managers", "Contractors", "Masons", "Tilers",
       "Electricians", "Plumbers", "Painters", "Welders", "Carpenters", "Gypsum",
-      "Artisans", "Entrepreneurs", "Youth",
+      "Artisans", "Entrepreneurs", "Students",
     ],
   },
   {
