@@ -259,6 +259,11 @@ function AuthPage() {
           )}
 
           {error && <p className="text-sm font-medium text-destructive">{error}</p>}
+          {notice && (
+            <p className="rounded-lg border border-baba-blue/20 bg-baba-blue/5 px-3.5 py-2.5 text-sm font-medium text-baba-blue">
+              {notice}
+            </p>
+          )}
 
           <button
             type="submit"
