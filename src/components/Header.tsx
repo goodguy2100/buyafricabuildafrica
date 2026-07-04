@@ -78,7 +78,7 @@ export function Header() {
         </Link>
 
         <nav className="hidden items-center gap-3 xl:flex">
-          {navLinks.map((l) => (
+          {primaryLinks.map((l) => (
             <Link
               key={l.to}
               to={l.to}
@@ -88,11 +88,26 @@ export function Header() {
               {l.label}
             </Link>
           ))}
+          <DropdownMenu>
+            <DropdownMenuTrigger className="flex items-center gap-1 font-display text-[0.72rem] font-semibold uppercase tracking-wide text-baba-slate/70 outline-none transition-colors hover:text-baba-blue 2xl:text-[0.78rem]">
+              More <ChevronDown className="h-3.5 w-3.5" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="min-w-44">
+              {moreLinks.map((l) => (
+                <DropdownMenuItem key={l.to} asChild>
+                  <Link
+                    to={l.to}
+                    className="font-display text-sm font-semibold text-baba-slate/80"
+                    activeProps={{ className: "text-baba-blue" }}
+                  >
+                    {l.label}
+                  </Link>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </nav>
 
-        <div className="hidden items-center gap-2.5 xl:flex">
-          <Link
-            to="/register"
             className="rounded-full baba-cta px-4 py-2 text-sm font-semibold text-white"
           >
             Join as Artisans
