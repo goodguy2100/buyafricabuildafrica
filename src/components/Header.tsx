@@ -108,6 +108,9 @@ export function Header() {
           </DropdownMenu>
         </nav>
 
+        <div className="hidden items-center gap-2.5 xl:flex">
+          <Link
+            to="/register"
             className="rounded-full baba-cta px-4 py-2 text-sm font-semibold text-white"
           >
             Join as Artisans
