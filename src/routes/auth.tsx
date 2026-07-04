@@ -117,11 +117,24 @@ function AuthPage() {
         },
       });
       if (signUpErr) {
-        if (/already registered|already exists/i.test(signUpErr.message)) {
-          throw new Error("An account with that ID already exists. Tap Sign in instead.");
+        // ID already registered — sign them in instead of creating a duplicate.
+        if (/already registered|already exists|user already/i.test(signUpErr.message)) {
+          const { error: existingSignInErr } = await supabase.auth.signInWithPassword({
+            email: syntheticEmail,
+            password,
+          });
+          if (existingSignInErr) {
+            throw new Error(
+              "An account with that ID already exists, but we couldn't log you in automatically. Please tap Log in and check your ID number.",
+            );
+          }
+          setNotice("You're already a member — we've signed you in. Welcome back!");
+          setTimeout(() => navigate({ to: redirectTo() }), 1200);
+          return;
         }
         throw signUpErr;
       }
+
 
       // Ensure a session (auto-confirm is on, so this succeeds).
       const { data: sess } = await supabase.auth.getSession();
