@@ -391,27 +391,27 @@ function RoleCard({
 
 function requiredFields(role: RoleValue, form: FormState): string[] {
   if (role === "individual") {
-    return ["fullName", "email", "phone", "nationalId", "occupation", "location"];
+    return ["fullName", "phone", "nationalId", "occupation", "location"];
   }
   if (role === "professional_young") {
     return [
-      "fullName", "email", "phone", "nationalId", "occupation", "yearsField",
+      "fullName", "phone", "nationalId", "occupation", "yearsField",
       "education", "institutionName", "fieldOfStudy", "location",
     ];
   }
   if (role === "professional_exp") {
     const base = [
-      "fullName", "email", "phone", "nationalId", "occupation", "yearsField",
+      "fullName", "phone", "nationalId", "occupation", "yearsField",
       "employmentStatus", "education", "institutionName", "fieldOfStudy", "location",
     ];
     if (form.employmentStatus === "Employed") base.push("organizationName", "jobTitle", "yearsAtOrg");
     return base;
   }
   if (role === "artisan") {
-    return ["fullName", "email", "phone", "nationalId", "trade", "yearsTrade", "areasServed", "canTravel"];
+    return ["fullName", "phone", "nationalId", "trade", "yearsTrade", "areasServed", "canTravel"];
   }
   return [
-    "corporateName", "contactPerson", "contactEmail", "contactPhone", "yearsInOperation",
+    "corporateName", "contactPerson", "contactPhone", "yearsInOperation",
     "businessLicense", "corporateType", "staffSize", "location",
   ];
 }
@@ -429,7 +429,7 @@ function IndividualFields({ form, errors, set, toggle }: FieldProps) {
   return (
     <>
       <Field label="Full Name" name="fullName" required {...{ form, errors, set }} />
-      <Field label="Email" name="email" type="email" required {...{ form, errors, set }} />
+      <Field label="Email (optional)" name="email" type="email" {...{ form, errors, set }} />
       <Field label="Phone Number" name="phone" required {...{ form, errors, set }} />
       <Field label="National ID Number" name="nationalId" required {...{ form, errors, set }} />
       <SelectField label="Primary Occupation / Skill Area" name="occupation" required options={OCCUPATIONS} {...{ form, errors, set }} />
@@ -446,7 +446,7 @@ function YoungProFields({ form, errors, set, toggle }: FieldProps) {
   return (
     <>
       <Field label="Full Name" name="fullName" required {...{ form, errors, set }} />
-      <Field label="Email" name="email" type="email" required {...{ form, errors, set }} />
+      <Field label="Email (optional)" name="email" type="email" {...{ form, errors, set }} />
       <Field label="Phone Number" name="phone" required {...{ form, errors, set }} />
       <Field label="National ID Number" name="nationalId" required {...{ form, errors, set }} />
       <SelectField label="Primary Occupation" name="occupation" required options={OCCUPATIONS} {...{ form, errors, set }} />
@@ -469,7 +469,7 @@ function ExpProFields({ form, errors, set, toggle }: FieldProps) {
   return (
     <>
       <Field label="Full Name" name="fullName" required {...{ form, errors, set }} />
-      <Field label="Email" name="email" type="email" required {...{ form, errors, set }} />
+      <Field label="Email (optional)" name="email" type="email" {...{ form, errors, set }} />
       <Field label="Phone Number" name="phone" required {...{ form, errors, set }} />
       <Field label="National ID Number" name="nationalId" required {...{ form, errors, set }} />
       <SelectField label="Primary Occupation" name="occupation" required options={OCCUPATIONS} {...{ form, errors, set }} />
@@ -502,7 +502,7 @@ function ArtisanFields({ form, errors, set, toggle }: FieldProps) {
   return (
     <>
       <Field label="Full Name" name="fullName" required {...{ form, errors, set }} />
-      <Field label="Email" name="email" type="email" required {...{ form, errors, set }} />
+      <Field label="Email (optional)" name="email" type="email" {...{ form, errors, set }} />
       <Field label="Phone Number" name="phone" required {...{ form, errors, set }} />
       <Field label="National ID Number" name="nationalId" required {...{ form, errors, set }} />
       <SelectField label="Trade / Specialization" name="trade" required options={TRADES} {...{ form, errors, set }} />
@@ -523,7 +523,7 @@ function CorporateFields({ form, errors, set, toggle }: FieldProps) {
     <>
       <Field label="Corporate Name" name="corporateName" required {...{ form, errors, set }} />
       <Field label="Contact Person Full Name" name="contactPerson" required {...{ form, errors, set }} />
-      <Field label="Contact Email" name="contactEmail" type="email" required {...{ form, errors, set }} />
+      <Field label="Contact Email (optional)" name="contactEmail" type="email" {...{ form, errors, set }} />
       <Field label="Contact Phone Number" name="contactPhone" required {...{ form, errors, set }} />
       <Field label="Years in operation" name="yearsInOperation" required {...{ form, errors, set }} />
       <Field label="Business License Number" name="businessLicense" required {...{ form, errors, set }} />
