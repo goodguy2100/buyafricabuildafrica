@@ -267,8 +267,8 @@ function GetStarted() {
             <div className="mt-8 grid gap-5 sm:grid-cols-2">
               <RoleCard
                 icon={Sparkles}
-                title="Young Professional"
-                desc="Less than 5 years in your field, still building experience."
+                title="Young Professional (Students)"
+                desc="Less than 5 years (zero Experience) in your field, still building experience."
                 onClick={() => chooseRole("professional_young")}
               />
               <RoleCard
