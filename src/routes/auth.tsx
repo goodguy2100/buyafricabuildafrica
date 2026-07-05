@@ -66,7 +66,7 @@ function AuthPage() {
 
   const pause = (ms: number) => new Promise<void>((resolve) => window.setTimeout(resolve, ms));
 
-  const finishRegistrationSetup = async (name: string, id: string, syntheticEmail: string, password: string) => {
+  const finishRegistrationSetup = async (name: string, id: string) => {
     const label = CATEGORIES.find((c) => c.value === category)?.label ?? category;
     try {
       await submitRegistration({
@@ -181,7 +181,7 @@ function AuthPage() {
       }
 
       // Save profile/registration details, but never keep the user stuck on a spinner if this is slow.
-      const setup = finishRegistrationSetup(name, id, syntheticEmail, password);
+      const setup = finishRegistrationSetup(name, id);
       await Promise.race([setup, pause(2500)]);
       await navigate({ to: destination, replace: true });
     } catch (err) {
