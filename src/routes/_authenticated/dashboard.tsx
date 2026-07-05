@@ -73,6 +73,7 @@ function DashboardPage() {
   const profileFn = useServerFn(getMyProfile);
   const regsFn = useServerFn(getMyRegistrations);
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const profileQuery = useQuery({ queryKey: ["my-profile"], queryFn: () => profileFn() });
   const regsQuery = useQuery({ queryKey: ["my-registrations"], queryFn: () => regsFn() });
@@ -86,8 +87,10 @@ function DashboardPage() {
   const fee = ROLE_FEES[role] ?? 100;
 
   const signOut = async () => {
+    await queryClient.cancelQueries();
+    queryClient.clear();
     await supabase.auth.signOut();
-    router.navigate({ to: "/auth", search: { redirect: "/dashboard" } });
+    router.navigate({ to: "/auth", search: { redirect: "/dashboard" }, replace: true });
   };
 
   if (profileQuery.isLoading || regsQuery.isLoading) {

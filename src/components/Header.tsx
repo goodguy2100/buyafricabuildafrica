@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
 import { Menu, X, LogOut, LayoutDashboard, LogIn, ChevronDown } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import babaLogo from "@/assets/baba-logo-vibrant.png";
@@ -33,6 +34,7 @@ export function Header() {
   const [signedIn, setSignedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const checkAdmin = useServerFn(getIsAdmin);
 
   useEffect(() => {
@@ -61,9 +63,11 @@ export function Header() {
   }, [checkAdmin]);
 
   const signOut = async () => {
+    await queryClient.cancelQueries();
+    queryClient.clear();
     await supabase.auth.signOut();
     setOpen(false);
-    navigate({ to: "/" });
+    navigate({ to: "/auth", replace: true });
   };
 
   return (
