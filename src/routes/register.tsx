@@ -469,7 +469,7 @@ function ExpProFields({ form, errors, set, toggle }: FieldProps) {
   return (
     <>
       <Field label="Full Name" name="fullName" required {...{ form, errors, set }} />
-      <Field label="Email" name="email" type="email" required {...{ form, errors, set }} />
+      <Field label="Email (optional)" name="email" type="email" {...{ form, errors, set }} />
       <Field label="Phone Number" name="phone" required {...{ form, errors, set }} />
       <Field label="National ID Number" name="nationalId" required {...{ form, errors, set }} />
       <SelectField label="Primary Occupation" name="occupation" required options={OCCUPATIONS} {...{ form, errors, set }} />
