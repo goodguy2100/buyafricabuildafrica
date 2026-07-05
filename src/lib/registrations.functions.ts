@@ -86,13 +86,27 @@ export const createRegistration = createServerFn({ method: "POST" })
     const arr = (v: unknown): string[] =>
       Array.isArray(v) ? v.filter((x): x is string => typeof x === "string") : [];
 
+    // Normalize artisan trade labels (e.g. "Gypsum Installer") into the slug
+    // values the DB check constraint accepts (e.g. "gypsum_installer").
+    const ALLOWED_TRADES = [
+      "plumber", "electrician", "mason", "carpenter",
+      "painter", "welder", "tiler", "gypsum_installer", "other",
+    ];
+    const normalizeTrade = (v: unknown): string | null => {
+      const s = typeof v === "string" ? v.trim().toLowerCase().replace(/\s+/g, "_") : "";
+      if (!s) return null;
+      return ALLOWED_TRADES.includes(s) ? s : "other";
+    };
+    const artisanType =
+      data.role === "artisan" ? normalizeTrade(data.artisan_type) : null;
+
     const { data: row, error } = await supabase
       .from("registrations")
       .insert({
         user_id: userId,
         role: data.role,
         user_role: data.role,
-        artisan_type: data.artisan_type ?? null,
+        artisan_type: artisanType,
         professional_experience:
           data.role === "professional_young"
             ? "young"
