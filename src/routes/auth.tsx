@@ -64,6 +64,29 @@ function AuthPage() {
   const redirectTo = () =>
     sanitizeRedirect(new URLSearchParams(window.location.search).get("redirect"));
 
+  const pause = (ms: number) => new Promise<void>((resolve) => window.setTimeout(resolve, ms));
+
+  const finishRegistrationSetup = async (name: string, id: string, syntheticEmail: string, password: string) => {
+    const label = CATEGORIES.find((c) => c.value === category)?.label ?? category;
+    try {
+      await submitRegistration({
+        data: {
+          role: category,
+          artisan_type: category === "artisan" ? "Skilled Trade" : undefined,
+          data: {
+            fullName: name,
+            nationalId: id,
+            email: email.trim() || null,
+            category: label,
+          },
+        },
+      });
+      await saveProfile({ data: { full_name: name } });
+    } catch {
+      // Non-fatal — the account is already active; details can be completed later.
+    }
+  };
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) navigate({ to: redirectTo() });
@@ -87,23 +110,37 @@ function AuthPage() {
     try {
       const syntheticEmail = idToEmail(id);
       const password = idToPassword(id);
-
-      if (mode === "signin") {
-        const { error: signInErr } = await supabase.auth.signInWithPassword({
+      const destination = redirectTo();
+      const signInWithId = () =>
+        supabase.auth.signInWithPassword({
           email: syntheticEmail,
           password,
         });
+
+      if (mode === "signin") {
+        const { error: signInErr } = await signInWithId();
         if (signInErr) {
           throw new Error(
             "We couldn't find an account with that ID. Check your ID number or tap Join instead.",
           );
         }
-        navigate({ to: redirectTo() });
+        await navigate({ to: destination, replace: true });
         return;
       }
 
+      // If this ID is already registered, sign in immediately instead of doing a slow duplicate signup attempt.
+      const existing = await signInWithId();
+      if (!existing.error) {
+        setNotice("You're already a member — we've signed you in. Welcome back!");
+        await navigate({ to: destination, replace: true });
+        return;
+      }
+      if (!/invalid login credentials|invalid_credentials/i.test(existing.error.message)) {
+        throw existing.error;
+      }
+
       // JOIN — create a free account keyed on the ID number.
-      const { error: signUpErr } = await supabase.auth.signUp({
+      const { data: signUpData, error: signUpErr } = await supabase.auth.signUp({
         email: syntheticEmail,
         password,
         options: {
@@ -135,34 +172,18 @@ function AuthPage() {
         throw signUpErr;
       }
 
-
-      // Ensure a session (auto-confirm is on, so this succeeds).
-      const { data: sess } = await supabase.auth.getSession();
-      if (!sess.session) {
-        await supabase.auth.signInWithPassword({ email: syntheticEmail, password });
+      // Ensure a session. Some auth settings create the user but do not return a session immediately.
+      if (!signUpData.session) {
+        const { error: signInAfterJoinErr } = await signInWithId();
+        if (signInAfterJoinErr) {
+          throw new Error("Your account was created, but we could not log you in automatically. Please tap Log in and enter the same ID number.");
+        }
       }
 
-      // Record the registration + profile so the dashboard and admin see it.
-      const label = CATEGORIES.find((c) => c.value === category)?.label ?? category;
-      try {
-        await submitRegistration({
-          data: {
-            role: category,
-            artisan_type: category === "artisan" ? "Skilled Trade" : undefined,
-            data: {
-              fullName: name,
-              nationalId: id,
-              email: email.trim() || null,
-              category: label,
-            },
-          },
-        });
-        await saveProfile({ data: { full_name: name } });
-      } catch {
-        // Non-fatal — the account is already created; details can be added later.
-      }
-
-      navigate({ to: redirectTo() });
+      // Save profile/registration details, but never keep the user stuck on a spinner if this is slow.
+      const setup = finishRegistrationSetup(name, id, syntheticEmail, password);
+      await Promise.race([setup, pause(2500)]);
+      await navigate({ to: destination, replace: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
     } finally {

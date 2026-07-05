@@ -1,4 +1,4 @@
-import { createFileRoute, useRouter, Link } from "@tanstack/react-router";
+import { createFileRoute, useRouter, Link, redirect } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
@@ -21,8 +21,23 @@ import { OpportunitiesSection } from "@/components/admin/OpportunitiesSection";
 import { NotificationsSection } from "@/components/admin/NotificationsSection";
 import { GallerySection } from "@/components/admin/GallerySection";
 import { SettingsSection } from "@/components/admin/SettingsSection";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated/admin")({
+  beforeLoad: async () => {
+    const { data: userData, error: userError } = await supabase.auth.getUser();
+    if (userError || !userData.user) {
+      throw redirect({ to: "/auth", search: { redirect: "/admin" } });
+    }
+
+    const { data: isAdmin, error } = await supabase.rpc("has_role", {
+      _user_id: userData.user.id,
+      _role: "admin",
+    });
+    if (error || !isAdmin) {
+      throw redirect({ to: "/dashboard", replace: true });
+    }
+  },
   head: () => ({
     meta: [{ title: "Admin Dashboard | BABA" }],
   }),
