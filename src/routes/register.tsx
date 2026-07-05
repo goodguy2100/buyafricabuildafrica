@@ -523,7 +523,7 @@ function CorporateFields({ form, errors, set, toggle }: FieldProps) {
     <>
       <Field label="Corporate Name" name="corporateName" required {...{ form, errors, set }} />
       <Field label="Contact Person Full Name" name="contactPerson" required {...{ form, errors, set }} />
-      <Field label="Contact Email" name="contactEmail" type="email" required {...{ form, errors, set }} />
+      <Field label="Contact Email (optional)" name="contactEmail" type="email" {...{ form, errors, set }} />
       <Field label="Contact Phone Number" name="contactPhone" required {...{ form, errors, set }} />
       <Field label="Years in operation" name="yearsInOperation" required {...{ form, errors, set }} />
       <Field label="Business License Number" name="businessLicense" required {...{ form, errors, set }} />
