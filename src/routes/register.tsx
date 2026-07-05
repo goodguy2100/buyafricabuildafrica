@@ -391,27 +391,27 @@ function RoleCard({
 
 function requiredFields(role: RoleValue, form: FormState): string[] {
   if (role === "individual") {
-    return ["fullName", "email", "phone", "nationalId", "occupation", "location"];
+    return ["fullName", "phone", "nationalId", "occupation", "location"];
   }
   if (role === "professional_young") {
     return [
-      "fullName", "email", "phone", "nationalId", "occupation", "yearsField",
+      "fullName", "phone", "nationalId", "occupation", "yearsField",
       "education", "institutionName", "fieldOfStudy", "location",
     ];
   }
   if (role === "professional_exp") {
     const base = [
-      "fullName", "email", "phone", "nationalId", "occupation", "yearsField",
+      "fullName", "phone", "nationalId", "occupation", "yearsField",
       "employmentStatus", "education", "institutionName", "fieldOfStudy", "location",
     ];
     if (form.employmentStatus === "Employed") base.push("organizationName", "jobTitle", "yearsAtOrg");
     return base;
   }
   if (role === "artisan") {
-    return ["fullName", "email", "phone", "nationalId", "trade", "yearsTrade", "areasServed", "canTravel"];
+    return ["fullName", "phone", "nationalId", "trade", "yearsTrade", "areasServed", "canTravel"];
   }
   return [
-    "corporateName", "contactPerson", "contactEmail", "contactPhone", "yearsInOperation",
+    "corporateName", "contactPerson", "contactPhone", "yearsInOperation",
     "businessLicense", "corporateType", "staffSize", "location",
   ];
 }
