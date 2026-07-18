@@ -197,8 +197,8 @@ function AuthPage() {
           </h1>
           <p className="mt-2 text-baba-slate/70">
             {mode === "join"
-              ? "No email needed — just your name and ID number. It's completely free."
-              : "Enter the name and ID number you signed up with."}
+              ? "Just your name, ID number and a password. It's completely free."
+              : "Enter your name, ID number and password."}
           </p>
         </div>
 
