@@ -17,10 +17,12 @@ async function assertAdmin(context: {
   userId: string;
 }): Promise<{ supabase: any; userId: string }> {
   const { supabase, userId } = context;
-  const { data: isAdmin, error } = await supabase.rpc("has_role", {
-    _user_id: userId,
-    _role: "admin",
-  });
+  const { data: isAdmin, error } = await supabase
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", userId)
+    .eq("role", "admin")
+    .maybeSingle();
   if (error) throw new Error(error.message);
   if (!isAdmin) throw new Error("Forbidden: admin access required");
   return { supabase, userId };
