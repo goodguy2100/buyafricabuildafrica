@@ -239,6 +239,26 @@ function AuthPage() {
             </span>
           </label>
 
+          <label className="grid gap-1.5">
+            <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
+              Password
+            </span>
+            <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
+              <Lock className="h-4 w-4 text-baba-slate/40" />
+              <input
+                required
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete={mode === "join" ? "new-password" : "current-password"}
+                minLength={6}
+                className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
+                placeholder={mode === "join" ? "Create a password (min 6 characters)" : "Your password"}
+              />
+            </div>
+          </label>
+
+
           {mode === "join" && (
             <>
               <label className="grid gap-1.5">
