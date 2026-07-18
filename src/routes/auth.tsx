@@ -102,48 +102,45 @@ function AuthPage() {
 
     const name = fullName.trim();
     const id = idNumber.trim();
+    const pwd = password;
     if (!name) return setError("Please enter your name.");
     if (id.replace(/[^a-zA-Z0-9]/g, "").length < 4) {
       return setError("Please enter a valid ID number.");
+    }
+    if (!pwd || pwd.length < 6) {
+      return setError("Please enter a password (at least 6 characters).");
     }
 
     setLoading(true);
     try {
       const syntheticEmail = idToEmail(id);
-      const password = idToPassword(id);
+      const legacyPassword = idToPassword(id);
       const destination = redirectTo();
-      const signInWithId = () =>
-        supabase.auth.signInWithPassword({
-          email: syntheticEmail,
-          password,
-        });
+
+      const signInWith = (p: string) =>
+        supabase.auth.signInWithPassword({ email: syntheticEmail, password: p });
 
       if (mode === "signin") {
-        const { error: signInErr } = await signInWithId();
-        if (signInErr) {
-          throw new Error(
-            "We couldn't find an account with that ID. Check your ID number or tap Join instead.",
-          );
+        let res = await signInWith(pwd);
+        if (res.error) {
+          // Legacy accounts created without a chosen password — try the derived one.
+          const legacy = await signInWith(legacyPassword);
+          if (!legacy.error) {
+            res = legacy;
+          } else {
+            throw new Error(
+              "Wrong ID or password. Check your details or tap Join if you don't have an account yet.",
+            );
+          }
         }
         await navigate({ to: destination, replace: true });
         return;
       }
 
-      // If this ID is already registered, sign in immediately instead of doing a slow duplicate signup attempt.
-      const existing = await signInWithId();
-      if (!existing.error) {
-        setNotice("You're already a member — we've signed you in. Welcome back!");
-        await navigate({ to: destination, replace: true });
-        return;
-      }
-      if (!/invalid login credentials|invalid_credentials/i.test(existing.error.message)) {
-        throw existing.error;
-      }
-
-      // JOIN — create a free account keyed on the ID number.
+      // JOIN — create a free account keyed on the ID number, using the chosen password.
       const { data: signUpData, error: signUpErr } = await supabase.auth.signUp({
         email: syntheticEmail,
-        password,
+        password: pwd,
         options: {
           emailRedirectTo: window.location.origin,
           data: {
@@ -155,33 +152,32 @@ function AuthPage() {
         },
       });
       if (signUpErr) {
-        // ID already registered — sign them in instead of creating a duplicate.
+        // ID already registered — try to sign them in with the password they just typed.
         if (/already registered|already exists|user already/i.test(signUpErr.message)) {
-          const { error: existingSignInErr } = await supabase.auth.signInWithPassword({
-            email: syntheticEmail,
-            password,
-          });
-          if (existingSignInErr) {
-            throw new Error(
-              "An account with that ID already exists, but we couldn't log you in automatically. Please tap Log in and check your ID number.",
-            );
+          const existing = await signInWith(pwd);
+          if (existing.error) {
+            // Try legacy derived password as a last resort.
+            const legacy = await signInWith(legacyPassword);
+            if (legacy.error) {
+              throw new Error(
+                "An account with that ID already exists. Tap Log in and enter your password.",
+              );
+            }
           }
           setNotice("You're already a member — we've signed you in. Welcome back!");
-          setTimeout(() => navigate({ to: redirectTo() }), 1200);
+          await navigate({ to: destination, replace: true });
           return;
         }
         throw signUpErr;
       }
 
-      // Ensure a session. Some auth settings create the user but do not return a session immediately.
       if (!signUpData.session) {
-        const { error: signInAfterJoinErr } = await signInWithId();
+        const { error: signInAfterJoinErr } = await signInWith(pwd);
         if (signInAfterJoinErr) {
-          throw new Error("Your account was created, but we could not log you in automatically. Please tap Log in and enter the same ID number.");
+          throw new Error("Your account was created, but we could not log you in automatically. Please tap Log in.");
         }
       }
 
-      // Save profile/registration details, but never keep the user stuck on a spinner if this is slow.
       const setup = finishRegistrationSetup(name, id);
       await Promise.race([setup, pause(2500)]);
       await navigate({ to: destination, replace: true });
