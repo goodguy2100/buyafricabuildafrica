@@ -521,13 +521,6 @@ export type Database = {
         Args: { _artisan_type: string; _user_role: string }
         Returns: string
       }
-      has_role: {
-        Args: {
-          _role: Database["public"]["Enums"]["app_role"]
-          _user_id: string
-        }
-        Returns: boolean
-      }
     }
     Enums: {
       app_role: "admin" | "user"
