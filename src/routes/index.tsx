@@ -124,6 +124,28 @@ const impactStats = [
   { icon: Building, value: "120+", label: "Projects" },
 ];
 
+const ubuntuCommunities: { country: string; flag: string; chapters: string[] }[] = [
+  {
+    country: "Kenya",
+    flag: "🇰🇪",
+    chapters: [
+      "Abandu ba Western Kenya",
+      "Team Nairobi Kenya",
+      "Mtu wa Eastern Kenya",
+      "Wetu wa Central Kenya",
+      "Watu wa Mombasa Kenya",
+    ],
+  },
+  { country: "Uganda", flag: "🇺🇬", chapters: ["Bantu ba Kampala Uganda"] },
+  { country: "Tanzania", flag: "🇹🇿", chapters: ["Sisi Kutoka Dar es Salaam Tanzania"] },
+  { country: "Ethiopia", flag: "🇪🇹", chapters: ["Addis Ababa Ethiopia"] },
+  {
+    country: "Nigeria",
+    flag: "🇳🇬",
+    chapters: ["We Dey Abuja Nigeria", "We Dey Lagos Nigeria"],
+  },
+];
+
 function Home() {
   return (
     <PageShell>
