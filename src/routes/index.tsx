@@ -124,6 +124,28 @@ const impactStats = [
   { icon: Building, value: "120+", label: "Projects" },
 ];
 
+const ubuntuCommunities: { country: string; flag: string; chapters: string[] }[] = [
+  {
+    country: "Kenya",
+    flag: "🇰🇪",
+    chapters: [
+      "Abandu ba Western Kenya",
+      "Team Nairobi Kenya",
+      "Mtu wa Eastern Kenya",
+      "Wetu wa Central Kenya",
+      "Watu wa Mombasa Kenya",
+    ],
+  },
+  { country: "Uganda", flag: "🇺🇬", chapters: ["Bantu ba Kampala Uganda"] },
+  { country: "Tanzania", flag: "🇹🇿", chapters: ["Sisi Kutoka Dar es Salaam Tanzania"] },
+  { country: "Ethiopia", flag: "🇪🇹", chapters: ["Addis Ababa Ethiopia"] },
+  {
+    country: "Nigeria",
+    flag: "🇳🇬",
+    chapters: ["We Dey Abuja Nigeria", "We Dey Lagos Nigeria"],
+  },
+];
+
 function Home() {
   return (
     <PageShell>
@@ -341,6 +363,55 @@ function Home() {
           ))}
         </div>
       </section>
+
+      {/* ═══ UBUNTU COMMUNITIES ═══ */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-baba-copper/10 via-baba-cream to-baba-blue/10 py-20">
+        <div className="pointer-events-none absolute -left-16 top-10 h-64 w-64 rounded-full bg-baba-copper/20 blur-3xl" />
+        <div className="pointer-events-none absolute -right-16 bottom-10 h-64 w-64 rounded-full bg-baba-blue/20 blur-3xl" />
+        <div className="relative mx-auto max-w-7xl px-5 lg:px-8">
+          <div className="mx-auto max-w-3xl text-center">
+            <span className="inline-flex items-center gap-2 rounded-full bg-baba-copper/15 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">
+              🤝 The Ubuntu
+            </span>
+            <h2 className="mt-3 font-display text-3xl font-extrabold text-baba-slate sm:text-4xl">
+              <span className="baba-rainbow">The UBUNTU</span>
+            </h2>
+            <p className="mt-4 text-baba-slate/70">
+              "I am because we are." Local BABA Africa chapters rooted across the continent — where our people meet, connect and build together.
+            </p>
+          </div>
+
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {ubuntuCommunities.map((c) => (
+              <div
+                key={c.country}
+                className="baba-pop-card group relative overflow-hidden rounded-2xl border border-baba-blue/10 bg-white/80 p-6 backdrop-blur"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-3xl leading-none">{c.flag}</span>
+                  <h3 className="font-display text-lg font-extrabold text-baba-slate">
+                    {c.country}
+                  </h3>
+                </div>
+                <ul className="mt-4 space-y-2">
+                  {c.chapters.map((ch) => (
+                    <li
+                      key={ch}
+                      className="flex items-start gap-2 rounded-lg bg-baba-blue/5 px-3 py-2 text-sm font-medium text-baba-slate"
+                    >
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-baba-copper" />
+                      <span>
+                        <span className="font-semibold text-baba-blue">Baba Africa</span> — {ch}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
 
       {/* ═══ JOIN THE BABA ECOSYSTEM ═══ */}
       <section className="bg-gradient-to-br from-baba-blue/5 via-baba-cream to-baba-cream py-20">
