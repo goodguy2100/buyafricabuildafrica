@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Mail, Phone, MapPin, Check } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
+import { LocationPicker, EMPTY_LOCATION } from "@/components/LocationPicker";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -20,6 +21,7 @@ export const Route = createFileRoute("/contact")({
 
 function Contact() {
   const [category, setCategory] = useState("");
+  const [loc, setLoc] = useState(EMPTY_LOCATION);
   const [sent, setSent] = useState(false);
 
   return (
@@ -78,10 +80,20 @@ function Contact() {
 
               <div className="mt-6 grid gap-5 sm:grid-cols-2">
                 <Field label="Full Name" placeholder="John Doe" required />
-                <Field label="Email" placeholder="john@example.com" type="email" required />
+                <Field label="Email (optional)" placeholder="john@example.com" type="email" />
                 <Field label="Organization" placeholder="Optional" />
                 <Field label="Phone" placeholder="+254 746216258" />
               </div>
+
+              <div className="mt-5">
+                <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
+                  Where are you?
+                </span>
+                <div className="mt-1.5">
+                  <LocationPicker value={loc} onChange={setLoc} />
+                </div>
+              </div>
+
               <div className="mt-5">
                 <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
                   Message

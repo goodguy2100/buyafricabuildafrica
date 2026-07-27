@@ -16,10 +16,12 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DirectoryRouteImport } from './routes/directory'
 import { Route as EventsRouteImport } from './routes/events'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as ImpactRouteImport } from './routes/impact'
 import { Route as PartnersRouteImport } from './routes/partners'
 import { Route as PillarsRouteImport } from './routes/pillars'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -63,6 +65,11 @@ const EventsRoute = EventsRouteImport.update({
   path: '/events',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ImpactRoute = ImpactRouteImport.update({
   id: '/impact',
   path: '/impact',
@@ -81,6 +88,11 @@ const PillarsRoute = PillarsRouteImport.update({
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -131,10 +143,12 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/directory': typeof DirectoryRoute
   '/events': typeof EventsRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/impact': typeof ImpactRoute
   '/partners': typeof PartnersRoute
   '/pillars': typeof PillarsRoute
   '/register': typeof RegisterRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -151,10 +165,12 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/directory': typeof DirectoryRoute
   '/events': typeof EventsRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/impact': typeof ImpactRoute
   '/partners': typeof PartnersRoute
   '/pillars': typeof PillarsRoute
   '/register': typeof RegisterRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -173,10 +189,12 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/directory': typeof DirectoryRoute
   '/events': typeof EventsRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/impact': typeof ImpactRoute
   '/partners': typeof PartnersRoute
   '/pillars': typeof PillarsRoute
   '/register': typeof RegisterRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
@@ -195,10 +213,12 @@ export interface FileRouteTypes {
     | '/contact'
     | '/directory'
     | '/events'
+    | '/forgot-password'
     | '/impact'
     | '/partners'
     | '/pillars'
     | '/register'
+    | '/reset-password'
     | '/sitemap.xml'
     | '/admin'
     | '/dashboard'
@@ -215,10 +235,12 @@ export interface FileRouteTypes {
     | '/contact'
     | '/directory'
     | '/events'
+    | '/forgot-password'
     | '/impact'
     | '/partners'
     | '/pillars'
     | '/register'
+    | '/reset-password'
     | '/sitemap.xml'
     | '/admin'
     | '/dashboard'
@@ -236,10 +258,12 @@ export interface FileRouteTypes {
     | '/contact'
     | '/directory'
     | '/events'
+    | '/forgot-password'
     | '/impact'
     | '/partners'
     | '/pillars'
     | '/register'
+    | '/reset-password'
     | '/sitemap.xml'
     | '/_authenticated/admin'
     | '/_authenticated/dashboard'
@@ -258,10 +282,12 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   DirectoryRoute: typeof DirectoryRoute
   EventsRoute: typeof EventsRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
   ImpactRoute: typeof ImpactRoute
   PartnersRoute: typeof PartnersRoute
   PillarsRoute: typeof PillarsRoute
   RegisterRoute: typeof RegisterRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   NewsSlugRoute: typeof NewsSlugRoute
   OpportunitiesIdRoute: typeof OpportunitiesIdRoute
@@ -321,6 +347,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EventsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/impact': {
       id: '/impact'
       path: '/impact'
@@ -347,6 +380,13 @@ declare module '@tanstack/react-router' {
       path: '/register'
       fullPath: '/register'
       preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap.xml': {
@@ -429,10 +469,12 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   DirectoryRoute: DirectoryRoute,
   EventsRoute: EventsRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
   ImpactRoute: ImpactRoute,
   PartnersRoute: PartnersRoute,
   PillarsRoute: PillarsRoute,
   RegisterRoute: RegisterRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   NewsSlugRoute: NewsSlugRoute,
   OpportunitiesIdRoute: OpportunitiesIdRoute,
@@ -443,13 +485,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

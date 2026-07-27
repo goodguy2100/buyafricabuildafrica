@@ -17,11 +17,13 @@ import {
 } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { supabase } from "@/integrations/supabase/client";
+import { LocationPicker } from "@/components/LocationPicker";
 import {
   createRegistration,
   updateMyProfile,
   type RoleValue,
 } from "@/lib/registrations.functions";
+import { appendMemberRowToSheet } from "@/lib/sheets.functions";
 
 export const Route = createFileRoute("/register")({
   head: () => ({
@@ -69,6 +71,7 @@ function GetStarted() {
   const navigate = useNavigate();
   const submitRegistration = useServerFn(createRegistration);
   const saveProfile = useServerFn(updateMyProfile);
+  const appendToSheet = useServerFn(appendMemberRowToSheet);
   const [authState, setAuthState] = useState<"checking" | "in" | "out">("checking");
   const [step, setStep] = useState(0); // 0 role, 1 form, 2 welcome
   const [proChoosing, setProChoosing] = useState(false);
@@ -132,7 +135,7 @@ function GetStarted() {
     setSubmitting(true);
     setSubmitError("");
     try {
-      await submitRegistration({
+      const reg = await submitRegistration({
         data: {
           role,
           artisan_type: role === "artisan" ? (form.trade as string) : undefined,
@@ -142,17 +145,29 @@ function GetStarted() {
       // Keep the profile record in sync so the dashboard shows the basics.
       const fullName = (form.fullName || form.contactPerson) as string | undefined;
       const phone = (form.phone || form.contactPhone) as string | undefined;
-      const location = form.location as string | undefined;
+      const country = form.country as string | undefined;
+      const city = form.city as string | undefined;
+      const area = form.area as string | undefined;
+      const location =
+        (form.location as string | undefined) ||
+        [area, city, country].filter(Boolean).join(", ") || undefined;
       try {
         await saveProfile({
           data: {
             ...(fullName ? { full_name: fullName } : {}),
             ...(phone ? { phone } : {}),
             ...(location ? { location } : {}),
+            ...(country ? { country } : {}),
+            ...(city ? { city } : {}),
+            ...(area ? { area } : {}),
           },
         });
       } catch {
         // Non-fatal — registration already saved.
+      }
+      // Auto-append to Google Sheets when configured. Never blocks the flow.
+      if (reg?.id) {
+        appendToSheet({ data: { registration_id: reg.id } }).catch(() => {});
       }
       setStep(2);
     } catch (err) {
@@ -390,29 +405,30 @@ function RoleCard({
 /* --------------------------- required-field logic -------------------------- */
 
 function requiredFields(role: RoleValue, form: FormState): string[] {
+  const loc = ["country", "city"];
   if (role === "individual") {
-    return ["fullName", "phone", "nationalId", "occupation", "location"];
+    return ["fullName", "phone", "nationalId", "occupation", ...loc];
   }
   if (role === "professional_young") {
     return [
       "fullName", "phone", "nationalId", "occupation", "yearsField",
-      "education", "institutionName", "fieldOfStudy", "location",
+      "education", "institutionName", "fieldOfStudy", ...loc,
     ];
   }
   if (role === "professional_exp") {
     const base = [
       "fullName", "phone", "nationalId", "occupation", "yearsField",
-      "employmentStatus", "education", "institutionName", "fieldOfStudy", "location",
+      "employmentStatus", "education", "institutionName", "fieldOfStudy", ...loc,
     ];
     if (form.employmentStatus === "Employed") base.push("organizationName", "jobTitle", "yearsAtOrg");
     return base;
   }
   if (role === "artisan") {
-    return ["fullName", "phone", "nationalId", "trade", "yearsTrade", "areasServed", "canTravel"];
+    return ["fullName", "phone", "nationalId", "trade", "yearsTrade", ...loc, "canTravel"];
   }
   return [
     "corporateName", "contactPerson", "contactPhone", "yearsInOperation",
-    "businessLicense", "corporateType", "staffSize", "location",
+    "businessLicense", "corporateType", "staffSize", ...loc,
   ];
 }
 
@@ -433,7 +449,7 @@ function IndividualFields({ form, errors, set, toggle }: FieldProps) {
       <Field label="Phone Number" name="phone" required {...{ form, errors, set }} />
       <Field label="National ID Number" name="nationalId" required {...{ form, errors, set }} />
       <SelectField label="Primary Occupation / Skill Area" name="occupation" required options={OCCUPATIONS} {...{ form, errors, set }} />
-      <Field label="Location (City/Town)" name="location" required {...{ form, errors, set }} />
+      <LocationField required form={form} set={set} />
       <MultiSelect label="Industries Interested In" name="industries" options={INDUSTRIES} {...{ form, toggle }} />
       <MultiSelect label="What are you looking for?" name="lookingFor"
         options={["Skills Training", "Job Opportunities", "Event Notifications", "Networking", "Other"]}
@@ -456,7 +472,7 @@ function YoungProFields({ form, errors, set, toggle }: FieldProps) {
         options={["Secondary", "Certificate", "Diploma", "Bachelor's", "Master's", "Other"]} {...{ form, errors, set }} />
       <Field label="Institution Name" name="institutionName" required {...{ form, errors, set }} />
       <Field label="Field of Study" name="fieldOfStudy" required {...{ form, errors, set }} />
-      <Field label="Location (City/Town)" name="location" required {...{ form, errors, set }} />
+      <LocationField required form={form} set={set} />
       <MultiSelect label="Industries Interested In" name="industries" options={INDUSTRIES} {...{ form, toggle }} />
       <MultiSelect label="What are you looking for?" name="lookingFor"
         options={["Job opportunities", "Training/courses", "Networking", "Mentorship", "Other"]}
@@ -489,7 +505,7 @@ function ExpProFields({ form, errors, set, toggle }: FieldProps) {
       <Field label="Institution Name" name="institutionName" required {...{ form, errors, set }} />
       <Field label="Field of Study" name="fieldOfStudy" required {...{ form, errors, set }} />
       <Field label="Professional Certifications (if any)" name="certifications" {...{ form, errors, set }} />
-      <Field label="Location (City/Town)" name="location" required {...{ form, errors, set }} />
+      <LocationField required form={form} set={set} />
       <MultiSelect label="Industries Interested In" name="industries" options={INDUSTRIES} {...{ form, toggle }} />
       <MultiSelect label="What are you looking for?" name="lookingFor"
         options={["Senior roles", "Consulting work", "Training/mentorship", "Board positions", "Networking", "Other"]}
@@ -507,7 +523,7 @@ function ArtisanFields({ form, errors, set, toggle }: FieldProps) {
       <Field label="National ID Number" name="nationalId" required {...{ form, errors, set }} />
       <SelectField label="Trade / Specialization" name="trade" required options={TRADES} {...{ form, errors, set }} />
       <Field label="Years in trade" name="yearsTrade" required {...{ form, errors, set }} />
-      <Field label="Areas served (Location)" name="areasServed" required {...{ form, errors, set }} />
+      <LocationField required form={form} set={set} nameKey="areasServed" label="Areas you serve" />
       <SelectField label="Can travel for work?" name="canTravel" required options={["Yes", "No"]} {...{ form, errors, set }} />
       <TextField label="Certifications / Training completed" name="trainingCompleted" {...{ form, set }} />
       <TextField label="Services offered (brief description)" name="services" {...{ form, set }} />
@@ -530,7 +546,7 @@ function CorporateFields({ form, errors, set, toggle }: FieldProps) {
       <SelectField label="Corporate Type" name="corporateType" required options={CORPORATE_TYPES} {...{ form, errors, set }} />
       <SelectField label="Approximate staff size" name="staffSize" required
         options={["1-10", "11-50", "51-200", "201-500", "500+"]} {...{ form, errors, set }} />
-      <Field label="Location (Headquarters)" name="location" required {...{ form, errors, set }} />
+      <LocationField required form={form} set={set} label="Headquarters location" />
       <MultiSelect label="Primary industries" name="industries" options={INDUSTRIES} {...{ form, toggle }} />
       <MultiSelect label="What are you looking for?" name="lookingFor"
         options={["Hire talent", "Partner for training", "Access talent network", "Event collaboration"]}
@@ -572,6 +588,37 @@ function Field({
         }`}
       />
       <ErrorText msg={errors[name]} />
+    </div>
+  );
+}
+
+function LocationField({
+  form, set, required, label = "Where are you based?", nameKey = "location",
+}: {
+  form: FormState; set: (k: string, v: string | string[]) => void;
+  required?: boolean; label?: string; nameKey?: string;
+}) {
+  const value = {
+    country: (form.country as string) ?? "",
+    city: (form.city as string) ?? "",
+    area: (form.area as string) ?? "",
+  };
+  return (
+    <div className="sm:col-span-2">
+      <Label required={required}>{label}</Label>
+      <div className="mt-1.5">
+        <LocationPicker
+          value={value}
+          required={required}
+          onChange={(v) => {
+            set("country", v.country);
+            set("city", v.city);
+            set("area", v.area);
+            const combined = [v.area, v.city, v.country].filter(Boolean).join(", ");
+            set(nameKey, combined);
+          }}
+        />
+      </div>
     </div>
   );
 }

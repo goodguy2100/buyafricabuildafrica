@@ -1,10 +1,12 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { User, IdCard, Mail, Loader2, Lock } from "lucide-react";
+import { User, IdCard, Mail, Loader2, Lock, MapPin } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { supabase } from "@/integrations/supabase/client";
 import { createRegistration, updateMyProfile, type RoleValue } from "@/lib/registrations.functions";
+import { LocationPicker, EMPTY_LOCATION, type LocationValue } from "@/components/LocationPicker";
+import { PasswordStrength, scorePassword } from "@/components/PasswordStrength";
 
 export const Route = createFileRoute("/auth")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -16,7 +18,7 @@ export const Route = createFileRoute("/auth")({
       {
         name: "description",
         content:
-          "Join Buy Africa Build Africa (BABA) for free. Register with just your name and ID number — no email needed. Log back in anytime with your name and ID.",
+          "Join Buy Africa Build Africa (BABA) for free. Register with your name, ID, and location — email is optional.",
       },
     ],
     links: [{ rel: "canonical", href: "/auth" }],
@@ -36,8 +38,6 @@ function sanitizeRedirect(value: string | null): string {
   return value;
 }
 
-// Turn an ID number into a stable synthetic email + password so people can log
-// in with just their name and ID — no real email address required.
 function idToEmail(id: string): string {
   const clean = id.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
   return `id${clean}@baba.local`;
@@ -57,7 +57,9 @@ function AuthPage() {
   const [idNumber, setIdNumber] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [category, setCategory] = useState<RoleValue>("artisan");
+  const [location, setLocation] = useState<LocationValue>(EMPTY_LOCATION);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [loading, setLoading] = useState(false);
@@ -67,7 +69,7 @@ function AuthPage() {
 
   const pause = (ms: number) => new Promise<void>((resolve) => window.setTimeout(resolve, ms));
 
-  const finishRegistrationSetup = async (name: string, id: string) => {
+  const finishRegistrationSetup = async (name: string, id: string, loc: LocationValue) => {
     const label = CATEGORIES.find((c) => c.value === category)?.label ?? category;
     try {
       await submitRegistration({
@@ -79,12 +81,24 @@ function AuthPage() {
             nationalId: id,
             email: email.trim() || null,
             category: label,
+            country: loc.country,
+            city: loc.city.trim(),
+            area: loc.area.trim(),
+            location: [loc.area, loc.city, loc.country].filter(Boolean).join(", "),
           },
         },
       });
-      await saveProfile({ data: { full_name: name } });
+      await saveProfile({
+        data: {
+          full_name: name,
+          country: loc.country || undefined,
+          city: loc.city.trim() || undefined,
+          area: loc.area.trim() || undefined,
+          location: [loc.area, loc.city, loc.country].filter(Boolean).join(", ") || undefined,
+        },
+      });
     } catch {
-      // Non-fatal — the account is already active; details can be completed later.
+      // Non-fatal
     }
   };
 
@@ -110,6 +124,17 @@ function AuthPage() {
     if (!pwd || pwd.length < 6) {
       return setError("Please enter a password (at least 6 characters).");
     }
+    if (mode === "join") {
+      if (scorePassword(pwd).score < 2) {
+        return setError("Please choose a stronger password (add length, capitals, a number or symbol).");
+      }
+      if (pwd !== confirmPassword) {
+        return setError("Passwords don't match — please re-type your password.");
+      }
+      if (!location.country || !location.city.trim()) {
+        return setError("Please choose your country and city.");
+      }
+    }
 
     setLoading(true);
     try {
@@ -123,7 +148,6 @@ function AuthPage() {
       if (mode === "signin") {
         let res = await signInWith(pwd);
         if (res.error) {
-          // Legacy accounts created without a chosen password — try the derived one.
           const legacy = await signInWith(legacyPassword);
           if (!legacy.error) {
             res = legacy;
@@ -137,7 +161,6 @@ function AuthPage() {
         return;
       }
 
-      // JOIN — create a free account keyed on the ID number, using the chosen password.
       const { data: signUpData, error: signUpErr } = await supabase.auth.signUp({
         email: syntheticEmail,
         password: pwd,
@@ -148,15 +171,16 @@ function AuthPage() {
             national_id: id,
             contact_email: email.trim() || null,
             category,
+            country: location.country,
+            city: location.city.trim(),
+            area: location.area.trim(),
           },
         },
       });
       if (signUpErr) {
-        // ID already registered — try to sign them in with the password they just typed.
         if (/already registered|already exists|user already/i.test(signUpErr.message)) {
           const existing = await signInWith(pwd);
           if (existing.error) {
-            // Try legacy derived password as a last resort.
             const legacy = await signInWith(legacyPassword);
             if (legacy.error) {
               throw new Error(
@@ -178,7 +202,7 @@ function AuthPage() {
         }
       }
 
-      const setup = finishRegistrationSetup(name, id);
+      const setup = finishRegistrationSetup(name, id, location);
       await Promise.race([setup, pause(2500)]);
       await navigate({ to: destination, replace: true });
     } catch (err) {
@@ -190,15 +214,15 @@ function AuthPage() {
 
   return (
     <PageShell>
-      <section className="mx-auto max-w-md px-5 py-16 lg:px-8">
+      <section className="mx-auto max-w-2xl px-5 py-16 lg:px-8">
         <div className="text-center">
           <h1 className="font-display text-3xl font-extrabold text-baba-blue">
             {mode === "join" ? "Join for free" : "Welcome back"}
           </h1>
           <p className="mt-2 text-baba-slate/70">
             {mode === "join"
-              ? "Just your name, ID number and a password. It's completely free."
-              : "Enter your name, ID number and password."}
+              ? "Your name, ID, location and a password. Email is optional."
+              : "Enter your ID and password."}
           </p>
         </div>
 
@@ -256,8 +280,31 @@ function AuthPage() {
                 placeholder={mode === "join" ? "Create a password (min 6 characters)" : "Your password"}
               />
             </div>
+            {mode === "join" && <PasswordStrength password={password} />}
           </label>
 
+          {mode === "join" && (
+            <label className="grid gap-1.5">
+              <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
+                Confirm Password
+              </span>
+              <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
+                <Lock className="h-4 w-4 text-baba-slate/40" />
+                <input
+                  required
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  autoComplete="new-password"
+                  className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
+                  placeholder="Re-type your password"
+                />
+              </div>
+              {confirmPassword && confirmPassword !== password && (
+                <span className="text-[0.7rem] text-red-500">Passwords don't match.</span>
+              )}
+            </label>
+          )}
 
           {mode === "join" && (
             <>
@@ -278,6 +325,16 @@ function AuthPage() {
                 </select>
               </label>
 
+              <div className="grid gap-1.5">
+                <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-baba-slate/70">
+                  <MapPin className="h-3.5 w-3.5" /> Where are you?
+                </span>
+                <LocationPicker value={location} onChange={setLocation} required />
+                <span className="text-[0.7rem] text-baba-slate/50">
+                  Pick your country and city, then type your specific area (e.g. Westlands, South B, Lekki Phase 1).
+                </span>
+              </div>
+
               <label className="grid gap-1.5">
                 <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
                   Email <span className="font-normal normal-case text-baba-slate/50">(optional)</span>
@@ -292,6 +349,9 @@ function AuthPage() {
                     placeholder="you@example.com"
                   />
                 </div>
+                <span className="text-[0.7rem] text-baba-slate/50">
+                  Add an email if you'd like to receive password reset links and updates.
+                </span>
               </label>
             </>
           )}
@@ -312,6 +372,14 @@ function AuthPage() {
             {mode === "join" ? "Join for Free" : "Log In"}
           </button>
         </form>
+
+        {mode === "signin" && (
+          <p className="mt-4 text-center text-sm">
+            <Link to="/forgot-password" className="font-semibold text-baba-blue hover:underline">
+              Forgot your password?
+            </Link>
+          </p>
+        )}
 
         <p className="mt-6 text-center text-sm text-baba-slate/70">
           {mode === "join" ? "Already registered?" : "New to BABA?"}{" "}
