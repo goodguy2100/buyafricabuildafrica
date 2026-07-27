@@ -17,7 +17,7 @@ export default defineTool({
     }
     return {
       content: [{ type: "text", text: JSON.stringify(opp, null, 2) }],
-      structuredContent: opp,
+      structuredContent: { opportunity: opp } as unknown as Record<string, unknown>,
     };
   },
 });
