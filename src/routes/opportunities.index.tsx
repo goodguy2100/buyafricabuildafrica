@@ -105,9 +105,11 @@ function Opportunities() {
 
         <div
           ref={gridRef}
+          data-stack
           className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
           aria-busy={loading}
         >
+
           {visible.map((o) => (
             <article
               key={o.id}

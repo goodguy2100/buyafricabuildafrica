@@ -173,7 +173,7 @@ export function About() {
       {/* Mission, Vision, Purpose */}
       <section className="bg-baba-cream py-20">
         <div className="mx-auto max-w-7xl px-5 lg:px-8">
-          <div className="grid gap-8 md:grid-cols-3">
+          <div data-stack className="grid gap-8 md:grid-cols-3">
             <div className="rounded-2xl border border-baba-blue/10 bg-white p-8 shadow-sm">
               <Target className="h-8 w-8 text-baba-blue" />
               <h3 className="mt-4 font-display text-xl font-bold text-baba-slate">Our Mission</h3>
@@ -219,7 +219,7 @@ export function About() {
             The principles that guide everything we do at BABA.
           </p>
         </div>
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div data-stack className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {coreValues.map((v) => (
             <div
               key={v.title}
@@ -253,7 +253,7 @@ export function About() {
               and stronger African economies.
             </p>
           </div>
-          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div data-stack className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {whatWeDo.map((item, i) => (
               <div
                 key={item.title}

@@ -186,7 +186,7 @@ function Home() {
                 </span>
                 <p className="text-xs text-baba-slate/60">The numbers we're working towards as the BABA ecosystem grows.</p>
               </div>
-              <div className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-3">
+              <div data-stack className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-3">
                 <Counter target={50000} label="Members" suffix="+" tone="dark" />
                 <Counter target={30000} label="Tradespeople" suffix="+" tone="dark" />
                 <Counter target={9000} label="Professionals" suffix="+" tone="dark" />
@@ -194,7 +194,7 @@ function Home() {
                 <Counter target={1000} label="Suppliers" suffix="+" tone="dark" />
                 <Counter target={100} label="Partners" suffix="+" tone="dark" />
               </div>
-              <div className="mt-6 grid gap-6 border-t border-baba-blue/10 pt-6 sm:grid-cols-2">
+              <div data-stack className="mt-6 grid gap-6 border-t border-baba-blue/10 pt-6 sm:grid-cols-2">
                 {impactStats.map((s) => (
                   <div key={s.label} className="flex items-center gap-3">
                     <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-baba-blue/10">
@@ -279,7 +279,7 @@ function Home() {
           <span className="text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">Our Process</span>
           <h2 className="mt-2 font-display text-3xl font-extrabold text-baba-slate sm:text-4xl">How BABA Works</h2>
         </div>
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
+        <div data-stack className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
           {howBabaWorks.map((step, i) => (
             <div key={step.title} className="baba-pop-card baba-float overflow-hidden rounded-2xl p-6 text-center">
               <div className="mx-auto flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-baba-blue to-baba-copper text-sm font-extrabold text-white shadow">
@@ -304,7 +304,7 @@ function Home() {
             </h2>
             <p className="mt-3 text-white/70">Five interconnected pillars driving Africa's development — connecting people, building industries, transforming the continent.</p>
           </div>
-          <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div data-stack className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {pillars.map((pillar, i) => {
               const grads = [
                 "from-baba-blue to-baba-blue-light",
@@ -381,7 +381,7 @@ function Home() {
             </p>
           </div>
 
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div data-stack className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {ubuntuCommunities.map((c) => (
               <div
                 key={c.country}
@@ -420,7 +420,7 @@ function Home() {
             <span className="text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">Get Involved</span>
             <h2 className="mt-2 font-display text-3xl font-extrabold text-baba-slate sm:text-4xl">Join the BABA Ecosystem</h2>
           </div>
-          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div data-stack className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {ecosystemGroups.map((g) => (
               <Link
                 key={g.group}
@@ -502,7 +502,7 @@ function Home() {
           <span className="text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">Events</span>
           <h2 className="mt-2 font-display text-3xl font-extrabold text-baba-slate sm:text-4xl">Our Annual Events</h2>
         </div>
-        <div className="mt-10 grid gap-6 sm:grid-cols-3">
+        <div data-stack className="mt-10 grid gap-6 sm:grid-cols-3">
           <div className="rounded-2xl border border-baba-blue/10 bg-white p-6 baba-card-hover">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-baba-blue/10">
               <Building className="h-6 w-6 text-baba-blue" />
@@ -567,7 +567,7 @@ function Home() {
             </span>
             <p className="text-xs text-white/70">Where we're headed as we grow — goals, not yet achieved.</p>
           </div>
-          <div className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-4">
+          <div data-stack className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-4">
             <Counter target={10000} label="Members Target" suffix="+" />
             <Counter target={800} label="Jobs Target" suffix="+" />
             <Counter target={1200} label="Trainings Target" suffix="+" />

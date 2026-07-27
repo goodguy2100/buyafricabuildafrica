@@ -56,7 +56,7 @@ function Partners() {
       </section>
 
       <section className="mx-auto max-w-7xl px-5 py-16 lg:px-8">
-        <div className="grid gap-5 sm:grid-cols-2">
+        <div data-stack className="grid gap-5 sm:grid-cols-2">
           {types.map((t) => (
             <div
               key={t.title}
@@ -75,7 +75,7 @@ function Partners() {
           ))}
         </div>
 
-        <div className="mt-12 grid gap-8 rounded-3xl bg-baba-blue p-8 text-baba-cream lg:grid-cols-2 lg:p-12">
+        <div data-stack className="mt-12 grid gap-8 rounded-3xl bg-baba-blue p-8 text-baba-cream lg:grid-cols-2 lg:p-12">
           <div>
             <h2 className="font-display text-3xl font-extrabold">Why partner with us</h2>
             <p className="mt-3 text-baba-cream/80">

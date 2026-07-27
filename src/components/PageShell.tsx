@@ -12,44 +12,53 @@ import { useMotion } from "@/lib/motion";
  */
 function useAutoReveal(enabled: boolean) {
   useEffect(() => {
-    const targets = Array.from(
+    const sectionTargets = Array.from(
       document.querySelectorAll<HTMLElement>("main > section, main [data-reveal]"),
     );
+    const stackTargets = Array.from(
+      document.querySelectorAll<HTMLElement>("main [data-stack]"),
+    );
+    const targets = [...sectionTargets, ...stackTargets];
     if (targets.length === 0) return;
 
     if (!enabled) {
-      targets.forEach((el) => {
+      sectionTargets.forEach((el) => {
         el.classList.remove("baba-reveal");
         el.classList.add("baba-reveal-in");
       });
+      stackTargets.forEach((el) => el.classList.add("baba-stack-in"));
       return;
     }
 
-    targets.forEach((el) => {
-      el.classList.add("baba-reveal");
-    });
+    sectionTargets.forEach((el) => el.classList.add("baba-reveal"));
 
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("baba-reveal-in");
-            io.unobserve(entry.target);
+          if (!entry.isIntersecting) return;
+          const el = entry.target as HTMLElement;
+          if (el.hasAttribute("data-stack")) {
+            el.classList.add("baba-stack-in");
+          } else {
+            el.classList.add("baba-reveal-in");
           }
+          io.unobserve(el);
         });
       },
       { threshold: 0.08, rootMargin: "0px 0px -6% 0px" },
     );
     targets.forEach((el) => io.observe(el));
 
-    // Safety net: anything already in the viewport at mount should reveal
-    // immediately (IntersectionObserver fires async, avoids first-paint flash).
     requestAnimationFrame(() => {
       const vh = window.innerHeight;
       targets.forEach((el) => {
         const rect = el.getBoundingClientRect();
         if (rect.top < vh * 0.9 && rect.bottom > 0) {
-          el.classList.add("baba-reveal-in");
+          if (el.hasAttribute("data-stack")) {
+            el.classList.add("baba-stack-in");
+          } else {
+            el.classList.add("baba-reveal-in");
+          }
           io.unobserve(el);
         }
       });
@@ -58,6 +67,7 @@ function useAutoReveal(enabled: boolean) {
     return () => io.disconnect();
   }, [enabled]);
 }
+
 
 export function PageShell({
   children,
