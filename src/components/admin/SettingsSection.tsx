@@ -13,10 +13,13 @@ import {
 } from "@/lib/admin.functions";
 import { LoadingBlock, EmptyState, exportCsv, SectionHeading } from "./shared";
 
+import { SheetsSyncSection } from "./SheetsSyncSection";
+
 export function SettingsSection() {
   return (
     <div className="space-y-8">
       <PlatformSettings />
+      <SheetsSyncSection />
       <AdminManagement />
       <DataExport />
     </div>
