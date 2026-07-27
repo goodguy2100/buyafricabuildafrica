@@ -327,7 +327,7 @@ const ecosystemSummary = [
 
 function PillarsPage() {
   return (
-    <PageShell>
+    <PageShell preset="pillars">
       {/* Hero */}
       <section className="relative overflow-hidden baba-wash py-20 lg:py-28">
         <div className="mx-auto max-w-7xl px-5 text-center lg:px-8">
