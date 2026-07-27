@@ -392,7 +392,7 @@ function PillarsPage() {
 
               {/* Lists */}
               {pillar.lists.length > 0 && (
-                <div className="mt-10 grid gap-6 md:grid-cols-2">
+                <div data-stack className="mt-10 grid gap-6 md:grid-cols-2">
                   {pillar.lists.map((list) => (
                     <div key={list.heading} className="rounded-2xl border border-baba-blue/10 bg-white p-6 shadow-sm">
                       <h3 className="font-display text-lg font-bold text-baba-slate">{list.heading}</h3>
@@ -413,7 +413,7 @@ function PillarsPage() {
 
               {/* Sub-events (Events pillar) */}
               {pillar.subEvents && (
-                <div className="mt-10 grid gap-6 lg:grid-cols-3">
+                <div data-stack className="mt-10 grid gap-6 lg:grid-cols-3">
                   {pillar.subEvents.map((ev) => (
                     <div key={ev.name} className="baba-pop-card flex flex-col overflow-hidden rounded-2xl p-6">
                       <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-baba-copper/15 px-3 py-1 text-xs font-bold text-baba-copper-dark">

@@ -76,7 +76,7 @@ function Impact() {
       </section>
 
       <section className="mx-auto max-w-7xl px-5 py-16 lg:px-8">
-        <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
+        <div data-stack className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
           {headline.map((s) => (
             <div
               key={s.label}
@@ -97,7 +97,7 @@ function Impact() {
         <h2 className="font-display text-3xl font-extrabold text-baba-slate sm:text-4xl">
           Stories Behind the Numbers
         </h2>
-        <div className="mt-8 grid gap-6 md:grid-cols-3">
+        <div data-stack className="mt-8 grid gap-6 md:grid-cols-3">
           {stories.map((s) => (
             <div
               key={s.title}

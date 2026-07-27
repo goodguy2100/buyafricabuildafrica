@@ -87,7 +87,7 @@ export function Events() {
             <span className="text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">Mark Your Calendar</span>
             <h2 className="mt-2 font-display text-3xl font-extrabold text-baba-slate sm:text-4xl">Upcoming Events</h2>
           </div>
-          <div className="mt-12 grid gap-8 lg:grid-cols-3">
+          <div data-stack className="mt-12 grid gap-8 lg:grid-cols-3">
             {upcomingEvents.map((event) => (
               <div key={event.title} className="baba-card-hover group relative overflow-hidden rounded-2xl border border-baba-copper/20 bg-white">
                 <div className="relative h-44 overflow-hidden bg-gradient-to-br from-baba-blue via-baba-blue-dark to-baba-slate">
@@ -115,7 +115,7 @@ export function Events() {
       <section className="bg-baba-cream py-16 md:py-24">
 
         <div className="mx-auto max-w-7xl px-5 lg:px-8">
-          <div className="grid gap-8 lg:grid-cols-3">
+          <div data-stack className="grid gap-8 lg:grid-cols-3">
             {annualEvents.map((event) => (
               <div key={event.title} className="baba-card-hover overflow-hidden rounded-2xl border border-baba-copper/20 bg-white">
                 <div className="h-2 bg-gradient-to-r from-baba-blue to-baba-copper" />

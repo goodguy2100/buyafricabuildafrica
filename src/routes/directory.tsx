@@ -275,7 +275,7 @@ function Directory() {
           </div>
         </div>
 
-        <div className="mt-8 grid gap-8 lg:grid-cols-[260px_1fr]">
+        <div data-stack className="mt-8 grid gap-8 lg:grid-cols-[260px_1fr]">
           {/* Sidebar */}
           <aside className="space-y-7">
             <div>
@@ -383,7 +383,7 @@ function Directory() {
               </p>
             </div>
 
-            <div className="mt-5 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+            <div data-stack className="mt-5 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
               {filtered.map((p) => (
                 <article
                   key={p.id}
@@ -446,7 +446,7 @@ function Directory() {
         </div>
 
         {/* CTA banner */}
-        <div className="mt-16 grid gap-6 rounded-3xl bg-baba-slate p-8 text-baba-cream lg:grid-cols-[1fr_auto] lg:items-center lg:p-12">
+        <div data-stack className="mt-16 grid gap-6 rounded-3xl bg-baba-slate p-8 text-baba-cream lg:grid-cols-[1fr_auto] lg:items-center lg:p-12">
           <div>
             <h2 className="font-display text-2xl font-extrabold sm:text-3xl">
               Are you a professional, artisan, supplier, or institution?
