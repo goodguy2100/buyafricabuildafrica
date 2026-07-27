@@ -29,6 +29,7 @@ import {
   PenTool,
 } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
+import { NewsHomePreview } from "@/components/NewsHomePreview";
 import { Counter } from "@/components/Counter";
 import { pillars } from "@/data/pillars";
 import heroCollage from "@/assets/hero-collage.jpg";
@@ -575,6 +576,9 @@ function Home() {
           </div>
         </div>
       </section>
+
+      {/* ═══ NEWS PREVIEW ═══ */}
+      <NewsHomePreview />
 
     </PageShell>
   );
