@@ -23,6 +23,7 @@ import {
   updateMyProfile,
   type RoleValue,
 } from "@/lib/registrations.functions";
+import { appendMemberRowToSheet } from "@/lib/sheets.functions";
 
 export const Route = createFileRoute("/register")({
   head: () => ({
@@ -70,6 +71,7 @@ function GetStarted() {
   const navigate = useNavigate();
   const submitRegistration = useServerFn(createRegistration);
   const saveProfile = useServerFn(updateMyProfile);
+  const appendToSheet = useServerFn(appendMemberRowToSheet);
   const [authState, setAuthState] = useState<"checking" | "in" | "out">("checking");
   const [step, setStep] = useState(0); // 0 role, 1 form, 2 welcome
   const [proChoosing, setProChoosing] = useState(false);
