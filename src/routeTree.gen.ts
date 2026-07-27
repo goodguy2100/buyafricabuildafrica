@@ -23,8 +23,11 @@ import { Route as RegisterRouteImport } from './routes/register'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as NewsIndexRouteImport } from './routes/news.index'
+import { Route as NewsSlugRouteImport } from './routes/news.$slug'
 import { Route as OpportunitiesIndexRouteImport } from './routes/opportunities.index'
 import { Route as OpportunitiesIdRouteImport } from './routes/opportunities.$id'
+import { Route as ApiPublicNewsGenerateRouteImport } from './routes/api/public/news-generate'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -95,6 +98,16 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const NewsIndexRoute = NewsIndexRouteImport.update({
+  id: '/news/',
+  path: '/news/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewsSlugRoute = NewsSlugRouteImport.update({
+  id: '/news/$slug',
+  path: '/news/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OpportunitiesIndexRoute = OpportunitiesIndexRouteImport.update({
   id: '/opportunities/',
   path: '/opportunities/',
@@ -103,6 +116,11 @@ const OpportunitiesIndexRoute = OpportunitiesIndexRouteImport.update({
 const OpportunitiesIdRoute = OpportunitiesIdRouteImport.update({
   id: '/opportunities/$id',
   path: '/opportunities/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicNewsGenerateRoute = ApiPublicNewsGenerateRouteImport.update({
+  id: '/api/public/news-generate',
+  path: '/api/public/news-generate',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -120,8 +138,11 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/news/$slug': typeof NewsSlugRoute
   '/opportunities/$id': typeof OpportunitiesIdRoute
+  '/news/': typeof NewsIndexRoute
   '/opportunities/': typeof OpportunitiesIndexRoute
+  '/api/public/news-generate': typeof ApiPublicNewsGenerateRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -137,8 +158,11 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/news/$slug': typeof NewsSlugRoute
   '/opportunities/$id': typeof OpportunitiesIdRoute
+  '/news': typeof NewsIndexRoute
   '/opportunities': typeof OpportunitiesIndexRoute
+  '/api/public/news-generate': typeof ApiPublicNewsGenerateRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -156,8 +180,11 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/news/$slug': typeof NewsSlugRoute
   '/opportunities/$id': typeof OpportunitiesIdRoute
+  '/news/': typeof NewsIndexRoute
   '/opportunities/': typeof OpportunitiesIndexRoute
+  '/api/public/news-generate': typeof ApiPublicNewsGenerateRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -175,8 +202,11 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/admin'
     | '/dashboard'
+    | '/news/$slug'
     | '/opportunities/$id'
+    | '/news/'
     | '/opportunities/'
+    | '/api/public/news-generate'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -192,8 +222,11 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/admin'
     | '/dashboard'
+    | '/news/$slug'
     | '/opportunities/$id'
+    | '/news'
     | '/opportunities'
+    | '/api/public/news-generate'
   id:
     | '__root__'
     | '/'
@@ -210,8 +243,11 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/_authenticated/admin'
     | '/_authenticated/dashboard'
+    | '/news/$slug'
     | '/opportunities/$id'
+    | '/news/'
     | '/opportunities/'
+    | '/api/public/news-generate'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -227,8 +263,11 @@ export interface RootRouteChildren {
   PillarsRoute: typeof PillarsRoute
   RegisterRoute: typeof RegisterRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  NewsSlugRoute: typeof NewsSlugRoute
   OpportunitiesIdRoute: typeof OpportunitiesIdRoute
+  NewsIndexRoute: typeof NewsIndexRoute
   OpportunitiesIndexRoute: typeof OpportunitiesIndexRoute
+  ApiPublicNewsGenerateRoute: typeof ApiPublicNewsGenerateRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -331,6 +370,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/news/': {
+      id: '/news/'
+      path: '/news'
+      fullPath: '/news/'
+      preLoaderRoute: typeof NewsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/news/$slug': {
+      id: '/news/$slug'
+      path: '/news/$slug'
+      fullPath: '/news/$slug'
+      preLoaderRoute: typeof NewsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/opportunities/': {
       id: '/opportunities/'
       path: '/opportunities'
@@ -343,6 +396,13 @@ declare module '@tanstack/react-router' {
       path: '/opportunities/$id'
       fullPath: '/opportunities/$id'
       preLoaderRoute: typeof OpportunitiesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/news-generate': {
+      id: '/api/public/news-generate'
+      path: '/api/public/news-generate'
+      fullPath: '/api/public/news-generate'
+      preLoaderRoute: typeof ApiPublicNewsGenerateRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -374,8 +434,11 @@ const rootRouteChildren: RootRouteChildren = {
   PillarsRoute: PillarsRoute,
   RegisterRoute: RegisterRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  NewsSlugRoute: NewsSlugRoute,
   OpportunitiesIdRoute: OpportunitiesIdRoute,
+  NewsIndexRoute: NewsIndexRoute,
   OpportunitiesIndexRoute: OpportunitiesIndexRoute,
+  ApiPublicNewsGenerateRoute: ApiPublicNewsGenerateRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

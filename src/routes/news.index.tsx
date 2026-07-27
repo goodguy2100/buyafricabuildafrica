@@ -5,7 +5,7 @@ import { Loader2, Newspaper, ArrowRight, Calendar } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { listPublishedNews, type NewsArticle } from "@/lib/news.functions";
 
-export const Route = createFileRoute("/news")({
+export const Route = createFileRoute("/news/")({
   head: () => ({
     meta: [
       { title: "News | Buy Africa Build Africa (BABA)" },
