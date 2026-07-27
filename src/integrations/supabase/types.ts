@@ -16,6 +16,9 @@ export type Database = {
     Tables: {
       contact_messages: {
         Row: {
+          area: string | null
+          city: string | null
+          country: string | null
           created_at: string
           email: string
           id: string
@@ -29,6 +32,9 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          area?: string | null
+          city?: string | null
+          country?: string | null
           created_at?: string
           email: string
           id?: string
@@ -42,6 +48,9 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          area?: string | null
+          city?: string | null
+          country?: string | null
           created_at?: string
           email?: string
           id?: string
@@ -305,6 +314,9 @@ export type Database = {
           applicant_email: string | null
           applicant_name: string | null
           applicant_phone: string | null
+          area: string | null
+          city: string | null
+          country: string | null
           created_at: string
           id: string
           note: string | null
@@ -319,6 +331,9 @@ export type Database = {
           applicant_email?: string | null
           applicant_name?: string | null
           applicant_phone?: string | null
+          area?: string | null
+          city?: string | null
+          country?: string | null
           created_at?: string
           id?: string
           note?: string | null
@@ -333,6 +348,9 @@ export type Database = {
           applicant_email?: string | null
           applicant_name?: string | null
           applicant_phone?: string | null
+          area?: string | null
+          city?: string | null
+          country?: string | null
           created_at?: string
           id?: string
           note?: string | null
@@ -347,7 +365,10 @@ export type Database = {
       }
       profiles: {
         Row: {
+          area: string | null
           bio: string | null
+          city: string | null
+          country: string | null
           created_at: string
           cv_url: string | null
           email: string | null
@@ -359,7 +380,10 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          area?: string | null
           bio?: string | null
+          city?: string | null
+          country?: string | null
           created_at?: string
           cv_url?: string | null
           email?: string | null
@@ -371,7 +395,10 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          area?: string | null
           bio?: string | null
+          city?: string | null
+          country?: string | null
           created_at?: string
           cv_url?: string | null
           email?: string | null
@@ -386,10 +413,13 @@ export type Database = {
       }
       registrations: {
         Row: {
+          area: string | null
           artisan_type: string | null
           business_license: string | null
+          city: string | null
           corporate_name: string | null
           corporate_type: string | null
+          country: string | null
           created_at: string
           data: Json
           education_level: string | null
@@ -419,10 +449,13 @@ export type Database = {
           years_experience: string | null
         }
         Insert: {
+          area?: string | null
           artisan_type?: string | null
           business_license?: string | null
+          city?: string | null
           corporate_name?: string | null
           corporate_type?: string | null
+          country?: string | null
           created_at?: string
           data?: Json
           education_level?: string | null
@@ -452,10 +485,13 @@ export type Database = {
           years_experience?: string | null
         }
         Update: {
+          area?: string | null
           artisan_type?: string | null
           business_license?: string | null
+          city?: string | null
           corporate_name?: string | null
           corporate_type?: string | null
+          country?: string | null
           created_at?: string
           data?: Json
           education_level?: string | null
