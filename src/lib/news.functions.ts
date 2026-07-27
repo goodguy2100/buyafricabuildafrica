@@ -298,7 +298,6 @@ export async function generateAndSaveArticleAsCron(topic?: string): Promise<News
   const draft = await generateArticlePayload(topic);
   const url = process.env.SUPABASE_URL!;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-  const { createClient } = require("@supabase/supabase-js");
   const supabase = createClient(url, key, { auth: { persistSession: false } });
   const { data: row, error } = await supabase
     .from("news_articles")
