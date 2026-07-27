@@ -399,29 +399,30 @@ function RoleCard({
 /* --------------------------- required-field logic -------------------------- */
 
 function requiredFields(role: RoleValue, form: FormState): string[] {
+  const loc = ["country", "city"];
   if (role === "individual") {
-    return ["fullName", "phone", "nationalId", "occupation", "location"];
+    return ["fullName", "phone", "nationalId", "occupation", ...loc];
   }
   if (role === "professional_young") {
     return [
       "fullName", "phone", "nationalId", "occupation", "yearsField",
-      "education", "institutionName", "fieldOfStudy", "location",
+      "education", "institutionName", "fieldOfStudy", ...loc,
     ];
   }
   if (role === "professional_exp") {
     const base = [
       "fullName", "phone", "nationalId", "occupation", "yearsField",
-      "employmentStatus", "education", "institutionName", "fieldOfStudy", "location",
+      "employmentStatus", "education", "institutionName", "fieldOfStudy", ...loc,
     ];
     if (form.employmentStatus === "Employed") base.push("organizationName", "jobTitle", "yearsAtOrg");
     return base;
   }
   if (role === "artisan") {
-    return ["fullName", "phone", "nationalId", "trade", "yearsTrade", "areasServed", "canTravel"];
+    return ["fullName", "phone", "nationalId", "trade", "yearsTrade", ...loc, "canTravel"];
   }
   return [
     "corporateName", "contactPerson", "contactPhone", "yearsInOperation",
-    "businessLicense", "corporateType", "staffSize", "location",
+    "businessLicense", "corporateType", "staffSize", ...loc,
   ];
 }
 
@@ -581,6 +582,37 @@ function Field({
         }`}
       />
       <ErrorText msg={errors[name]} />
+    </div>
+  );
+}
+
+function LocationField({
+  form, set, required, label = "Where are you based?", nameKey = "location",
+}: {
+  form: FormState; set: (k: string, v: string | string[]) => void;
+  required?: boolean; label?: string; nameKey?: string;
+}) {
+  const value = {
+    country: (form.country as string) ?? "",
+    city: (form.city as string) ?? "",
+    area: (form.area as string) ?? "",
+  };
+  return (
+    <div className="sm:col-span-2">
+      <Label required={required}>{label}</Label>
+      <div className="mt-1.5">
+        <LocationPicker
+          value={value}
+          required={required}
+          onChange={(v) => {
+            set("country", v.country);
+            set("city", v.city);
+            set("area", v.area);
+            const combined = [v.area, v.city, v.country].filter(Boolean).join(", ");
+            set(nameKey, combined);
+          }}
+        />
+      </div>
     </div>
   );
 }
