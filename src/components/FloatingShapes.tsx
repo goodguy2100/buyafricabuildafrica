@@ -83,15 +83,16 @@ export function FloatingShapes({ preset = "default" }: { preset?: ShapePreset })
   const { motionEnabled, isCompact } = useMotion();
   const wrapRef = useRef<HTMLDivElement | null>(null);
 
-  // Reduce visual load on mobile: drop every other shape.
+  // Reduce visual load on mobile: keep only every 3rd shape.
   const shapes = isCompact
-    ? PRESETS[preset].filter((_, i) => i % 2 === 0)
+    ? PRESETS[preset].filter((_, i) => i % 3 === 0)
     : PRESETS[preset];
 
   // rAF-throttled scroll → CSS custom property for parallax.
+  // Skip entirely on mobile — scroll listeners + transforms kill perf.
   useEffect(() => {
     const wrap = wrapRef.current;
-    if (!wrap || !motionEnabled) {
+    if (!wrap || !motionEnabled || isCompact) {
       if (wrap) wrap.style.setProperty("--baba-scroll", "0");
       return;
     }
@@ -135,7 +136,7 @@ export function FloatingShapes({ preset = "default" }: { preset?: ShapePreset })
           }}
         >
           <span
-            className={`baba-shape block h-full w-full bg-gradient-to-br ${toneClass[s.tone]} border backdrop-blur-[2px] ${shapeClass(s.kind)}`}
+            className={`baba-shape block h-full w-full bg-gradient-to-br ${toneClass[s.tone]} border ${shapeClass(s.kind)}`}
             style={{
               animationDelay: `${s.delay}s`,
               animationDuration: `${s.dur}s`,

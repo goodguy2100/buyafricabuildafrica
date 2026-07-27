@@ -13,7 +13,7 @@ import { useMotion } from "@/lib/motion";
 function useAutoReveal(enabled: boolean) {
   useEffect(() => {
     const targets = Array.from(
-      document.querySelectorAll<HTMLElement>("main section, main [data-reveal]"),
+      document.querySelectorAll<HTMLElement>("main > section, main [data-reveal]"),
     );
     if (targets.length === 0) return;
 
