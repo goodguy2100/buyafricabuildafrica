@@ -106,6 +106,54 @@ export type Database = {
           },
         ]
       }
+      news_articles: {
+        Row: {
+          body: string
+          created_at: string
+          hero_image_url: string | null
+          id: string
+          published: boolean
+          published_at: string
+          slug: string
+          source_name: string | null
+          source_url: string | null
+          summary: string
+          title: string
+          topic: string | null
+          updated_at: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          hero_image_url?: string | null
+          id?: string
+          published?: boolean
+          published_at?: string
+          slug: string
+          source_name?: string | null
+          source_url?: string | null
+          summary: string
+          title: string
+          topic?: string | null
+          updated_at?: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          hero_image_url?: string | null
+          id?: string
+          published?: boolean
+          published_at?: string
+          slug?: string
+          source_name?: string | null
+          source_url?: string | null
+          summary?: string
+          title?: string
+          topic?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       newsletter_subscribers: {
         Row: {
           created_at: string
