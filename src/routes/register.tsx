@@ -135,7 +135,7 @@ function GetStarted() {
     setSubmitting(true);
     setSubmitError("");
     try {
-      await submitRegistration({
+      const reg = await submitRegistration({
         data: {
           role,
           artisan_type: role === "artisan" ? (form.trade as string) : undefined,
@@ -164,6 +164,10 @@ function GetStarted() {
         });
       } catch {
         // Non-fatal — registration already saved.
+      }
+      // Auto-append to Google Sheets when configured. Never blocks the flow.
+      if (reg?.id) {
+        appendToSheet({ data: { registration_id: reg.id } }).catch(() => {});
       }
       setStep(2);
     } catch (err) {
