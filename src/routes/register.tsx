@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { supabase } from "@/integrations/supabase/client";
+import { LocationPicker } from "@/components/LocationPicker";
 import {
   createRegistration,
   updateMyProfile,
@@ -142,13 +143,21 @@ function GetStarted() {
       // Keep the profile record in sync so the dashboard shows the basics.
       const fullName = (form.fullName || form.contactPerson) as string | undefined;
       const phone = (form.phone || form.contactPhone) as string | undefined;
-      const location = form.location as string | undefined;
+      const country = form.country as string | undefined;
+      const city = form.city as string | undefined;
+      const area = form.area as string | undefined;
+      const location =
+        (form.location as string | undefined) ||
+        [area, city, country].filter(Boolean).join(", ") || undefined;
       try {
         await saveProfile({
           data: {
             ...(fullName ? { full_name: fullName } : {}),
             ...(phone ? { phone } : {}),
             ...(location ? { location } : {}),
+            ...(country ? { country } : {}),
+            ...(city ? { city } : {}),
+            ...(area ? { area } : {}),
           },
         });
       } catch {
