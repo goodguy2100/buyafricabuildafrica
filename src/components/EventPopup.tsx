@@ -66,14 +66,30 @@ function generateICS(event: (typeof upcomingEvents)[number]) {
   ].join("\r\n");
 }
 
+const DISMISS_KEY = "baba.eventPopup.dismissed";
+
 export function EventPopup() {
   const [visible, setVisible] = useState(false);
   const event = closestEvent();
 
   useEffect(() => {
+    try {
+      if (sessionStorage.getItem(DISMISS_KEY) === "1") return;
+    } catch {
+      /* ignore */
+    }
     const timer = setTimeout(() => setVisible(true), 1500);
     return () => clearTimeout(timer);
   }, []);
+
+  const handleDismiss = () => {
+    setVisible(false);
+    try {
+      sessionStorage.setItem(DISMISS_KEY, "1");
+    } catch {
+      /* ignore */
+    }
+  };
 
   const handleAddToCalendar = () => {
     const ics = generateICS(event);
@@ -86,9 +102,11 @@ export function EventPopup() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    handleDismiss();
   };
 
   if (!visible) return null;
+
 
   return (
     <div className="fixed inset-x-0 bottom-0 z-50 p-3 sm:p-4">
