@@ -68,7 +68,7 @@ function Opportunities() {
 
 
   return (
-    <PageShell>
+    <PageShell preset="opportunities">
       <section className="border-b border-baba-blue/10 bg-baba-blue/5">
         <div className="mx-auto max-w-7xl px-5 py-16 lg:px-8">
           <span className="text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">

@@ -148,7 +148,7 @@ const ubuntuCommunities: { country: string; flag: string; chapters: string[] }[]
 
 function Home() {
   return (
-    <PageShell>
+    <PageShell preset="home">
       {/* ═══ HERO ═══ */}
       <section className="relative overflow-hidden baba-wash py-20 lg:py-28">
         <div className="mx-auto max-w-7xl px-5 lg:px-8">

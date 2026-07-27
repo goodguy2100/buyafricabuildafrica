@@ -6,6 +6,7 @@ import { useServerFn } from "@tanstack/react-start";
 import babaLogo from "@/assets/baba-logo-vibrant.png";
 import { supabase } from "@/integrations/supabase/client";
 import { getIsAdmin } from "@/lib/registrations.functions";
+import { MotionToggle } from "@/components/MotionToggle";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -113,6 +114,7 @@ export function Header() {
         </nav>
 
         <div className="hidden items-center gap-2.5 xl:flex">
+          <MotionToggle />
           <Link
             to="/register"
             className="rounded-full baba-cta px-4 py-2 text-sm font-semibold text-white"
@@ -164,13 +166,16 @@ export function Header() {
           )}
         </div>
 
-        <button
-          className="rounded-lg p-2 text-baba-blue xl:hidden"
-          onClick={() => setOpen((v) => !v)}
-          aria-label="Toggle menu"
-        >
-          {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-        </button>
+        <div className="flex items-center gap-1 xl:hidden">
+          <MotionToggle />
+          <button
+            className="rounded-lg p-2 text-baba-blue"
+            onClick={() => setOpen((v) => !v)}
+            aria-label="Toggle menu"
+          >
+            {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
+        </div>
       </div>
 
       {open && (

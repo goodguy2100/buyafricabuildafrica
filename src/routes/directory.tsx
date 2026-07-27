@@ -244,7 +244,7 @@ function Directory() {
   }, [query, selectedCats, selectedExp, verifiedOnly]);
 
   return (
-    <PageShell>
+    <PageShell preset="directory">
       <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8">
         <p className="text-sm text-baba-slate/50">
           Home <span className="mx-1">›</span> Directory and Professional Database
