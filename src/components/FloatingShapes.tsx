@@ -136,7 +136,7 @@ export function FloatingShapes({ preset = "default" }: { preset?: ShapePreset })
           }}
         >
           <span
-            className={`baba-shape block h-full w-full bg-gradient-to-br ${toneClass[s.tone]} border backdrop-blur-[2px] ${shapeClass(s.kind)}`}
+            className={`baba-shape block h-full w-full bg-gradient-to-br ${toneClass[s.tone]} border ${shapeClass(s.kind)}`}
             style={{
               animationDelay: `${s.delay}s`,
               animationDuration: `${s.dur}s`,
