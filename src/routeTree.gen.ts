@@ -18,17 +18,22 @@ import { Route as DirectoryRouteImport } from './routes/directory'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as ImpactRouteImport } from './routes/impact'
+import { Route as McpRouteImport } from './routes/mcp'
 import { Route as PartnersRouteImport } from './routes/partners'
 import { Route as PillarsRouteImport } from './routes/pillars'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
+import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as NewsIndexRouteImport } from './routes/news.index'
 import { Route as NewsSlugRouteImport } from './routes/news.$slug'
 import { Route as OpportunitiesIndexRouteImport } from './routes/opportunities.index'
 import { Route as OpportunitiesIdRouteImport } from './routes/opportunities.$id'
+import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
+import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as ApiPublicNewsGenerateRouteImport } from './routes/api/public/news-generate'
 
 const IndexRoute = IndexRouteImport.update({
@@ -75,6 +80,11 @@ const ImpactRoute = ImpactRouteImport.update({
   path: '/impact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const McpRoute = McpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PartnersRoute = PartnersRouteImport.update({
   id: '/partners',
   path: '/partners',
@@ -100,6 +110,18 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Char91DotmcpChar93ListToolsRoute =
+  Char91DotmcpChar93ListToolsRouteImport.update({
+    id: '/.mcp/list-tools',
+    path: '/.mcp/list-tools',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const Char91DotwellKnownChar93OauthProtectedResourceRoute =
+  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
+    id: '/.well-known/oauth-protected-resource',
+    path: '/.well-known/oauth-protected-resource',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -130,6 +152,17 @@ const OpportunitiesIdRoute = OpportunitiesIdRouteImport.update({
   path: '/opportunities/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
+  id: '/.lovable/oauth/consent',
+  path: '/.lovable/oauth/consent',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Char91DotmcpChar93InvokeToolToolRoute =
+  Char91DotmcpChar93InvokeToolToolRouteImport.update({
+    id: '/.mcp/invoke-tool/$tool',
+    path: '/.mcp/invoke-tool/$tool',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicNewsGenerateRoute = ApiPublicNewsGenerateRouteImport.update({
   id: '/api/public/news-generate',
   path: '/api/public/news-generate',
@@ -145,17 +178,22 @@ export interface FileRoutesByFullPath {
   '/events': typeof EventsRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/impact': typeof ImpactRoute
+  '/mcp': typeof McpRoute
   '/partners': typeof PartnersRoute
   '/pillars': typeof PillarsRoute
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/news/$slug': typeof NewsSlugRoute
   '/opportunities/$id': typeof OpportunitiesIdRoute
   '/news/': typeof NewsIndexRoute
   '/opportunities/': typeof OpportunitiesIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/api/public/news-generate': typeof ApiPublicNewsGenerateRoute
 }
 export interface FileRoutesByTo {
@@ -167,17 +205,22 @@ export interface FileRoutesByTo {
   '/events': typeof EventsRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/impact': typeof ImpactRoute
+  '/mcp': typeof McpRoute
   '/partners': typeof PartnersRoute
   '/pillars': typeof PillarsRoute
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/news/$slug': typeof NewsSlugRoute
   '/opportunities/$id': typeof OpportunitiesIdRoute
   '/news': typeof NewsIndexRoute
   '/opportunities': typeof OpportunitiesIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/api/public/news-generate': typeof ApiPublicNewsGenerateRoute
 }
 export interface FileRoutesById {
@@ -191,17 +234,22 @@ export interface FileRoutesById {
   '/events': typeof EventsRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/impact': typeof ImpactRoute
+  '/mcp': typeof McpRoute
   '/partners': typeof PartnersRoute
   '/pillars': typeof PillarsRoute
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/news/$slug': typeof NewsSlugRoute
   '/opportunities/$id': typeof OpportunitiesIdRoute
   '/news/': typeof NewsIndexRoute
   '/opportunities/': typeof OpportunitiesIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/api/public/news-generate': typeof ApiPublicNewsGenerateRoute
 }
 export interface FileRouteTypes {
@@ -215,17 +263,22 @@ export interface FileRouteTypes {
     | '/events'
     | '/forgot-password'
     | '/impact'
+    | '/mcp'
     | '/partners'
     | '/pillars'
     | '/register'
     | '/reset-password'
     | '/sitemap.xml'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/admin'
     | '/dashboard'
     | '/news/$slug'
     | '/opportunities/$id'
     | '/news/'
     | '/opportunities/'
+    | '/.lovable/oauth/consent'
+    | '/.mcp/invoke-tool/$tool'
     | '/api/public/news-generate'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -237,17 +290,22 @@ export interface FileRouteTypes {
     | '/events'
     | '/forgot-password'
     | '/impact'
+    | '/mcp'
     | '/partners'
     | '/pillars'
     | '/register'
     | '/reset-password'
     | '/sitemap.xml'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/admin'
     | '/dashboard'
     | '/news/$slug'
     | '/opportunities/$id'
     | '/news'
     | '/opportunities'
+    | '/.lovable/oauth/consent'
+    | '/.mcp/invoke-tool/$tool'
     | '/api/public/news-generate'
   id:
     | '__root__'
@@ -260,17 +318,22 @@ export interface FileRouteTypes {
     | '/events'
     | '/forgot-password'
     | '/impact'
+    | '/mcp'
     | '/partners'
     | '/pillars'
     | '/register'
     | '/reset-password'
     | '/sitemap.xml'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/_authenticated/admin'
     | '/_authenticated/dashboard'
     | '/news/$slug'
     | '/opportunities/$id'
     | '/news/'
     | '/opportunities/'
+    | '/.lovable/oauth/consent'
+    | '/.mcp/invoke-tool/$tool'
     | '/api/public/news-generate'
   fileRoutesById: FileRoutesById
 }
@@ -284,15 +347,20 @@ export interface RootRouteChildren {
   EventsRoute: typeof EventsRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   ImpactRoute: typeof ImpactRoute
+  McpRoute: typeof McpRoute
   PartnersRoute: typeof PartnersRoute
   PillarsRoute: typeof PillarsRoute
   RegisterRoute: typeof RegisterRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
+  Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   NewsSlugRoute: typeof NewsSlugRoute
   OpportunitiesIdRoute: typeof OpportunitiesIdRoute
   NewsIndexRoute: typeof NewsIndexRoute
   OpportunitiesIndexRoute: typeof OpportunitiesIndexRoute
+  DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
+  Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   ApiPublicNewsGenerateRoute: typeof ApiPublicNewsGenerateRoute
 }
 
@@ -361,6 +429,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ImpactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/partners': {
       id: '/partners'
       path: '/partners'
@@ -394,6 +469,20 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.mcp/list-tools': {
+      id: '/.mcp/list-tools'
+      path: '/.mcp/list-tools'
+      fullPath: '/.mcp/list-tools'
+      preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.well-known/oauth-protected-resource': {
+      id: '/.well-known/oauth-protected-resource'
+      path: '/.well-known/oauth-protected-resource'
+      fullPath: '/.well-known/oauth-protected-resource'
+      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin': {
@@ -438,6 +527,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OpportunitiesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/.lovable/oauth/consent': {
+      id: '/.lovable/oauth/consent'
+      path: '/.lovable/oauth/consent'
+      fullPath: '/.lovable/oauth/consent'
+      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.mcp/invoke-tool/$tool': {
+      id: '/.mcp/invoke-tool/$tool'
+      path: '/.mcp/invoke-tool/$tool'
+      fullPath: '/.mcp/invoke-tool/$tool'
+      preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/news-generate': {
       id: '/api/public/news-generate'
       path: '/api/public/news-generate'
@@ -471,15 +574,21 @@ const rootRouteChildren: RootRouteChildren = {
   EventsRoute: EventsRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   ImpactRoute: ImpactRoute,
+  McpRoute: McpRoute,
   PartnersRoute: PartnersRoute,
   PillarsRoute: PillarsRoute,
   RegisterRoute: RegisterRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
+  Char91DotwellKnownChar93OauthProtectedResourceRoute:
+    Char91DotwellKnownChar93OauthProtectedResourceRoute,
   NewsSlugRoute: NewsSlugRoute,
   OpportunitiesIdRoute: OpportunitiesIdRoute,
   NewsIndexRoute: NewsIndexRoute,
   OpportunitiesIndexRoute: OpportunitiesIndexRoute,
+  DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
+  Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   ApiPublicNewsGenerateRoute: ApiPublicNewsGenerateRoute,
 }
 export const routeTree = rootRouteImport
