@@ -119,6 +119,9 @@ export const createRegistration = createServerFn({ method: "POST" })
         phone: str(form.phone) ?? str(form.contactPhone),
         national_id: str(form.nationalId),
         location: str(form.location),
+        country: str(form.country),
+        city: str(form.city),
+        area: str(form.area),
         occupation: str(form.occupation),
         trade: str(form.trade),
         years_experience:
@@ -172,6 +175,9 @@ const profileUpdateInput = z.object({
   full_name: z.string().max(200).optional(),
   phone: z.string().max(60).optional(),
   location: z.string().max(200).optional(),
+  country: z.string().max(80).optional(),
+  city: z.string().max(120).optional(),
+  area: z.string().max(200).optional(),
   bio: z.string().max(4000).optional(),
   cv_url: z.string().max(500).optional(),
   extra: z.record(z.string(), z.any()).optional(),
@@ -183,17 +189,13 @@ export const updateMyProfile = createServerFn({ method: "POST" })
   .inputValidator((input) => profileUpdateInput.parse(input))
   .handler(async ({ data, context }): Promise<ProfileRow> => {
     const { supabase, userId } = context;
-    const patch: {
-      full_name?: string;
-      phone?: string;
-      location?: string;
-      bio?: string;
-      cv_url?: string;
-      extra?: Json;
-    } = {};
+    const patch: Record<string, unknown> = {};
     if (data.full_name !== undefined) patch.full_name = data.full_name;
     if (data.phone !== undefined) patch.phone = data.phone;
     if (data.location !== undefined) patch.location = data.location;
+    if (data.country !== undefined) patch.country = data.country;
+    if (data.city !== undefined) patch.city = data.city;
+    if (data.area !== undefined) patch.area = data.area;
     if (data.bio !== undefined) patch.bio = data.bio;
     if (data.cv_url !== undefined) patch.cv_url = data.cv_url;
     if (data.extra !== undefined) patch.extra = data.extra as Json;
