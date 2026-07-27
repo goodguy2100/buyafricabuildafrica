@@ -88,8 +88,8 @@ export function FloatingShapes({ preset = "default" }: { preset?: ShapePreset })
     ? PRESETS[preset].filter((_, i) => i % 3 === 0)
     : PRESETS[preset];
 
-  // rAF-throttled scroll → CSS custom property for parallax.
-  // Skip entirely on mobile — scroll listeners + transforms kill perf.
+  // Adaptive parallax: throttle based on device frame rate & scroll velocity.
+  // Slower devices update less often; fast scrolling coalesces frames.
   useEffect(() => {
     const wrap = wrapRef.current;
     if (!wrap || !motionEnabled || isCompact) {
@@ -97,24 +97,46 @@ export function FloatingShapes({ preset = "default" }: { preset?: ShapePreset })
       return;
     }
     let raf = 0;
-    let pending = false;
-    const update = () => {
+    let lastRun = 0;
+    let lastY = window.scrollY;
+    let lastT = performance.now();
+    // Start with a modest budget; adapt from measured frame durations.
+    let minInterval = 16; // ms between updates (~60fps ceiling)
+    let frameEma = 16;    // exponential moving avg of frame duration
+
+    const update = (now: number) => {
       raf = 0;
-      pending = false;
-      wrap.style.setProperty("--baba-scroll", String(window.scrollY));
+      const dt = now - lastT;
+      lastT = now;
+      // Track rolling frame cost; if frames are long, back off updates.
+      frameEma = frameEma * 0.85 + dt * 0.15;
+      // Target ~1 update per 1.2 frames, clamped 16–80ms.
+      minInterval = Math.min(80, Math.max(16, frameEma * 1.2));
+
+      const y = window.scrollY;
+      const dy = Math.abs(y - lastY);
+      // Fast scrolling → allow slightly cheaper updates by widening interval.
+      const velocityBoost = dy > 60 ? 1.4 : 1;
+      if (now - lastRun < minInterval * velocityBoost) {
+        raf = requestAnimationFrame(update);
+        return;
+      }
+      lastRun = now;
+      lastY = y;
+      wrap.style.setProperty("--baba-scroll", String(y));
     };
     const onScroll = () => {
-      if (pending) return;
-      pending = true;
+      if (raf) return;
       raf = requestAnimationFrame(update);
     };
-    update();
+    wrap.style.setProperty("--baba-scroll", String(window.scrollY));
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => {
       window.removeEventListener("scroll", onScroll);
       if (raf) cancelAnimationFrame(raf);
     };
   }, [motionEnabled, preset, isCompact]);
+
 
   return (
     <div
