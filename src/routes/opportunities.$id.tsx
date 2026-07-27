@@ -37,7 +37,7 @@ export const Route = createFileRoute("/opportunities/$id")({
 
 function OpportunityNotFound() {
   return (
-    <PageShell>
+    <PageShell preset="opportunities">
       <section className="mx-auto max-w-3xl px-5 py-24 text-center lg:px-8">
         <h1 className="font-display text-3xl font-extrabold text-baba-slate">
           Opportunity not found
@@ -68,7 +68,7 @@ function OpportunityDetail() {
     .slice(0, 3);
 
   return (
-    <PageShell>
+    <PageShell preset="opportunities">
       <section className="border-b border-baba-blue/10 bg-baba-blue/5">
         <div className="mx-auto max-w-4xl px-5 py-12 lg:px-8">
           <Link
