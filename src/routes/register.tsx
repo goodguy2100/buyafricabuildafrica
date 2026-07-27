@@ -442,7 +442,7 @@ function IndividualFields({ form, errors, set, toggle }: FieldProps) {
       <Field label="Phone Number" name="phone" required {...{ form, errors, set }} />
       <Field label="National ID Number" name="nationalId" required {...{ form, errors, set }} />
       <SelectField label="Primary Occupation / Skill Area" name="occupation" required options={OCCUPATIONS} {...{ form, errors, set }} />
-      <Field label="Location (City/Town)" name="location" required {...{ form, errors, set }} />
+      <LocationField required form={form} set={set} />
       <MultiSelect label="Industries Interested In" name="industries" options={INDUSTRIES} {...{ form, toggle }} />
       <MultiSelect label="What are you looking for?" name="lookingFor"
         options={["Skills Training", "Job Opportunities", "Event Notifications", "Networking", "Other"]}
@@ -465,7 +465,7 @@ function YoungProFields({ form, errors, set, toggle }: FieldProps) {
         options={["Secondary", "Certificate", "Diploma", "Bachelor's", "Master's", "Other"]} {...{ form, errors, set }} />
       <Field label="Institution Name" name="institutionName" required {...{ form, errors, set }} />
       <Field label="Field of Study" name="fieldOfStudy" required {...{ form, errors, set }} />
-      <Field label="Location (City/Town)" name="location" required {...{ form, errors, set }} />
+      <LocationField required form={form} set={set} />
       <MultiSelect label="Industries Interested In" name="industries" options={INDUSTRIES} {...{ form, toggle }} />
       <MultiSelect label="What are you looking for?" name="lookingFor"
         options={["Job opportunities", "Training/courses", "Networking", "Mentorship", "Other"]}
@@ -498,7 +498,7 @@ function ExpProFields({ form, errors, set, toggle }: FieldProps) {
       <Field label="Institution Name" name="institutionName" required {...{ form, errors, set }} />
       <Field label="Field of Study" name="fieldOfStudy" required {...{ form, errors, set }} />
       <Field label="Professional Certifications (if any)" name="certifications" {...{ form, errors, set }} />
-      <Field label="Location (City/Town)" name="location" required {...{ form, errors, set }} />
+      <LocationField required form={form} set={set} />
       <MultiSelect label="Industries Interested In" name="industries" options={INDUSTRIES} {...{ form, toggle }} />
       <MultiSelect label="What are you looking for?" name="lookingFor"
         options={["Senior roles", "Consulting work", "Training/mentorship", "Board positions", "Networking", "Other"]}
@@ -516,7 +516,7 @@ function ArtisanFields({ form, errors, set, toggle }: FieldProps) {
       <Field label="National ID Number" name="nationalId" required {...{ form, errors, set }} />
       <SelectField label="Trade / Specialization" name="trade" required options={TRADES} {...{ form, errors, set }} />
       <Field label="Years in trade" name="yearsTrade" required {...{ form, errors, set }} />
-      <Field label="Areas served (Location)" name="areasServed" required {...{ form, errors, set }} />
+      <LocationField required form={form} set={set} nameKey="areasServed" label="Areas you serve" />
       <SelectField label="Can travel for work?" name="canTravel" required options={["Yes", "No"]} {...{ form, errors, set }} />
       <TextField label="Certifications / Training completed" name="trainingCompleted" {...{ form, set }} />
       <TextField label="Services offered (brief description)" name="services" {...{ form, set }} />
@@ -539,7 +539,7 @@ function CorporateFields({ form, errors, set, toggle }: FieldProps) {
       <SelectField label="Corporate Type" name="corporateType" required options={CORPORATE_TYPES} {...{ form, errors, set }} />
       <SelectField label="Approximate staff size" name="staffSize" required
         options={["1-10", "11-50", "51-200", "201-500", "500+"]} {...{ form, errors, set }} />
-      <Field label="Location (Headquarters)" name="location" required {...{ form, errors, set }} />
+      <LocationField required form={form} set={set} label="Headquarters location" />
       <MultiSelect label="Primary industries" name="industries" options={INDUSTRIES} {...{ form, toggle }} />
       <MultiSelect label="What are you looking for?" name="lookingFor"
         options={["Hire talent", "Partner for training", "Access talent network", "Event collaboration"]}
