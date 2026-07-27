@@ -143,12 +143,13 @@ export function EventPopup() {
               Learn More
             </Link>
             <button
-              onClick={() => setVisible(false)}
+              onClick={handleDismiss}
               aria-label="Close event notice"
               className="rounded-full p-2 text-white/80 transition hover:bg-white/10 hover:text-white"
             >
               <X className="h-4 w-4" />
             </button>
+
           </div>
         </div>
       </div>
