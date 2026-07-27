@@ -343,13 +343,15 @@ html[data-motion="off"] .baba-shape-wrap { transform: none; will-change: auto; }
   .baba-shape-wrap { transform: none; will-change: auto; }
 }
 
-/* Scroll reveal — applied by PageShell auto-reveal effect. */
+/* Scroll reveal — applied by PageShell auto-reveal effect.
+   Cards travel further and settle with a soft "brake" overshoot so they
+   feel like they're being pressed down into place instead of popped in. */
 .baba-reveal {
   opacity: 0;
-  transform: translate3d(0, 26px, 0) scale(0.985);
+  transform: translate3d(0, 60px, 0) scale(0.965);
   transition:
-    opacity 0.7s ease,
-    transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+    opacity 0.8s ease-out,
+    transform 0.9s cubic-bezier(0.16, 1.2, 0.3, 1);
   will-change: opacity, transform;
 }
 .baba-reveal-in {
@@ -357,19 +359,43 @@ html[data-motion="off"] .baba-shape-wrap { transform: none; will-change: auto; }
   transform: none;
   will-change: auto;
 }
+
+/* Stagger children within a container tagged data-stack.
+   Each child slides up with an incremental delay so grids of cards
+   feel like they're stacking on top of each other from the bottom. */
+[data-stack] > * {
+  opacity: 0;
+  transform: translate3d(0, 48px, 0) scale(0.97);
+  transition:
+    opacity 0.7s ease-out,
+    transform 0.85s cubic-bezier(0.16, 1.2, 0.3, 1);
+  will-change: opacity, transform;
+}
+[data-stack].baba-stack-in > *          { opacity: 1; transform: none; }
+[data-stack].baba-stack-in > *:nth-child(1)  { transition-delay: 0ms;   }
+[data-stack].baba-stack-in > *:nth-child(2)  { transition-delay: 80ms;  }
+[data-stack].baba-stack-in > *:nth-child(3)  { transition-delay: 160ms; }
+[data-stack].baba-stack-in > *:nth-child(4)  { transition-delay: 240ms; }
+[data-stack].baba-stack-in > *:nth-child(5)  { transition-delay: 320ms; }
+[data-stack].baba-stack-in > *:nth-child(6)  { transition-delay: 400ms; }
+[data-stack].baba-stack-in > *:nth-child(7)  { transition-delay: 460ms; }
+[data-stack].baba-stack-in > *:nth-child(n+8){ transition-delay: 520ms; }
+
 html[data-motion="off"] .baba-reveal,
-html[data-motion="off"] .baba-reveal-in {
+html[data-motion="off"] .baba-reveal-in,
+html[data-motion="off"] [data-stack] > * {
   opacity: 1;
   transform: none;
   transition: none;
 }
 @media (prefers-reduced-motion: reduce) {
-  .baba-reveal, .baba-reveal-in {
+  .baba-reveal, .baba-reveal-in, [data-stack] > * {
     opacity: 1;
     transform: none;
     transition: none;
   }
 }
+
 
 /* Mobile: drop the heaviest shape effects for smoother scrolling. */
 @media (max-width: 767px) {
