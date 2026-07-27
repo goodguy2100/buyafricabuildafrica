@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { createClient } from "@supabase/supabase-js";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 export interface NewsArticle {
@@ -38,8 +39,6 @@ async function assertAdmin(context: { supabase: any; userId: string }) {
 function publicClient() {
   const url = process.env.SUPABASE_URL!;
   const key = process.env.SUPABASE_PUBLISHABLE_KEY!;
-  // Lazy import to keep bundle lean.
-  const { createClient } = require("@supabase/supabase-js");
   return createClient(url, key, {
     auth: { persistSession: false },
     global: {
@@ -299,7 +298,6 @@ export async function generateAndSaveArticleAsCron(topic?: string): Promise<News
   const draft = await generateArticlePayload(topic);
   const url = process.env.SUPABASE_URL!;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-  const { createClient } = require("@supabase/supabase-js");
   const supabase = createClient(url, key, { auth: { persistSession: false } });
   const { data: row, error } = await supabase
     .from("news_articles")
