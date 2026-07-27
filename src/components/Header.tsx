@@ -25,6 +25,7 @@ const primaryLinks = [
 const moreLinks = [
   { to: "/directory", label: "National Directory" },
   { to: "/opportunities", label: "Opportunities" },
+  { to: "/news", label: "News" },
   { to: "/contact", label: "Contact" },
 ] as const;
 

@@ -10,6 +10,7 @@ import {
   Briefcase,
   Bell,
   Images,
+  Newspaper,
   Settings,
 } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
@@ -20,6 +21,7 @@ import { PaymentsSection } from "@/components/admin/PaymentsSection";
 import { OpportunitiesSection } from "@/components/admin/OpportunitiesSection";
 import { NotificationsSection } from "@/components/admin/NotificationsSection";
 import { GallerySection } from "@/components/admin/GallerySection";
+import { NewsSection } from "@/components/admin/NewsSection";
 import { SettingsSection } from "@/components/admin/SettingsSection";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -52,6 +54,7 @@ const NAV = [
   { key: "members", label: "Members", icon: Users },
   { key: "payments", label: "Payments", icon: DollarSign },
   { key: "opportunities", label: "Opportunities", icon: Briefcase },
+  { key: "news", label: "News", icon: Newspaper },
   { key: "notifications", label: "Notifications", icon: Bell },
   { key: "gallery", label: "Gallery", icon: Images },
   { key: "settings", label: "Settings", icon: Settings },
@@ -149,6 +152,7 @@ function AdminPage() {
         {tab === "members" && <MembersSection />}
         {tab === "payments" && <PaymentsSection />}
         {tab === "opportunities" && <OpportunitiesSection />}
+        {tab === "news" && <NewsSection />}
         {tab === "notifications" && <NotificationsSection />}
         {tab === "gallery" && <GallerySection />}
         {tab === "settings" && <SettingsSection />}
