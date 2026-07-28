@@ -34,6 +34,7 @@ import { Route as OpportunitiesIndexRouteImport } from './routes/opportunities.i
 import { Route as OpportunitiesIdRouteImport } from './routes/opportunities.$id'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
+import { Route as ApiPublicMcpHealthRouteImport } from './routes/api/public/mcp-health'
 import { Route as ApiPublicNewsGenerateRouteImport } from './routes/api/public/news-generate'
 
 const IndexRoute = IndexRouteImport.update({
@@ -163,6 +164,11 @@ const Char91DotmcpChar93InvokeToolToolRoute =
     path: '/.mcp/invoke-tool/$tool',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicMcpHealthRoute = ApiPublicMcpHealthRouteImport.update({
+  id: '/api/public/mcp-health',
+  path: '/api/public/mcp-health',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicNewsGenerateRoute = ApiPublicNewsGenerateRouteImport.update({
   id: '/api/public/news-generate',
   path: '/api/public/news-generate',
@@ -194,6 +200,7 @@ export interface FileRoutesByFullPath {
   '/opportunities/': typeof OpportunitiesIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/api/public/mcp-health': typeof ApiPublicMcpHealthRoute
   '/api/public/news-generate': typeof ApiPublicNewsGenerateRoute
 }
 export interface FileRoutesByTo {
@@ -221,6 +228,7 @@ export interface FileRoutesByTo {
   '/opportunities': typeof OpportunitiesIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/api/public/mcp-health': typeof ApiPublicMcpHealthRoute
   '/api/public/news-generate': typeof ApiPublicNewsGenerateRoute
 }
 export interface FileRoutesById {
@@ -250,6 +258,7 @@ export interface FileRoutesById {
   '/opportunities/': typeof OpportunitiesIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/api/public/mcp-health': typeof ApiPublicMcpHealthRoute
   '/api/public/news-generate': typeof ApiPublicNewsGenerateRoute
 }
 export interface FileRouteTypes {
@@ -279,6 +288,7 @@ export interface FileRouteTypes {
     | '/opportunities/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
+    | '/api/public/mcp-health'
     | '/api/public/news-generate'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -306,6 +316,7 @@ export interface FileRouteTypes {
     | '/opportunities'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
+    | '/api/public/mcp-health'
     | '/api/public/news-generate'
   id:
     | '__root__'
@@ -334,6 +345,7 @@ export interface FileRouteTypes {
     | '/opportunities/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
+    | '/api/public/mcp-health'
     | '/api/public/news-generate'
   fileRoutesById: FileRoutesById
 }
@@ -361,6 +373,7 @@ export interface RootRouteChildren {
   OpportunitiesIndexRoute: typeof OpportunitiesIndexRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
+  ApiPublicMcpHealthRoute: typeof ApiPublicMcpHealthRoute
   ApiPublicNewsGenerateRoute: typeof ApiPublicNewsGenerateRoute
 }
 
@@ -541,6 +554,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/mcp-health': {
+      id: '/api/public/mcp-health'
+      path: '/api/public/mcp-health'
+      fullPath: '/api/public/mcp-health'
+      preLoaderRoute: typeof ApiPublicMcpHealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/news-generate': {
       id: '/api/public/news-generate'
       path: '/api/public/news-generate'
@@ -589,6 +609,7 @@ const rootRouteChildren: RootRouteChildren = {
   OpportunitiesIndexRoute: OpportunitiesIndexRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
+  ApiPublicMcpHealthRoute: ApiPublicMcpHealthRoute,
   ApiPublicNewsGenerateRoute: ApiPublicNewsGenerateRoute,
 }
 export const routeTree = rootRouteImport
