@@ -25,8 +25,8 @@ export default defineTool({
     const supabase = supabaseForUser(ctx);
     let query = supabase
       .from("news_articles")
-      .select("id, slug, title, summary, category, published_at, cover_image_url")
-      .eq("status", "published")
+      .select("id, slug, title, summary, topic, published_at, hero_image_url")
+      .eq("published", true)
       .order("published_at", { ascending: false })
       .limit(limit ?? 10);
     if (search?.trim()) {

@@ -12,7 +12,7 @@
   "mcp": {
     "server": {
       "name": "baba-mcp",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "title": "Buy Africa Build Africa"
     },
     "tools": [
@@ -118,6 +118,109 @@
               "type": "string"
             }
           }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "fetch_url",
+        "title": "Fetch URL",
+        "description": "Fetch a public https URL and return its cleaned text content plus title. Useful when the bot has a source link and wants to read the page before drafting a news article. Only http(s) URLs are allowed; response is truncated to ~15k characters.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": true
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "format": "uri",
+              "description": "Absolute http(s) URL to fetch."
+            },
+            "max_chars": {
+              "description": "Max characters of body text to return (default 15000).",
+              "type": "integer",
+              "minimum": 500,
+              "maximum": 20000
+            }
+          },
+          "required": [
+            "url"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "create_news_article",
+        "title": "Create news article",
+        "description": "Create a BABA news article. Admin-only. The bot writes the article (title, summary, body, topic, optional source) and posts it into the site. Set `publish` to true to publish immediately, false to save as a draft for admin review.",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "minLength": 6,
+              "maxLength": 300,
+              "description": "Headline, 6-14 words."
+            },
+            "summary": {
+              "type": "string",
+              "minLength": 20,
+              "maxLength": 600,
+              "description": "One-paragraph summary, plain prose, max ~40 words."
+            },
+            "body": {
+              "type": "string",
+              "minLength": 200,
+              "maxLength": 20000,
+              "description": "Article body: 3-5 short paragraphs separated by \\n\\n. No markdown headings or bullet lists."
+            },
+            "topic": {
+              "description": "Short tag e.g. 'Artisans', 'Sustainability', 'Housing'.",
+              "type": "string",
+              "maxLength": 60
+            },
+            "source_url": {
+              "description": "Primary source URL, if any.",
+              "type": "string",
+              "maxLength": 500,
+              "format": "uri"
+            },
+            "source_name": {
+              "description": "Human-readable source name.",
+              "type": "string",
+              "maxLength": 200
+            },
+            "hero_image_url": {
+              "description": "Absolute https URL for the hero image.",
+              "type": "string",
+              "maxLength": 600,
+              "format": "uri"
+            },
+            "slug": {
+              "description": "Optional custom slug; auto-generated from the title if omitted.",
+              "type": "string",
+              "maxLength": 80,
+              "pattern": "^[a-z0-9-]+$"
+            },
+            "publish": {
+              "description": "True = publish now (default), false = save as draft.",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "title",
+            "summary",
+            "body"
+          ]
         },
         "outputSchema": null
       }
