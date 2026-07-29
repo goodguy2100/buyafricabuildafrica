@@ -48,8 +48,12 @@ const OCCUPATIONS = [
 ];
 
 const TRADES = [
-  "Plumber", "Electrician", "Mason", "Carpenter", "Painter", "Welder", "Tiler",
-  "Gypsum Installer", "Other",
+  "Plumber", "Mason", "Interior Designer", "Architect", "Engineer",
+  "Quantity Surveyor", "Painter", "Other",
+];
+
+const EXPERIENCE_LEVELS = [
+  "Student", "Less than 1 year", "1-5 years", "5-10 years", "10+ years",
 ];
 
 const INDUSTRIES = [
