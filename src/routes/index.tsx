@@ -166,16 +166,16 @@ function Home() {
               We believe Africa's greatest resource is not beneath its soil. It is its people.
             </p>
             <div className="mt-10 flex flex-wrap justify-center gap-3">
-              <Link to="/register" className="rounded-full baba-cta px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-baba-blue/25">
+              <Link to="/register" className="baba-cta rounded-full px-8 py-3.5 text-sm font-bold text-white shadow-lg shadow-baba-blue/25">
                 Become a Member
               </Link>
-              <Link to="/partners" className="rounded-full border-2 border-baba-blue px-6 py-3 text-sm font-semibold text-baba-blue transition-colors hover:bg-baba-blue hover:text-white">
+              <Link to="/partners" className="rounded-full border-2 border-baba-blue px-8 py-3.5 text-sm font-bold text-baba-blue transition-colors hover:bg-baba-blue hover:text-white">
                 Partner With Us
               </Link>
-              <Link to="/register" className="rounded-full border-2 border-baba-copper px-6 py-3 text-sm font-semibold text-baba-copper-dark transition-colors hover:bg-baba-copper hover:text-baba-slate">
+              <Link to="/register" className="rounded-full border-2 border-baba-copper px-8 py-3.5 text-sm font-bold text-baba-copper-dark transition-colors hover:bg-baba-copper hover:text-baba-slate">
                 Join the BABA Capacity Building Programme
               </Link>
-              <Link to="/events" className="baba-cta inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-bold">
+              <Link to="/events" className="baba-cta inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-sm font-bold">
                 <Calendar className="h-4 w-4" /> Attend BABA Events
               </Link>
             </div>
@@ -305,7 +305,7 @@ function Home() {
             </h2>
             <p className="mt-3 text-white/70">Five interconnected pillars driving Africa's development — connecting people, building industries, transforming the continent.</p>
           </div>
-          <div data-stack className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div data-stack className="mt-12 grid auto-rows-fr gap-5 sm:grid-cols-2 lg:grid-cols-6">
             {pillars.map((pillar, i) => {
               const grads = [
                 "from-baba-blue to-baba-blue-light",
@@ -315,15 +315,17 @@ function Home() {
                 "from-baba-copper to-baba-blue",
               ];
               const Icon = pillar.icon;
+              // Desktop layout: 3 across top row, 2 centered on second row
+              const spanClass = i < 3 ? "lg:col-span-2" : "lg:col-span-3";
               return (
                 <Link
                   key={pillar.key}
                   to="/pillars"
-                  className={`group relative flex min-h-[200px] flex-col justify-between overflow-hidden rounded-2xl bg-gradient-to-br ${grads[i]} p-6 text-white shadow-lg transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] hover:shadow-2xl`}
+                  className={`group relative flex h-full min-h-[220px] flex-col justify-between overflow-hidden rounded-2xl bg-gradient-to-br ${grads[i]} ${spanClass} p-6 text-white shadow-lg transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] hover:shadow-2xl`}
                 >
                   <div className="flex items-start justify-between">
                     <span className="font-display text-5xl font-black text-white/25">{String(i + 1).padStart(2, "0")}</span>
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 backdrop-blur">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/20 backdrop-blur">
                       <Icon className="h-5 w-5 text-white" />
                     </div>
                   </div>
@@ -342,26 +344,53 @@ function Home() {
       </section>
 
       {/* ═══ WHO WE SERVE ═══ */}
-      <section className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
-        <div className="mx-auto max-w-3xl text-center">
-          <span className="text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">Our Community</span>
-          <h2 className="mt-2 font-display text-3xl font-extrabold text-baba-slate sm:text-4xl">Who We Serve</h2>
-        </div>
-        <div className="mt-12 space-y-10">
-          {whoWeServe.map((cat) => (
-            <div key={cat.group}>
-              <h3 className="text-center text-sm font-bold uppercase tracking-[0.2em] text-baba-copper-dark">
-                {cat.group}
-              </h3>
-              <div className="mt-5 flex flex-wrap justify-center gap-3">
-                {cat.items.map((item) => (
-                  <span key={item} className="rounded-full border border-baba-blue/20 bg-white px-5 py-2.5 text-sm font-medium text-baba-slate shadow-sm transition-colors hover:border-baba-blue/40 hover:text-baba-blue">
-                    {item}
-                  </span>
-                ))}
-              </div>
+      <section className="bg-baba-cream/40 py-20">
+        <div className="mx-auto max-w-7xl px-5 lg:px-8">
+          <div className="mx-auto max-w-3xl text-center">
+            <span className="text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">Our Community</span>
+            <h2 className="mt-2 font-display text-3xl font-extrabold text-baba-slate sm:text-4xl">Who We Serve</h2>
+          </div>
+
+          {/* Professionals & Artisans — full-width pill cloud */}
+          <div className="mt-12 rounded-3xl border border-baba-blue/10 bg-white/70 p-8 shadow-sm backdrop-blur sm:p-10">
+            <h3 className="text-center text-sm font-bold uppercase tracking-[0.2em] text-baba-copper-dark">
+              {whoWeServe[0].group}
+            </h3>
+            <div data-stack className="mt-6 flex flex-wrap justify-center gap-2.5">
+              {whoWeServe[0].items.map((item) => (
+                <span
+                  key={item}
+                  className="rounded-full border border-baba-blue/20 bg-white px-4 py-2 text-sm font-medium text-baba-slate shadow-sm transition-all hover:-translate-y-0.5 hover:border-baba-blue/50 hover:text-baba-blue hover:shadow-md"
+                >
+                  {item}
+                </span>
+              ))}
             </div>
-          ))}
+          </div>
+
+          {/* Government + Private Sector — paired cards */}
+          <div data-stack className="mt-6 grid gap-6 md:grid-cols-2">
+            {whoWeServe.slice(1).map((cat) => (
+              <div
+                key={cat.group}
+                className="rounded-3xl border border-baba-blue/10 bg-white/80 p-8 shadow-sm backdrop-blur"
+              >
+                <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-baba-copper-dark">
+                  {cat.group}
+                </h3>
+                <div className="mt-5 flex flex-wrap gap-2.5">
+                  {cat.items.map((item) => (
+                    <span
+                      key={item}
+                      className="rounded-full border border-baba-blue/20 bg-baba-cream/60 px-4 py-2 text-sm font-medium text-baba-slate transition-colors hover:border-baba-blue/50 hover:text-baba-blue"
+                    >
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -382,31 +411,35 @@ function Home() {
             </p>
           </div>
 
-          <div data-stack className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div data-stack className="mt-12 grid auto-rows-fr gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {ubuntuCommunities.map((c) => (
               <div
                 key={c.country}
-                className="baba-pop-card group relative overflow-hidden rounded-2xl border border-baba-blue/10 bg-white/80 p-6 backdrop-blur"
+                className="group relative flex h-full min-h-[240px] flex-col overflow-hidden rounded-2xl border border-baba-blue/10 bg-white/85 p-6 shadow-sm backdrop-blur transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-baba-copper/20"
               >
-                <div className="flex items-center gap-3">
+                {/* Flag watermark */}
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute -right-4 -top-6 select-none text-[9rem] leading-none opacity-10 transition-transform duration-500 group-hover:scale-110"
+                >
+                  {c.flag}
+                </span>
+                <div className="relative flex items-center gap-3">
                   <span className="text-3xl leading-none">{c.flag}</span>
-                  <h3 className="font-display text-lg font-extrabold text-baba-slate">
+                  <h3 className="font-display text-xl font-extrabold text-baba-slate">
                     {c.country}
                   </h3>
                 </div>
-                <ul className="mt-4 space-y-2">
+                <div className="relative mt-5 flex flex-1 flex-wrap content-start gap-2">
                   {c.chapters.map((ch) => (
-                    <li
+                    <span
                       key={ch}
-                      className="flex items-start gap-2 rounded-lg bg-baba-blue/5 px-3 py-2 text-sm font-medium text-baba-slate"
+                      className="inline-flex items-center rounded-full border border-baba-blue/15 bg-baba-blue/5 px-3 py-1.5 text-xs font-semibold text-baba-blue"
                     >
-                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-baba-copper" />
-                      <span>
-                        <span className="font-semibold text-baba-blue">Baba Africa</span> — {ch}
-                      </span>
-                    </li>
+                      {ch}
+                    </span>
                   ))}
-                </ul>
+                </div>
               </div>
             ))}
           </div>
@@ -449,23 +482,32 @@ function Home() {
         </div>
       </section>
 
-      {/* ═══ OUR IMPACT VISION ═══ */}
-      <section className="bg-baba-cream py-20">
-        <div className="mx-auto max-w-4xl px-5 text-center lg:px-8">
-          <span className="text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">Our Belief</span>
-          <div className="mt-8 space-y-4 text-xl font-display font-semibold text-baba-slate/80 sm:text-2xl">
-            <p>Skills lead to opportunity.</p>
-            <p>Opportunity leads to enterprise.</p>
-            <p>Enterprise leads to employment.</p>
-            <p>Employment leads to prosperity.</p>
-            <p>Prosperity leads to stronger communities.</p>
-            <p className="text-baba-blue">Stronger communities build stronger nations.</p>
+      {/* ═══ OUR IMPACT VISION — cascading belief ═══ */}
+      <section className="relative overflow-hidden bg-baba-slate py-24 sm:py-32">
+        <div className="pointer-events-none absolute -left-24 top-1/3 h-72 w-72 rounded-full bg-baba-blue/25 blur-3xl" />
+        <div className="pointer-events-none absolute -right-24 bottom-1/4 h-72 w-72 rounded-full bg-baba-copper/25 blur-3xl" />
+        <div className="relative mx-auto max-w-4xl px-5 text-center lg:px-8">
+          <span className="text-xs font-bold uppercase tracking-[0.35em] text-baba-copper">Our Belief</span>
+          <div
+            data-stack
+            className="mt-12 flex flex-col items-center gap-8 font-display font-semibold text-white/80 sm:gap-10"
+          >
+            <p className="text-lg leading-snug sm:text-xl">Skills lead to opportunity.</p>
+            <p className="text-xl leading-snug sm:text-2xl">Opportunity leads to enterprise.</p>
+            <p className="text-2xl font-bold leading-snug sm:text-3xl">Enterprise leads to employment.</p>
+            <p className="text-2xl font-bold leading-snug text-white sm:text-3xl">Employment leads to prosperity.</p>
+            <p className="text-3xl font-extrabold leading-snug text-white sm:text-4xl">
+              Prosperity leads to stronger communities.
+            </p>
+            <p className="baba-rainbow text-4xl font-extrabold leading-tight sm:text-5xl">
+              Stronger communities build stronger nations.
+            </p>
           </div>
         </div>
       </section>
 
-      {/* ═══ OUR PRESENCE ═══ */}
-      <section className="bg-baba-blue py-20 text-baba-cream">
+      {/* ═══ OUR PRESENCE — full-bleed Kenya pulse ═══ */}
+      <section className="bg-baba-blue py-24 text-baba-cream sm:py-28">
         <div className="mx-auto max-w-7xl px-5 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
             <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.3em] text-baba-copper">
@@ -477,22 +519,20 @@ function Home() {
               across Africa.
             </p>
           </div>
+        </div>
 
-          <div className="mt-12">
-            {/* Animated Kenya map video */}
-            <div className="mx-auto w-full max-w-lg overflow-hidden rounded-3xl">
-              <video
-                src={kenyaPulse.url}
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="h-full w-full object-contain"
-              />
-            </div>
+        {/* Full-bleed animated Kenya map video */}
+        <div className="mt-16 w-full">
+          <div className="relative w-full overflow-hidden">
+            <video
+              src={kenyaPulse.url}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="mx-auto block h-auto w-full max-w-6xl object-contain"
+            />
           </div>
-
-
         </div>
       </section>
 
