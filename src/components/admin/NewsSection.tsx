@@ -189,6 +189,112 @@ export function NewsSection() {
         </div>
       </div>
 
+      {/* Add from link */}
+      <div className="rounded-2xl border border-baba-blue/10 bg-card p-6 shadow-sm">
+        <div className="flex items-center gap-2">
+          <Link2 className="h-5 w-5 text-baba-blue" />
+          <h2 className="font-display text-lg font-bold text-baba-blue">Add from a link</h2>
+        </div>
+        <p className="mt-1 text-sm text-baba-slate/60">
+          Paste any news article URL. We'll auto-fill the title, summary, image and source — edit anything before publishing.
+        </p>
+
+        <div className="mt-4 grid gap-3 sm:grid-cols-[1fr_auto]">
+          <input
+            type="url"
+            placeholder="https://www.bbc.com/news/…"
+            value={form.source_url}
+            onChange={(e) => setF("source_url", e.target.value)}
+            className="rounded-lg border border-baba-blue/20 bg-white px-3 py-2 text-sm outline-none focus:border-baba-blue"
+          />
+          <button
+            onClick={() => fetchMeta.mutate()}
+            disabled={!form.source_url || fetchMeta.isPending}
+            className="inline-flex items-center gap-2 rounded-lg border border-baba-blue px-4 py-2 text-sm font-semibold text-baba-blue hover:bg-baba-blue hover:text-white disabled:opacity-60"
+          >
+            {fetchMeta.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
+            Fetch metadata
+          </button>
+        </div>
+
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          <input
+            type="text"
+            placeholder="Title"
+            value={form.title}
+            onChange={(e) => setF("title", e.target.value)}
+            className="rounded-lg border border-baba-blue/20 bg-white px-3 py-2 text-sm outline-none focus:border-baba-blue"
+          />
+          <input
+            type="text"
+            placeholder="Topic (e.g. Housing)"
+            value={form.topic}
+            onChange={(e) => setF("topic", e.target.value)}
+            className="rounded-lg border border-baba-blue/20 bg-white px-3 py-2 text-sm outline-none focus:border-baba-blue"
+          />
+          <input
+            type="url"
+            placeholder="Hero image URL (https://…)"
+            value={form.hero_image_url}
+            onChange={(e) => setF("hero_image_url", e.target.value)}
+            className="rounded-lg border border-baba-blue/20 bg-white px-3 py-2 text-sm outline-none focus:border-baba-blue sm:col-span-2"
+          />
+          {form.hero_image_url && (
+            <img
+              src={form.hero_image_url}
+              alt=""
+              className="h-40 w-full rounded-lg border border-baba-blue/10 object-cover sm:col-span-2"
+              onError={(e) => ((e.currentTarget.style.display = "none"))}
+            />
+          )}
+          <input
+            type="text"
+            placeholder="Source name (e.g. BBC News)"
+            value={form.source_name}
+            onChange={(e) => setF("source_name", e.target.value)}
+            className="rounded-lg border border-baba-blue/20 bg-white px-3 py-2 text-sm outline-none focus:border-baba-blue sm:col-span-2"
+          />
+          <textarea
+            placeholder="Summary (one paragraph shown in cards)"
+            value={form.summary}
+            onChange={(e) => setF("summary", e.target.value)}
+            rows={3}
+            className="rounded-lg border border-baba-blue/20 bg-white px-3 py-2 text-sm outline-none focus:border-baba-blue sm:col-span-2"
+          />
+          <textarea
+            placeholder="Body (full article — paragraphs separated by blank lines)"
+            value={form.body}
+            onChange={(e) => setF("body", e.target.value)}
+            rows={8}
+            className="rounded-lg border border-baba-blue/20 bg-white px-3 py-2 text-sm outline-none focus:border-baba-blue sm:col-span-2"
+          />
+        </div>
+
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+          <label className="inline-flex items-center gap-2 text-sm text-baba-slate/70">
+            <input
+              type="checkbox"
+              checked={form.published}
+              onChange={(e) => setF("published", e.target.checked)}
+            />
+            Publish immediately
+          </label>
+          <button
+            onClick={() => addManual.mutate()}
+            disabled={!form.title || !form.summary || addManual.isPending}
+            className="inline-flex items-center gap-2 rounded-lg baba-cta px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
+          >
+            {addManual.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+            Save article
+          </button>
+        </div>
+
+        {manualError && (
+          <p className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{manualError}</p>
+        )}
+      </div>
+
+
       {/* List */}
       <div className="rounded-2xl border border-baba-blue/10 bg-card p-6 shadow-sm">
         <div className="flex items-center justify-between">
