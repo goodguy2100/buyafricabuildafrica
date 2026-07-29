@@ -482,23 +482,32 @@ function Home() {
         </div>
       </section>
 
-      {/* ═══ OUR IMPACT VISION ═══ */}
-      <section className="bg-baba-cream py-20">
-        <div className="mx-auto max-w-4xl px-5 text-center lg:px-8">
-          <span className="text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">Our Belief</span>
-          <div className="mt-8 space-y-4 text-xl font-display font-semibold text-baba-slate/80 sm:text-2xl">
-            <p>Skills lead to opportunity.</p>
-            <p>Opportunity leads to enterprise.</p>
-            <p>Enterprise leads to employment.</p>
-            <p>Employment leads to prosperity.</p>
-            <p>Prosperity leads to stronger communities.</p>
-            <p className="text-baba-blue">Stronger communities build stronger nations.</p>
+      {/* ═══ OUR IMPACT VISION — cascading belief ═══ */}
+      <section className="relative overflow-hidden bg-baba-slate py-24 sm:py-32">
+        <div className="pointer-events-none absolute -left-24 top-1/3 h-72 w-72 rounded-full bg-baba-blue/25 blur-3xl" />
+        <div className="pointer-events-none absolute -right-24 bottom-1/4 h-72 w-72 rounded-full bg-baba-copper/25 blur-3xl" />
+        <div className="relative mx-auto max-w-4xl px-5 text-center lg:px-8">
+          <span className="text-xs font-bold uppercase tracking-[0.35em] text-baba-copper">Our Belief</span>
+          <div
+            data-stack
+            className="mt-12 flex flex-col items-center gap-8 font-display font-semibold text-white/80 sm:gap-10"
+          >
+            <p className="text-lg leading-snug sm:text-xl">Skills lead to opportunity.</p>
+            <p className="text-xl leading-snug sm:text-2xl">Opportunity leads to enterprise.</p>
+            <p className="text-2xl font-bold leading-snug sm:text-3xl">Enterprise leads to employment.</p>
+            <p className="text-2xl font-bold leading-snug text-white sm:text-3xl">Employment leads to prosperity.</p>
+            <p className="text-3xl font-extrabold leading-snug text-white sm:text-4xl">
+              Prosperity leads to stronger communities.
+            </p>
+            <p className="baba-rainbow text-4xl font-extrabold leading-tight sm:text-5xl">
+              Stronger communities build stronger nations.
+            </p>
           </div>
         </div>
       </section>
 
-      {/* ═══ OUR PRESENCE ═══ */}
-      <section className="bg-baba-blue py-20 text-baba-cream">
+      {/* ═══ OUR PRESENCE — full-bleed Kenya pulse ═══ */}
+      <section className="bg-baba-blue py-24 text-baba-cream sm:py-28">
         <div className="mx-auto max-w-7xl px-5 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
             <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.3em] text-baba-copper">
@@ -510,22 +519,20 @@ function Home() {
               across Africa.
             </p>
           </div>
+        </div>
 
-          <div className="mt-12">
-            {/* Animated Kenya map video */}
-            <div className="mx-auto w-full max-w-lg overflow-hidden rounded-3xl">
-              <video
-                src={kenyaPulse.url}
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="h-full w-full object-contain"
-              />
-            </div>
+        {/* Full-bleed animated Kenya map video */}
+        <div className="mt-16 w-full">
+          <div className="relative w-full overflow-hidden">
+            <video
+              src={kenyaPulse.url}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="mx-auto block h-auto w-full max-w-6xl object-contain"
+            />
           </div>
-
-
         </div>
       </section>
 
