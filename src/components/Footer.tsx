@@ -137,6 +137,31 @@ export function Footer() {
             <Globe className="h-5 w-5" />
             <span className="text-xs uppercase tracking-wide">Pan-African Network</span>
           </div>
+          <div className="mt-5">
+            <p className="text-xs font-semibold uppercase tracking-wide text-baba-cream/70">
+              Follow us
+            </p>
+            <div className="mt-3 flex items-center gap-3">
+              <a
+                href="https://www.instagram.com/buyafrica.buildafrica"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Buy Africa Build Africa on Instagram"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-white/10 text-baba-cream transition-colors hover:border-baba-copper hover:bg-baba-copper hover:text-white"
+              >
+                <Instagram className="h-4 w-4" />
+              </a>
+              <a
+                href="https://www.linkedin.com/company/buyafricabuildafrica"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Buy Africa Build Africa on LinkedIn"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-white/10 text-baba-cream transition-colors hover:border-baba-copper hover:bg-baba-copper hover:text-white"
+              >
+                <Linkedin className="h-4 w-4" />
+              </a>
+            </div>
+          </div>
         </div>
       </div>
 
