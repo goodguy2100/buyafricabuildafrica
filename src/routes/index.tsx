@@ -305,7 +305,7 @@ function Home() {
             </h2>
             <p className="mt-3 text-white/70">Five interconnected pillars driving Africa's development — connecting people, building industries, transforming the continent.</p>
           </div>
-          <div data-stack className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div data-stack className="mt-12 grid auto-rows-fr gap-5 sm:grid-cols-2 lg:grid-cols-6">
             {pillars.map((pillar, i) => {
               const grads = [
                 "from-baba-blue to-baba-blue-light",
@@ -315,15 +315,17 @@ function Home() {
                 "from-baba-copper to-baba-blue",
               ];
               const Icon = pillar.icon;
+              // Desktop layout: 3 across top row, 2 centered on second row
+              const spanClass = i < 3 ? "lg:col-span-2" : "lg:col-span-3";
               return (
                 <Link
                   key={pillar.key}
                   to="/pillars"
-                  className={`group relative flex min-h-[200px] flex-col justify-between overflow-hidden rounded-2xl bg-gradient-to-br ${grads[i]} p-6 text-white shadow-lg transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] hover:shadow-2xl`}
+                  className={`group relative flex h-full min-h-[220px] flex-col justify-between overflow-hidden rounded-2xl bg-gradient-to-br ${grads[i]} ${spanClass} p-6 text-white shadow-lg transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] hover:shadow-2xl`}
                 >
                   <div className="flex items-start justify-between">
                     <span className="font-display text-5xl font-black text-white/25">{String(i + 1).padStart(2, "0")}</span>
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 backdrop-blur">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/20 backdrop-blur">
                       <Icon className="h-5 w-5 text-white" />
                     </div>
                   </div>
