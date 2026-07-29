@@ -344,26 +344,53 @@ function Home() {
       </section>
 
       {/* ═══ WHO WE SERVE ═══ */}
-      <section className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
-        <div className="mx-auto max-w-3xl text-center">
-          <span className="text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">Our Community</span>
-          <h2 className="mt-2 font-display text-3xl font-extrabold text-baba-slate sm:text-4xl">Who We Serve</h2>
-        </div>
-        <div className="mt-12 space-y-10">
-          {whoWeServe.map((cat) => (
-            <div key={cat.group}>
-              <h3 className="text-center text-sm font-bold uppercase tracking-[0.2em] text-baba-copper-dark">
-                {cat.group}
-              </h3>
-              <div className="mt-5 flex flex-wrap justify-center gap-3">
-                {cat.items.map((item) => (
-                  <span key={item} className="rounded-full border border-baba-blue/20 bg-white px-5 py-2.5 text-sm font-medium text-baba-slate shadow-sm transition-colors hover:border-baba-blue/40 hover:text-baba-blue">
-                    {item}
-                  </span>
-                ))}
-              </div>
+      <section className="bg-baba-cream/40 py-20">
+        <div className="mx-auto max-w-7xl px-5 lg:px-8">
+          <div className="mx-auto max-w-3xl text-center">
+            <span className="text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">Our Community</span>
+            <h2 className="mt-2 font-display text-3xl font-extrabold text-baba-slate sm:text-4xl">Who We Serve</h2>
+          </div>
+
+          {/* Professionals & Artisans — full-width pill cloud */}
+          <div className="mt-12 rounded-3xl border border-baba-blue/10 bg-white/70 p-8 shadow-sm backdrop-blur sm:p-10">
+            <h3 className="text-center text-sm font-bold uppercase tracking-[0.2em] text-baba-copper-dark">
+              {whoWeServe[0].group}
+            </h3>
+            <div data-stack className="mt-6 flex flex-wrap justify-center gap-2.5">
+              {whoWeServe[0].items.map((item) => (
+                <span
+                  key={item}
+                  className="rounded-full border border-baba-blue/20 bg-white px-4 py-2 text-sm font-medium text-baba-slate shadow-sm transition-all hover:-translate-y-0.5 hover:border-baba-blue/50 hover:text-baba-blue hover:shadow-md"
+                >
+                  {item}
+                </span>
+              ))}
             </div>
-          ))}
+          </div>
+
+          {/* Government + Private Sector — paired cards */}
+          <div data-stack className="mt-6 grid gap-6 md:grid-cols-2">
+            {whoWeServe.slice(1).map((cat) => (
+              <div
+                key={cat.group}
+                className="rounded-3xl border border-baba-blue/10 bg-white/80 p-8 shadow-sm backdrop-blur"
+              >
+                <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-baba-copper-dark">
+                  {cat.group}
+                </h3>
+                <div className="mt-5 flex flex-wrap gap-2.5">
+                  {cat.items.map((item) => (
+                    <span
+                      key={item}
+                      className="rounded-full border border-baba-blue/20 bg-baba-cream/60 px-4 py-2 text-sm font-medium text-baba-slate transition-colors hover:border-baba-blue/50 hover:text-baba-blue"
+                    >
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
