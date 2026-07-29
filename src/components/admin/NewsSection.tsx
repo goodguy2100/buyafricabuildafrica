@@ -25,7 +25,72 @@ export function NewsSection() {
   const genFn = useServerFn(generateAndSaveArticle);
   const saveFn = useServerFn(upsertNewsArticle);
   const delFn = useServerFn(deleteNewsArticle);
+  const metaFn = useServerFn(fetchArticleMeta);
   const qc = useQueryClient();
+
+  // Manual "add from link" form state
+  const [form, setForm] = useState({
+    source_url: "",
+    title: "",
+    summary: "",
+    body: "",
+    topic: "",
+    source_name: "",
+    hero_image_url: "",
+    published: true,
+  });
+  const [manualError, setManualError] = useState<string | null>(null);
+
+  const setF = (k: keyof typeof form, v: string | boolean) =>
+    setForm((prev) => ({ ...prev, [k]: v as never }));
+
+  const fetchMeta = useMutation({
+    mutationFn: async () => metaFn({ data: { url: form.source_url } }),
+    onSuccess: (m) => {
+      setForm((prev) => ({
+        ...prev,
+        title: prev.title || m.title,
+        summary: prev.summary || m.summary,
+        hero_image_url: prev.hero_image_url || m.hero_image_url,
+        source_name: prev.source_name || m.source_name,
+        body: prev.body || m.summary, // seed body with summary, admin can expand
+      }));
+      setManualError(null);
+    },
+    onError: (e: Error) => setManualError(e.message),
+  });
+
+  const addManual = useMutation({
+    mutationFn: async () =>
+      saveFn({
+        data: {
+          title: form.title,
+          slug: `${slugify(form.title)}-${Date.now().toString(36).slice(-4)}`,
+          summary: form.summary,
+          body: form.body || form.summary,
+          topic: form.topic || undefined,
+          source_url: form.source_url || undefined,
+          source_name: form.source_name || undefined,
+          hero_image_url: form.hero_image_url || undefined,
+          published: form.published,
+        },
+      }),
+    onSuccess: () => {
+      setForm({
+        source_url: "",
+        title: "",
+        summary: "",
+        body: "",
+        topic: "",
+        source_name: "",
+        hero_image_url: "",
+        published: true,
+      });
+      setManualError(null);
+      qc.invalidateQueries({ queryKey: ["news"] });
+    },
+    onError: (e: Error) => setManualError(e.message),
+  });
 
   const listQ = useQuery({ queryKey: ["news", "admin"], queryFn: () => listFn() });
 
