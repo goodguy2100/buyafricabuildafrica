@@ -315,3 +315,88 @@ export async function generateAndSaveArticleAsCron(topic?: string): Promise<News
   if (error) throw new Error(error.message);
   return row as NewsArticle;
 }
+
+// --------------------------------------------------------------------------
+// FETCH METADATA from an external news URL (Open Graph / Twitter cards)
+// --------------------------------------------------------------------------
+
+function pickMeta(html: string, patterns: RegExp[]): string | null {
+  for (const re of patterns) {
+    const m = html.match(re);
+    if (m?.[1]) return m[1].trim();
+  }
+  return null;
+}
+
+function decodeEntities(s: string): string {
+  return s
+    .replace(/&amp;/g, "&")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&nbsp;/g, " ");
+}
+
+export const fetchArticleMeta = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z.object({ url: z.string().url() }).parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const res = await fetch(data.url, {
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (compatible; BABA-NewsBot/1.0; +https://buyafricabuildafrica.org)",
+        Accept: "text/html,application/xhtml+xml",
+      },
+      redirect: "follow",
+    });
+    if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
+    const html = (await res.text()).slice(0, 500_000);
+
+    const attr = (prop: string, kind: "property" | "name" = "property") =>
+      new RegExp(
+        `<meta[^>]+${kind}=["']${prop}["'][^>]*content=["']([^"']+)["']`,
+        "i",
+      );
+    const attrRev = (prop: string, kind: "property" | "name" = "property") =>
+      new RegExp(
+        `<meta[^>]+content=["']([^"']+)["'][^>]*${kind}=["']${prop}["']`,
+        "i",
+      );
+
+    const title =
+      pickMeta(html, [attr("og:title"), attrRev("og:title"), attr("twitter:title", "name"), /<title>([^<]+)<\/title>/i]) ??
+      "";
+    const summary =
+      pickMeta(html, [
+        attr("og:description"),
+        attrRev("og:description"),
+        attr("description", "name"),
+        attr("twitter:description", "name"),
+      ]) ?? "";
+    const image =
+      pickMeta(html, [attr("og:image"), attrRev("og:image"), attr("twitter:image", "name")]) ??
+      "";
+    const site =
+      pickMeta(html, [attr("og:site_name"), attr("application-name", "name")]) ?? "";
+
+    let imageAbs = image;
+    if (image && !/^https?:\/\//i.test(image)) {
+      try {
+        imageAbs = new URL(image, data.url).toString();
+      } catch {
+        imageAbs = "";
+      }
+    }
+
+    return {
+      title: decodeEntities(title).slice(0, 300),
+      summary: decodeEntities(summary).slice(0, 600),
+      hero_image_url: imageAbs,
+      source_name: decodeEntities(site).slice(0, 200) || new URL(data.url).hostname,
+      source_url: data.url,
+    };
+  });
