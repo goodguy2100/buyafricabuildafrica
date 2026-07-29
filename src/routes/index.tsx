@@ -166,16 +166,16 @@ function Home() {
               We believe Africa's greatest resource is not beneath its soil. It is its people.
             </p>
             <div className="mt-10 flex flex-wrap justify-center gap-3">
-              <Link to="/register" className="rounded-full baba-cta px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-baba-blue/25">
+              <Link to="/register" className="baba-cta rounded-full px-8 py-3.5 text-sm font-bold text-white shadow-lg shadow-baba-blue/25">
                 Become a Member
               </Link>
-              <Link to="/partners" className="rounded-full border-2 border-baba-blue px-6 py-3 text-sm font-semibold text-baba-blue transition-colors hover:bg-baba-blue hover:text-white">
+              <Link to="/partners" className="rounded-full border-2 border-baba-blue px-8 py-3.5 text-sm font-bold text-baba-blue transition-colors hover:bg-baba-blue hover:text-white">
                 Partner With Us
               </Link>
-              <Link to="/register" className="rounded-full border-2 border-baba-copper px-6 py-3 text-sm font-semibold text-baba-copper-dark transition-colors hover:bg-baba-copper hover:text-baba-slate">
+              <Link to="/register" className="rounded-full border-2 border-baba-copper px-8 py-3.5 text-sm font-bold text-baba-copper-dark transition-colors hover:bg-baba-copper hover:text-baba-slate">
                 Join the BABA Capacity Building Programme
               </Link>
-              <Link to="/events" className="baba-cta inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-bold">
+              <Link to="/events" className="baba-cta inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-sm font-bold">
                 <Calendar className="h-4 w-4" /> Attend BABA Events
               </Link>
             </div>
