@@ -411,31 +411,35 @@ function Home() {
             </p>
           </div>
 
-          <div data-stack className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div data-stack className="mt-12 grid auto-rows-fr gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {ubuntuCommunities.map((c) => (
               <div
                 key={c.country}
-                className="baba-pop-card group relative overflow-hidden rounded-2xl border border-baba-blue/10 bg-white/80 p-6 backdrop-blur"
+                className="group relative flex h-full min-h-[240px] flex-col overflow-hidden rounded-2xl border border-baba-blue/10 bg-white/85 p-6 shadow-sm backdrop-blur transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-baba-copper/20"
               >
-                <div className="flex items-center gap-3">
+                {/* Flag watermark */}
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute -right-4 -top-6 select-none text-[9rem] leading-none opacity-10 transition-transform duration-500 group-hover:scale-110"
+                >
+                  {c.flag}
+                </span>
+                <div className="relative flex items-center gap-3">
                   <span className="text-3xl leading-none">{c.flag}</span>
-                  <h3 className="font-display text-lg font-extrabold text-baba-slate">
+                  <h3 className="font-display text-xl font-extrabold text-baba-slate">
                     {c.country}
                   </h3>
                 </div>
-                <ul className="mt-4 space-y-2">
+                <div className="relative mt-5 flex flex-1 flex-wrap content-start gap-2">
                   {c.chapters.map((ch) => (
-                    <li
+                    <span
                       key={ch}
-                      className="flex items-start gap-2 rounded-lg bg-baba-blue/5 px-3 py-2 text-sm font-medium text-baba-slate"
+                      className="inline-flex items-center rounded-full border border-baba-blue/15 bg-baba-blue/5 px-3 py-1.5 text-xs font-semibold text-baba-blue"
                     >
-                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-baba-copper" />
-                      <span>
-                        <span className="font-semibold text-baba-blue">Baba Africa</span> — {ch}
-                      </span>
-                    </li>
+                      {ch}
+                    </span>
                   ))}
-                </ul>
+                </div>
               </div>
             ))}
           </div>
