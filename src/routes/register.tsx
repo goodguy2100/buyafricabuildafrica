@@ -652,11 +652,15 @@ function SelectField({
   label: string; name: string; options: string[]; required?: boolean;
   form: FormState; errors: Record<string, string>; set: (k: string, v: string | string[]) => void;
 }) {
+  const current = (form[name] as string) ?? "";
+  const hasOther = options.includes("Other");
+  const isOther = hasOther && (current === "Other" || (current !== "" && !options.includes(current)));
+  const customValue = current === "Other" ? "" : (isOther ? current : "");
   return (
     <div>
       <Label required={required}>{label}</Label>
       <select
-        value={(form[name] as string) ?? ""}
+        value={isOther ? "Other" : current}
         onChange={(e) => set(name, e.target.value)}
         className={`mt-1.5 w-full rounded-lg border bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none ${
           errors[name] ? "border-destructive" : "border-input"
@@ -667,6 +671,15 @@ function SelectField({
           <option key={o} value={o}>{o}</option>
         ))}
       </select>
+      {isOther && (
+        <input
+          type="text"
+          value={customValue}
+          onChange={(e) => set(name, e.target.value || "Other")}
+          placeholder={`Type your ${label.toLowerCase()}`}
+          className="mt-2 w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
+        />
+      )}
       <ErrorText msg={errors[name]} />
     </div>
   );
