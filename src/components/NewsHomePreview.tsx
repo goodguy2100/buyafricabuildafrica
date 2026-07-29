@@ -37,7 +37,8 @@ export function NewsHomePreview() {
   });
 
   const items = query.data ?? [];
-  if (query.isLoading || items.length === 0) return null;
+  const showSkeletons = query.isLoading || (query.isFetching && items.length === 0);
+  if (!query.isLoading && !query.isFetching && items.length === 0 && !query.isError) return null;
 
   return (
     <section className="bg-baba-cream py-20 md:py-28">
