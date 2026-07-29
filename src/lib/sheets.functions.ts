@@ -71,6 +71,30 @@ interface RegRow {
   status: string | null;
 }
 
+/**
+ * Susan's rule: one tab per category. Young pros never mix with experienced
+ * pros, and each artisan trade lives in its own tab (Plumbers, Masons, …).
+ * Anything unmapped falls into "Other".
+ */
+function tabFor(r: RegRow): string {
+  const role = (r.user_role ?? r.role ?? "").toLowerCase();
+  if (role === "artisan") {
+    const t = (r.artisan_type ?? "").trim();
+    if (!t) return "Artisans - Other";
+    // Pluralise cleanly for common trades; otherwise use the raw label.
+    const nice = t.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+    if (/^(Plumber|Mason|Painter|Carpenter|Welder|Tiler|Electrician|Engineer|Architect|Interior Designer|Quantity Surveyor|Gypsum Installer)$/i.test(nice)) {
+      return nice.endsWith("s") ? nice : `${nice}s`;
+    }
+    return `Artisans - ${nice}`;
+  }
+  if (role === "professional_young") return "Young Professionals";
+  if (role === "professional_exp") return "Experienced Professionals";
+  if (role === "individual") return "Individuals";
+  if (role === "corporate") return "Corporate & NGO";
+  return "Other";
+}
+
 function rowFor(r: RegRow): (string | number | boolean)[] {
   return [
     r.created_at ?? "",
@@ -92,18 +116,50 @@ function rowFor(r: RegRow): (string | number | boolean)[] {
   ];
 }
 
+async function listExistingTabs(auth: SheetsAuth): Promise<Set<string>> {
+  const res = await sheetsFetch(
+    auth,
+    `/spreadsheets/${auth.spreadsheetId}?fields=sheets.properties.title`,
+    { method: "GET" },
+  );
+  const json = (await res.json()) as { sheets?: { properties?: { title?: string } }[] };
+  return new Set((json.sheets ?? []).map((s) => s.properties?.title ?? "").filter(Boolean));
+}
+
+async function ensureTab(auth: SheetsAuth, existing: Set<string>, title: string) {
+  if (existing.has(title)) return;
+  try {
+    await sheetsFetch(auth, `/spreadsheets/${auth.spreadsheetId}:batchUpdate`, {
+      method: "POST",
+      body: JSON.stringify({
+        requests: [{ addSheet: { properties: { title } } }],
+      }),
+    });
+    existing.add(title);
+  } catch (e) {
+    // Tab may have been added concurrently — ignore duplicate errors.
+    if (!/already exists/i.test(String(e))) throw e;
+    existing.add(title);
+  }
+}
+
+function quoteTab(title: string): string {
+  // Sheet names with spaces/specials need single quotes in A1 refs.
+  return `'${title.replace(/'/g, "''")}'`;
+}
+
 async function assertAdmin(supabase: { from: (t: string) => { select: (c: string) => { eq: (col: string, v: string) => { eq: (col: string, v: string) => { maybeSingle: () => Promise<{ data: unknown }> } } } } }, userId: string) {
   const { data } = await supabase.from("user_roles").select("role").eq("user_id", userId).eq("role", "admin").maybeSingle();
   if (!data) throw new Error("Forbidden");
 }
 
 /**
- * Full re-sync: writes headers + every registration row to Sheet1.
- * Overwrites the sheet content.
+ * Full re-sync: one tab per category, each rewritten from scratch so removed
+ * rows don't linger. Empty categories still get a headers-only tab.
  */
 export const syncMembersToSheet = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .handler(async ({ context }): Promise<{ synced: number; spreadsheetId: string }> => {
+  .handler(async ({ context }): Promise<{ synced: number; tabs: string[]; spreadsheetId: string }> => {
     const { supabase, userId } = context;
     await assertAdmin(supabase as never, userId);
     const auth = readSheetsAuth();
@@ -116,19 +172,41 @@ export const syncMembersToSheet = createServerFn({ method: "POST" })
       .order("created_at", { ascending: false });
     if (error) throw new Error(error.message);
     const rows = (data ?? []) as RegRow[];
-    const values = [HEADERS, ...rows.map(rowFor)];
 
-    // Clear then write, so removed rows don't linger.
-    await sheetsFetch(auth, `/spreadsheets/${auth.spreadsheetId}/values/Sheet1:clear`, {
-      method: "POST",
-      body: "{}",
-    });
-    await sheetsFetch(
-      auth,
-      `/spreadsheets/${auth.spreadsheetId}/values/Sheet1!A1?valueInputOption=RAW`,
-      { method: "PUT", body: JSON.stringify({ values }) },
-    );
-    return { synced: rows.length, spreadsheetId: auth.spreadsheetId };
+    // Group by tab.
+    const grouped = new Map<string, RegRow[]>();
+    for (const r of rows) {
+      const t = tabFor(r);
+      const arr = grouped.get(t) ?? [];
+      arr.push(r);
+      grouped.set(t, arr);
+    }
+
+    const existing = await listExistingTabs(auth);
+    for (const title of grouped.keys()) {
+      await ensureTab(auth, existing, title);
+    }
+
+    for (const [title, list] of grouped) {
+      const range = `${quoteTab(title)}!A1`;
+      const clearRange = `${quoteTab(title)}!A1:Z`;
+      await sheetsFetch(auth, `/spreadsheets/${auth.spreadsheetId}/values/${encodeURIComponent(clearRange)}:clear`, {
+        method: "POST",
+        body: "{}",
+      });
+      const values = [HEADERS, ...list.map(rowFor)];
+      await sheetsFetch(
+        auth,
+        `/spreadsheets/${auth.spreadsheetId}/values/${encodeURIComponent(range)}?valueInputOption=RAW`,
+        { method: "PUT", body: JSON.stringify({ values }) },
+      );
+    }
+
+    return {
+      synced: rows.length,
+      tabs: Array.from(grouped.keys()),
+      spreadsheetId: auth.spreadsheetId,
+    };
   });
 
 /**
@@ -138,7 +216,7 @@ export const syncMembersToSheet = createServerFn({ method: "POST" })
 export const appendMemberRowToSheet = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) => z.object({ registration_id: z.string().uuid() }).parse(input))
-  .handler(async ({ data, context }): Promise<{ appended: boolean; reason?: string }> => {
+  .handler(async ({ data, context }): Promise<{ appended: boolean; tab?: string; reason?: string }> => {
     const { supabase, userId } = context;
     try {
       const { data: reg, error } = await supabase
@@ -149,17 +227,37 @@ export const appendMemberRowToSheet = createServerFn({ method: "POST" })
         .eq("id", data.registration_id)
         .maybeSingle();
       if (error || !reg) return { appended: false, reason: "not found" };
-      // Only the row owner (or admin) can append their own row.
       if ((reg as { user_id: string }).user_id !== userId) {
         await assertAdmin(supabase as never, userId);
       }
       const auth = readSheetsAuth();
+      const row = reg as RegRow;
+      const title = tabFor(row);
+
+      const existing = await listExistingTabs(auth);
+      await ensureTab(auth, existing, title);
+
+      // If the tab was just created, seed headers first.
+      const headerRes = await sheetsFetch(
+        auth,
+        `/spreadsheets/${auth.spreadsheetId}/values/${encodeURIComponent(`${quoteTab(title)}!A1:P1`)}`,
+        { method: "GET" },
+      );
+      const headerJson = (await headerRes.json()) as { values?: unknown[][] };
+      if (!headerJson.values || headerJson.values.length === 0) {
+        await sheetsFetch(
+          auth,
+          `/spreadsheets/${auth.spreadsheetId}/values/${encodeURIComponent(`${quoteTab(title)}!A1`)}?valueInputOption=RAW`,
+          { method: "PUT", body: JSON.stringify({ values: [HEADERS] }) },
+        );
+      }
+
       await sheetsFetch(
         auth,
-        `/spreadsheets/${auth.spreadsheetId}/values/Sheet1!A1:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS`,
-        { method: "POST", body: JSON.stringify({ values: [rowFor(reg as RegRow)] }) },
+        `/spreadsheets/${auth.spreadsheetId}/values/${encodeURIComponent(`${quoteTab(title)}!A1:append`)}?valueInputOption=RAW&insertDataOption=INSERT_ROWS`,
+        { method: "POST", body: JSON.stringify({ values: [rowFor(row)] }) },
       );
-      return { appended: true };
+      return { appended: true, tab: title };
     } catch (e) {
       return { appended: false, reason: e instanceof Error ? e.message : "unknown" };
     }
