@@ -61,7 +61,22 @@ export function NewsHomePreview() {
         </div>
 
         <div data-stack className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {items.map((a: NewsArticle) => (
+          {showSkeletons &&
+            Array.from({ length: 3 }).map((_, i) => (
+              <div
+                key={`sk-${i}`}
+                className="flex flex-col overflow-hidden rounded-2xl border border-baba-blue/10 bg-white shadow-sm"
+              >
+                <div className="h-44 animate-pulse bg-baba-blue/10" />
+                <div className="space-y-3 p-6">
+                  <div className="h-3 w-24 animate-pulse rounded bg-baba-blue/10" />
+                  <div className="h-5 w-3/4 animate-pulse rounded bg-baba-blue/10" />
+                  <div className="h-4 w-full animate-pulse rounded bg-baba-blue/5" />
+                  <div className="h-4 w-5/6 animate-pulse rounded bg-baba-blue/5" />
+                </div>
+              </div>
+            ))}
+          {!showSkeletons && items.map((a: NewsArticle) => (
             <Link
               key={a.id}
               to="/news/$slug"
