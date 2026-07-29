@@ -96,7 +96,16 @@ function ArticlePage() {
           {a.title}
         </h1>
 
-        <p className="mt-4 text-lg leading-relaxed text-baba-slate/80">{a.summary}</p>
+        {a.hero_image_url && (
+          <img
+            src={a.hero_image_url}
+            alt=""
+            className="mt-6 h-auto w-full rounded-2xl border border-baba-blue/10 object-cover"
+            loading="lazy"
+          />
+        )}
+
+        <p className="mt-6 text-lg leading-relaxed text-baba-slate/80">{a.summary}</p>
 
         <div className="mt-8 space-y-5 text-base leading-relaxed text-baba-slate/85">
           {paragraphs.map((p, i) => (

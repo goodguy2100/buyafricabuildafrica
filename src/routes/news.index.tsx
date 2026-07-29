@@ -89,8 +89,17 @@ function NewsIndex() {
                   key={a.id}
                   className="baba-card-hover flex flex-col overflow-hidden rounded-2xl border border-baba-blue/10 bg-white"
                 >
-                  <div className="relative h-40 bg-gradient-to-br from-baba-blue via-baba-blue-dark to-baba-slate">
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.15),transparent_50%)]" />
+                  <div className="relative h-40 overflow-hidden bg-gradient-to-br from-baba-blue via-baba-blue-dark to-baba-slate">
+                    {a.hero_image_url ? (
+                      <img
+                        src={a.hero_image_url}
+                        alt=""
+                        loading="lazy"
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.15),transparent_50%)]" />
+                    )}
                     {a.topic && (
                       <span className="absolute left-4 top-4 rounded-full bg-white/20 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur-sm">
                         {a.topic}
