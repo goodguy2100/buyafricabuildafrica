@@ -1,14 +1,24 @@
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Loader2, Sparkles, Trash2, Eye, EyeOff, RefreshCw, ExternalLink } from "lucide-react";
+import { Loader2, Sparkles, Trash2, Eye, EyeOff, RefreshCw, ExternalLink, Link2, Plus } from "lucide-react";
 import {
   listAllNews,
   generateAndSaveArticle,
   upsertNewsArticle,
   deleteNewsArticle,
+  fetchArticleMeta,
   type NewsArticle,
 } from "@/lib/news.functions";
+
+function slugify(s: string): string {
+  return s
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-")
+    .slice(0, 80);
+}
 
 export function NewsSection() {
   const listFn = useServerFn(listAllNews);
