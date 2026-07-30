@@ -359,6 +359,12 @@ html[data-motion="off"] .baba-shape-wrap { transform: none; will-change: auto; }
   transform: none;
   will-change: auto;
 }
+/* LCP safeguard: the first above-the-fold section always paints immediately. */
+main > section:first-of-type,
+main > section:first-of-type [data-stack] > * {
+  opacity: 1 !important;
+  transform: none !important;
+}
 
 /* Stagger children within a container tagged data-stack.
    Each child slides up with an incremental delay so grids of cards
