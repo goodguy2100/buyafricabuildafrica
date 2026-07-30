@@ -12,13 +12,20 @@ import { useMotion } from "@/lib/motion";
  */
 function useAutoReveal(enabled: boolean) {
   useEffect(() => {
+    // Never hide the first (above-the-fold) section — it holds the LCP
+    // element, and gating it behind hydration delays first paint badly.
+    const firstSection = document.querySelector<HTMLElement>("main > section");
+    firstSection?.classList.remove("baba-reveal");
+    firstSection?.classList.add("baba-reveal-in");
+
     const sectionTargets = Array.from(
       document.querySelectorAll<HTMLElement>("main > section, main [data-reveal]"),
-    );
+    ).filter((el) => el !== firstSection && !el.hasAttribute("data-no-reveal"));
     const stackTargets = Array.from(
       document.querySelectorAll<HTMLElement>("main [data-stack]"),
-    );
+    ).filter((el) => !firstSection?.contains(el));
     const targets = [...sectionTargets, ...stackTargets];
+
     if (targets.length === 0) return;
 
     if (!enabled) {
