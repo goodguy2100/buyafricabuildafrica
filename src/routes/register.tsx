@@ -450,7 +450,7 @@ function IndividualFields({ form, errors, set, toggle }: FieldProps) {
     <>
       <Field label="Full Name" name="fullName" required {...{ form, errors, set }} />
       <Field label="Phone Number" name="phone" required {...{ form, errors, set }} />
-      <Field label="National ID Number" name="nationalId" required {...{ form, errors, set }} />
+      <Field label="National Identification No" name="nationalId" required {...{ form, errors, set }} />
       <SelectField label="Primary Occupation / Skill Area" name="occupation" required options={OCCUPATIONS} {...{ form, errors, set }} />
       <LocationField required form={form} set={set} />
       <MultiSelect label="Industries Interested In" name="industries" options={INDUSTRIES} {...{ form, toggle }} />
@@ -467,7 +467,7 @@ function YoungProFields({ form, errors, set, toggle }: FieldProps) {
     <>
       <Field label="Full Name" name="fullName" required {...{ form, errors, set }} />
       <Field label="Phone Number" name="phone" required {...{ form, errors, set }} />
-      <Field label="National ID Number" name="nationalId" required {...{ form, errors, set }} />
+      <Field label="National Identification No" name="nationalId" required {...{ form, errors, set }} />
       <SelectField label="Primary Occupation" name="occupation" required options={OCCUPATIONS} {...{ form, errors, set }} />
       <SelectField label="Experience" name="yearsField" required
         options={EXPERIENCE_LEVELS} {...{ form, errors, set }} />
@@ -490,7 +490,7 @@ function ExpProFields({ form, errors, set, toggle }: FieldProps) {
     <>
       <Field label="Full Name" name="fullName" required {...{ form, errors, set }} />
       <Field label="Phone Number" name="phone" required {...{ form, errors, set }} />
-      <Field label="National ID Number" name="nationalId" required {...{ form, errors, set }} />
+      <Field label="National Identification No" name="nationalId" required {...{ form, errors, set }} />
       <SelectField label="Primary Occupation" name="occupation" required options={OCCUPATIONS} {...{ form, errors, set }} />
       <SelectField label="Experience" name="yearsField" required
         options={EXPERIENCE_LEVELS} {...{ form, errors, set }} />
@@ -523,7 +523,7 @@ function ArtisanFields({ form, errors, set, toggle }: FieldProps) {
     <>
       <Field label="Full Name" name="fullName" required {...{ form, errors, set }} />
       <Field label="Phone Number" name="phone" required {...{ form, errors, set }} />
-      <Field label="National ID Number" name="nationalId" required {...{ form, errors, set }} />
+      <Field label="National Identification No" name="nationalId" required {...{ form, errors, set }} />
       <SelectField label="Role" name="trade" required options={TRADES} {...{ form, errors, set }} />
       <SelectField label="Experience" name="yearsTrade" required options={EXPERIENCE_LEVELS} {...{ form, errors, set }} />
       <LocationField required form={form} set={set} nameKey="areasServed" label="Areas you serve" />
