@@ -27,8 +27,15 @@ export const Route = createFileRoute("/about")({
         content:
           "Learn about BABA's mission to connect local talent with continental opportunity across Africa's built environment.",
       },
+      { property: "og:title", content: "About BABA — Building Africa's Future by Africans" },
+      {
+        property: "og:description",
+        content:
+          "BABA's mission, values and model for connecting local talent with continental opportunity across Africa's built environment.",
+      },
+      { property: "og:url", content: "https://buyafricabuildafrica.org/about" },
     ],
-    links: [{ rel: "canonical", href: "/about" }],
+    links: [{ rel: "canonical", href: "https://buyafricabuildafrica.org/about" }],
   }),
   component: About,
 });

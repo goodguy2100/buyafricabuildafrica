@@ -27,8 +27,49 @@ export const Route = createFileRoute("/events")({
     meta: [
       { title: "Events | Buy Africa Build Africa (BABA)" },
       { name: "description", content: "BABA's three annual events — Corporate Strategy Summit, Expo & Conference, and Excellence Awards." },
+      { property: "og:title", content: "BABA Events — Summit, Expo & Excellence Awards" },
+      {
+        property: "og:description",
+        content:
+          "The BABA Corporate Strategy Summit, Expo & Conference and Excellence Awards — Africa's annual gatherings for industry and professionals.",
+      },
+      { property: "og:url", content: "https://buyafricabuildafrica.org/events" },
     ],
-    links: [{ rel: "canonical", href: "/events" }],
+    links: [{ rel: "canonical", href: "https://buyafricabuildafrica.org/events" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify([
+          {
+            "@context": "https://schema.org",
+            "@type": "Event",
+            name: "BABA Corporate Strategy Summit",
+            description:
+              "Annual leadership platform bringing together governments, investors, development partners, corporates and professionals to shape Africa's economic development agenda.",
+            location: { "@type": "Place", name: "Nairobi, Kenya", address: "Nairobi, Kenya" },
+            organizer: { "@type": "Organization", name: "Buy Africa Build Africa (BABA)", url: "https://buyafricabuildafrica.org/" },
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "Event",
+            name: "BABA Expo & Conference",
+            description:
+              "Africa's marketplace of ideas, products and opportunities — exhibitions, supplier showcases, keynotes and industry panels.",
+            location: { "@type": "Place", name: "Rotating African cities", address: "Africa" },
+            organizer: { "@type": "Organization", name: "Buy Africa Build Africa (BABA)", url: "https://buyafricabuildafrica.org/" },
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "Event",
+            name: "BABA Excellence Awards",
+            description:
+              "Annual awards celebrating individuals and organizations creating impact across Africa's built environment and industry.",
+            location: { "@type": "Place", name: "Nairobi, Kenya", address: "Nairobi, Kenya" },
+            organizer: { "@type": "Organization", name: "Buy Africa Build Africa (BABA)", url: "https://buyafricabuildafrica.org/" },
+          },
+        ]),
+      },
+    ],
   }),
   component: Events,
 });

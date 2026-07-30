@@ -14,8 +14,28 @@ export const Route = createFileRoute("/opportunities/")({
         content:
           "Upcoming trainings, masterclasses and events you can sign up for across the BABA network.",
       },
+      { property: "og:title", content: "Up & Coming — BABA Trainings & Masterclasses" },
+      {
+        property: "og:description",
+        content:
+          "Browse upcoming trainings, masterclasses and programmes open for sign-up across the BABA network.",
+      },
+      { property: "og:url", content: "https://buyafricabuildafrica.org/opportunities" },
     ],
-    links: [{ rel: "canonical", href: "/opportunities" }],
+    links: [{ rel: "canonical", href: "https://buyafricabuildafrica.org/opportunities" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: "BABA Up & Coming Opportunities",
+          url: "https://buyafricabuildafrica.org/opportunities",
+          description:
+            "A searchable listing of upcoming BABA trainings, masterclasses and capacity building programmes across Africa.",
+        }),
+      },
+    ],
   }),
   component: Opportunities,
 });

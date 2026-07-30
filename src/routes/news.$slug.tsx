@@ -6,17 +6,40 @@ import { PageShell } from "@/components/PageShell";
 import { getArticleBySlug } from "@/lib/news.functions";
 
 export const Route = createFileRoute("/news/$slug")({
-  head: ({ params }) => ({
-    meta: [
-      { title: `${params.slug.replace(/-/g, " ")} | BABA News` },
-      {
-        name: "description",
-        content: "Read the full story on the BABA News Desk.",
-      },
-      { property: "og:type", content: "article" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  head: ({ params }) => {
+    const readable = params.slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+    const description = `${readable} — reporting and analysis from the BABA News Desk on Africa's built environment, skills, jobs and sustainable development.`;
+    const url = `https://buyafricabuildafrica.org/news/${params.slug}`;
+    return {
+      meta: [
+        { title: `${readable} | BABA News` },
+        { name: "description", content: description },
+        { property: "og:title", content: `${readable} | BABA News` },
+        { property: "og:description", content: description },
+        { property: "og:url", content: url },
+        { property: "og:type", content: "article" },
+        { name: "twitter:card", content: "summary_large_image" },
+      ],
+      links: [{ rel: "canonical", href: url }],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            headline: readable,
+            description,
+            url,
+            publisher: {
+              "@type": "Organization",
+              name: "Buy Africa Build Africa (BABA)",
+              url: "https://buyafricabuildafrica.org/",
+            },
+          }),
+        },
+      ],
+    };
+  },
   component: ArticlePage,
 });
 

@@ -21,8 +21,28 @@ export const Route = createFileRoute("/directory")({
         content:
           "Search, filter and connect with verified construction artisans, technical professionals, contractors and suppliers across Africa.",
       },
+      { property: "og:title", content: "BABA National Directory — Africa's Verified Talent" },
+      {
+        property: "og:description",
+        content:
+          "Search and connect with verified artisans, technical professionals, contractors and suppliers across Africa.",
+      },
+      { property: "og:url", content: "https://buyafricabuildafrica.org/directory" },
     ],
-    links: [{ rel: "canonical", href: "/directory" }],
+    links: [{ rel: "canonical", href: "https://buyafricabuildafrica.org/directory" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: "BABA National Directory",
+          url: "https://buyafricabuildafrica.org/directory",
+          description:
+            "A searchable database of verified construction artisans, technical professionals, contractors and suppliers across Africa.",
+        }),
+      },
+    ],
   }),
   component: Directory,
 });

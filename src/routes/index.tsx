@@ -39,16 +39,51 @@ import kenyaPulse from "@/assets/kenya-pulse.mp4.asset.json";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Buy Africa Build Africa (BABA) | Building Africa's Future by Africans" },
+      { title: "Buy Africa Build Africa (BABA) | Building Africa's Future" },
       {
         name: "description",
         content:
-          "A Pan-African platform connecting people, industries, institutions, skills, innovation, and opportunities to drive economic growth and sustainable development across Africa.",
+          "A Pan-African platform connecting people, industries, institutions, skills and opportunities to drive growth across Africa.",
       },
-      { property: "og:title", content: "Buy Africa Build Africa (BABA)" },
-      { property: "og:description", content: "Building Africa's Future by Africans." },
+      { property: "og:title", content: "Buy Africa Build Africa (BABA) — Building Africa's Future by Africans" },
+      {
+        property: "og:description",
+        content:
+          "A Pan-African platform connecting people, industries, institutions, skills and opportunities to drive growth across Africa.",
+      },
+      { property: "og:url", content: "https://buyafricabuildafrica.org/" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/cnSUIEtJ7wUkpmtI1OlzTnY67gk1/social-images/social-1780435793299-WhatsApp_Image_2026-05-30_at_11.07.37_PM.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/cnSUIEtJ7wUkpmtI1OlzTnY67gk1/social-images/social-1780435793299-WhatsApp_Image_2026-05-30_at_11.07.37_PM.webp" },
     ],
-    links: [{ rel: "canonical", href: "/" }],
+    links: [{ rel: "canonical", href: "https://buyafricabuildafrica.org/" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "Buy Africa Build Africa (BABA)",
+          alternateName: "BABA",
+          url: "https://buyafricabuildafrica.org/",
+          description:
+            "A Pan-African platform connecting people, industries, institutions, skills, innovation and opportunities to drive economic growth and sustainable development across Africa.",
+          areaServed: "Africa",
+          sameAs: [
+            "https://www.instagram.com/buyafrica.buildafrica",
+            "https://www.linkedin.com/company/buyafricabuildafrica",
+          ],
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "Buy Africa Build Africa (BABA)",
+          url: "https://buyafricabuildafrica.org/",
+        }),
+      },
+    ],
   }),
   component: Home,
 });

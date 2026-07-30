@@ -83,22 +83,24 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "Buy Africa Build Africa (BABA) — the institutional portal connecting Africa's skilled workforce, professionals, suppliers and partners to build the continent's future.",
+          "BABA connects Africa's workforce, professionals, institutions and industry into one ecosystem for skills, jobs and sustainable growth.",
       },
       { name: "author", content: "Buy Africa Build Africa" },
+      { property: "og:site_name", content: "Buy Africa Build Africa (BABA)" },
       { property: "og:title", content: "Buy Africa Build Africa (BABA)" },
       {
         property: "og:description",
-        content: "Building Africa from within — skills, jobs, cities and futures.",
+        content:
+          "Connecting Africa's workforce, professionals, institutions and industry — skills, jobs, manufacturing and sustainable development.",
       },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
+      { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Buy Africa Build Africa (BABA)" },
-      { name: "description", content: "Connecting Africa’s workforce, professionals, institutions, and industry into one integrated ecosystem for skills development, employment, manufacturing, sustai" },
-      { property: "og:description", content: "Connecting Africa’s workforce, professionals, institutions, and industry into one integrated ecosystem for skills development, employment, manufacturing, sustai" },
-      { name: "twitter:description", content: "Connecting Africa’s workforce, professionals, institutions, and industry into one integrated ecosystem for skills development, employment, manufacturing, sustai" },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/cnSUIEtJ7wUkpmtI1OlzTnY67gk1/social-images/social-1780435793299-WhatsApp_Image_2026-05-30_at_11.07.37_PM.webp" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/cnSUIEtJ7wUkpmtI1OlzTnY67gk1/social-images/social-1780435793299-WhatsApp_Image_2026-05-30_at_11.07.37_PM.webp" },
+      {
+        name: "twitter:description",
+        content:
+          "Connecting Africa's workforce, professionals, institutions and industry — skills, jobs, manufacturing and sustainable development.",
+      },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
