@@ -1,0 +1,4 @@
+CREATE POLICY "Members upload their own ID doc" ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id = 'member-ids' AND (storage.foldername(name))[1] = auth.uid()::text);
+CREATE POLICY "Members read their own ID doc" ON storage.objects FOR SELECT TO authenticated USING (bucket_id = 'member-ids' AND ((storage.foldername(name))[1] = auth.uid()::text OR private.has_role(auth.uid(), 'admin'::app_role)));
+CREATE POLICY "Members update their own ID doc" ON storage.objects FOR UPDATE TO authenticated USING (bucket_id = 'member-ids' AND (storage.foldername(name))[1] = auth.uid()::text);
+CREATE POLICY "Members delete their own ID doc" ON storage.objects FOR DELETE TO authenticated USING (bucket_id = 'member-ids' AND (storage.foldername(name))[1] = auth.uid()::text);
