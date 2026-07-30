@@ -1,7 +1,7 @@
 import { createFileRoute, useRouter, Link, redirect } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import {
   Loader2,
   LayoutDashboard,
