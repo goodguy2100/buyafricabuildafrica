@@ -219,7 +219,7 @@ function ProfileTab({ profile, role }: { profile: ProfileRow | null; role: RoleV
           location,
           bio,
           cv_url: cvName,
-          extra: { skills, industries, certifications },
+          extra: { ...extra, skills, industries, certifications },
         },
       }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["my-profile"] }),
@@ -299,6 +299,10 @@ function ProfileTab({ profile, role }: { profile: ProfileRow | null; role: RoleV
         </div>
       )}
 
+      <IdDocumentUpload profile={profile} />
+
+
+
       <div className="mt-6 flex items-center gap-3">
         <button
           onClick={() => mutation.mutate()}
@@ -320,6 +324,113 @@ function ProfileTab({ profile, role }: { profile: ProfileRow | null; role: RoleV
     </div>
   );
 }
+
+/* ----------------------- National ID document upload ---------------------- */
+
+function IdDocumentUpload({ profile }: { profile: ProfileRow | null }) {
+  const saveFn = useServerFn(updateMyProfile);
+  const queryClient = useQueryClient();
+  const inputRef = useRef<HTMLInputElement>(null);
+  const extra = (profile?.extra ?? {}) as Record<string, unknown>;
+  const existingPath = (extra.id_document_path as string) ?? "";
+  const [status, setStatus] = useState<"idle" | "busy" | "done" | "error">("idle");
+  const [message, setMessage] = useState("");
+
+  const upload = async (file: File) => {
+    setStatus("busy");
+    setMessage("");
+    try {
+      const { data: userData } = await supabase.auth.getUser();
+      const uid = userData.user?.id;
+      if (!uid) throw new Error("Please log in again.");
+      if (file.size > 8 * 1024 * 1024) throw new Error("That file is too big. Use one under 8 MB.");
+      const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+      const path = `${uid}/id-document.${ext}`;
+      const { error: upErr } = await supabase.storage
+        .from("member-ids")
+        .upload(path, file, { upsert: true, contentType: file.type || undefined });
+      if (upErr) throw upErr;
+      await saveFn({ data: { extra: { ...extra, id_document_path: path } } });
+      queryClient.invalidateQueries({ queryKey: ["my-profile"] });
+      setStatus("done");
+      setMessage("Your ID was sent. Thank you.");
+    } catch (err) {
+      setStatus("error");
+      setMessage(err instanceof Error ? err.message : "Upload failed. Please try again.");
+    }
+  };
+
+  const view = async () => {
+    const { data } = await supabase.storage.from("member-ids").createSignedUrl(existingPath, 60);
+    if (data?.signedUrl) window.open(data.signedUrl, "_blank", "noopener,noreferrer");
+  };
+
+  return (
+    <div className="mt-5 rounded-xl border border-dashed border-baba-blue/25 p-5">
+      <h3 className="text-sm font-bold text-baba-slate">Your ID (National Identification No)</h3>
+      <p className="mt-1 text-xs text-baba-slate/60">
+        You can add a photo of your ID here at any time. Only you and the BABA team can see it.
+      </p>
+
+      {existingPath ? (
+        <div className="mt-3 flex flex-wrap items-center gap-3">
+          <span className="flex items-center gap-2 rounded-lg bg-baba-blue/5 px-3 py-2 text-sm text-baba-slate">
+            <FileText className="h-4 w-4 text-baba-blue" /> ID saved
+          </span>
+          <button
+            type="button"
+            onClick={view}
+            className="flex items-center gap-1.5 rounded-lg border-2 border-baba-blue/20 px-3 py-2 text-sm font-semibold text-baba-blue"
+          >
+            <Download className="h-4 w-4" /> View
+          </button>
+          <button
+            type="button"
+            onClick={() => inputRef.current?.click()}
+            className="flex items-center gap-1.5 rounded-lg border-2 border-baba-blue/20 px-3 py-2 text-sm font-semibold text-baba-blue"
+          >
+            <FileUp className="h-4 w-4" /> Change
+          </button>
+        </div>
+      ) : (
+        <button
+          type="button"
+          onClick={() => inputRef.current?.click()}
+          className="mt-3 flex w-full flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-baba-blue/25 py-8 text-sm text-baba-slate/60 transition-colors hover:border-baba-blue"
+        >
+          {status === "busy" ? (
+            <Loader2 className="h-6 w-6 animate-spin text-baba-blue" />
+          ) : (
+            <FileUp className="h-6 w-6 text-baba-blue" />
+          )}
+          Tap to add a photo of your ID (or a PDF)
+        </button>
+      )}
+
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*,.pdf"
+        className="hidden"
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) upload(file);
+        }}
+      />
+
+      {message && (
+        <p
+          className={`mt-2 text-xs font-medium ${
+            status === "error" ? "text-destructive" : "text-green-600"
+          }`}
+        >
+          {message}
+        </p>
+      )}
+    </div>
+  );
+}
+
 
 /* --------------------------- Opportunities tab ---------------------------- */
 
