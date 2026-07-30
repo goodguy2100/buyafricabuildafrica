@@ -170,14 +170,23 @@ function AdminPage() {
           })}
         </div>
 
-        {tab === "overview" && <OverviewSection />}
-        {tab === "members" && <MembersSection />}
-        {tab === "payments" && <PaymentsSection />}
-        {tab === "opportunities" && <OpportunitiesSection />}
-        {tab === "news" && <NewsSection />}
-        {tab === "notifications" && <NotificationsSection />}
-        {tab === "gallery" && <GallerySection />}
-        {tab === "settings" && <SettingsSection />}
+        <Suspense
+          fallback={
+            <div className="flex justify-center py-16" role="status" aria-live="polite">
+              <Loader2 className="h-6 w-6 animate-spin text-baba-blue" />
+              <span className="sr-only">Loading section…</span>
+            </div>
+          }
+        >
+          {tab === "overview" && <OverviewSection />}
+          {tab === "members" && <MembersSection />}
+          {tab === "payments" && <PaymentsSection />}
+          {tab === "opportunities" && <OpportunitiesSection />}
+          {tab === "news" && <NewsSection />}
+          {tab === "notifications" && <NotificationsSection />}
+          {tab === "gallery" && <GallerySection />}
+          {tab === "settings" && <SettingsSection />}
+        </Suspense>
       </section>
     </PageShell>
   );
