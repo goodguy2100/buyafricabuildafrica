@@ -37,6 +37,10 @@ export function Footer() {
           <img
             src={babaLogo}
             alt="Buy Africa Build Africa logo"
+            width={600}
+            height={489}
+            loading="lazy"
+            decoding="async"
             className="h-24 w-auto object-contain"
           />
           <p className="mt-4 max-w-sm text-sm leading-relaxed text-baba-cream">
