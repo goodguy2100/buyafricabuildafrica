@@ -79,6 +79,10 @@ export function Header() {
           <img
             src={babaLogo}
             alt="Buy Africa Build Africa logo"
+            width={600}
+            height={489}
+            decoding="async"
+            fetchPriority="high"
             className="h-20 w-auto object-contain lg:h-24"
           />
         </Link>
