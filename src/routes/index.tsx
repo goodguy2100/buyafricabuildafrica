@@ -158,9 +158,9 @@ function Home() {
               🌍 Building Africa, by Africans
             </span>
             <h1 className="mt-6 font-display text-5xl font-extrabold leading-[1.02] tracking-tight text-baba-slate sm:text-6xl lg:text-7xl">
-              Buy Africa
+              Buy Africa Build Africa
               <br />
-              <span className="baba-rainbow">Build Africa</span>
+              <span className="baba-rainbow">Building Africa's Future by Africans</span>
             </h1>
             <p className="mx-auto mt-6 max-w-xl text-sm font-semibold text-baba-copper-dark">
               We believe Africa's greatest resource is not beneath its soil. It is its people.
