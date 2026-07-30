@@ -299,6 +299,10 @@ function ProfileTab({ profile, role }: { profile: ProfileRow | null; role: RoleV
         </div>
       )}
 
+      <IdDocumentUpload profile={profile} />
+
+
+
       <div className="mt-6 flex items-center gap-3">
         <button
           onClick={() => mutation.mutate()}
