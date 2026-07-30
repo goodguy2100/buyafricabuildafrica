@@ -1,4 +1,4 @@
-import kenyaMap from "@/assets/kenya-map.png";
+import kenyaMap from "@/assets/kenya-map.webp";
 
 // Pop order: Nairobi → Coast → Central → Rift Valley → Western
 const regions = [

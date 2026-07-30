@@ -3,7 +3,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { Menu, X, LogOut, LayoutDashboard, LogIn, ChevronDown } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
-import babaLogo from "@/assets/baba-logo-vibrant.png";
+import babaLogo from "@/assets/baba-logo.webp";
 import { supabase } from "@/integrations/supabase/client";
 import { getIsAdmin } from "@/lib/registrations.functions";
 import { MotionToggle } from "@/components/MotionToggle";
