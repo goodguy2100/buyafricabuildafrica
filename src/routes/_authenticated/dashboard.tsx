@@ -219,7 +219,7 @@ function ProfileTab({ profile, role }: { profile: ProfileRow | null; role: RoleV
           location,
           bio,
           cv_url: cvName,
-          extra: { skills, industries, certifications },
+          extra: { ...extra, skills, industries, certifications },
         },
       }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["my-profile"] }),
