@@ -1,4 +1,4 @@
-import kenyaMap from "@/assets/kenya-map.png";
+import kenyaMap from "@/assets/kenya-map.webp";
 
 // Pop order: Nairobi → Coast → Central → Rift Valley → Western
 const regions = [
@@ -15,6 +15,9 @@ export function KenyaMap() {
       <img
         src={kenyaMap}
         alt="Map of Kenya showing BABA active regions"
+        width={744}
+        height={956}
+        decoding="async"
         className="h-full w-full object-contain"
         loading="lazy"
       />

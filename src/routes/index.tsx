@@ -32,7 +32,6 @@ import { PageShell } from "@/components/PageShell";
 import { NewsHomePreview } from "@/components/NewsHomePreview";
 import { Counter } from "@/components/Counter";
 import { pillars } from "@/data/pillars";
-import heroCollage from "@/assets/hero-collage.jpg";
 
 import kenyaPulse from "@/assets/kenya-pulse.mp4.asset.json";
 

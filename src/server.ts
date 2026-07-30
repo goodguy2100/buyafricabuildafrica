@@ -37,12 +37,41 @@ async function normalizeCatastrophicSsrResponse(response: Response): Promise<Res
   });
 }
 
+// Hashed build output is immutable; everything else gets a short shared cache
+// so repeat visits and CDN edges avoid re-fetching unchanged bytes.
+const IMMUTABLE_PATH = /^\/(?:_build|assets|_serverFn)?\/?.*\.[0-9a-zA-Z_-]{8,}\.(?:js|css|woff2?|png|jpe?g|webp|avif|svg|mp4)$/;
+const STATIC_EXT = /\.(?:js|css|woff2?|png|jpe?g|webp|avif|svg|ico|mp4|txt)$/;
+
+function withCacheHeaders(request: Request, response: Response): Response {
+  if (request.method !== "GET" || response.status !== 200) return response;
+  if (response.headers.has("cache-control")) return response;
+
+  const { pathname } = new URL(request.url);
+  let value: string | null = null;
+  if (IMMUTABLE_PATH.test(pathname)) {
+    value = "public, max-age=31536000, immutable";
+  } else if (STATIC_EXT.test(pathname)) {
+    value = "public, max-age=3600, stale-while-revalidate=86400";
+  } else if ((response.headers.get("content-type") ?? "").includes("text/html")) {
+    value = "public, max-age=0, s-maxage=300, stale-while-revalidate=86400";
+  }
+  if (!value) return response;
+
+  const headers = new Headers(response.headers);
+  headers.set("cache-control", value);
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
+}
+
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
-      return await normalizeCatastrophicSsrResponse(response);
+      return withCacheHeaders(request, await normalizeCatastrophicSsrResponse(response));
     } catch (error) {
       console.error(error);
       return new Response(renderErrorPage(), {

@@ -3,7 +3,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { Menu, X, LogOut, LayoutDashboard, LogIn, ChevronDown } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
-import babaLogo from "@/assets/baba-logo-vibrant.png";
+import babaLogo from "@/assets/baba-logo.webp";
 import { supabase } from "@/integrations/supabase/client";
 import { getIsAdmin } from "@/lib/registrations.functions";
 import { MotionToggle } from "@/components/MotionToggle";
@@ -79,6 +79,10 @@ export function Header() {
           <img
             src={babaLogo}
             alt="Buy Africa Build Africa logo"
+            width={600}
+            height={489}
+            decoding="async"
+            fetchPriority="high"
             className="h-20 w-auto object-contain lg:h-24"
           />
         </Link>

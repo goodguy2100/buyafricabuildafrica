@@ -1,7 +1,7 @@
 import { createFileRoute, useRouter, Link, redirect } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import {
   Loader2,
   LayoutDashboard,
@@ -15,14 +15,36 @@ import {
 } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { getIsAdmin } from "@/lib/registrations.functions";
-import { OverviewSection } from "@/components/admin/OverviewSection";
-import { MembersSection } from "@/components/admin/MembersSection";
-import { PaymentsSection } from "@/components/admin/PaymentsSection";
-import { OpportunitiesSection } from "@/components/admin/OpportunitiesSection";
-import { NotificationsSection } from "@/components/admin/NotificationsSection";
-import { GallerySection } from "@/components/admin/GallerySection";
-import { NewsSection } from "@/components/admin/NewsSection";
-import { SettingsSection } from "@/components/admin/SettingsSection";
+// Each admin section is loaded on demand so opening the dashboard doesn't pull
+// in charting/upload code for tabs the admin never visits.
+const OverviewSection = lazy(() =>
+  import("@/components/admin/OverviewSection").then((m) => ({ default: m.OverviewSection })),
+);
+const MembersSection = lazy(() =>
+  import("@/components/admin/MembersSection").then((m) => ({ default: m.MembersSection })),
+);
+const PaymentsSection = lazy(() =>
+  import("@/components/admin/PaymentsSection").then((m) => ({ default: m.PaymentsSection })),
+);
+const OpportunitiesSection = lazy(() =>
+  import("@/components/admin/OpportunitiesSection").then((m) => ({
+    default: m.OpportunitiesSection,
+  })),
+);
+const NotificationsSection = lazy(() =>
+  import("@/components/admin/NotificationsSection").then((m) => ({
+    default: m.NotificationsSection,
+  })),
+);
+const GallerySection = lazy(() =>
+  import("@/components/admin/GallerySection").then((m) => ({ default: m.GallerySection })),
+);
+const NewsSection = lazy(() =>
+  import("@/components/admin/NewsSection").then((m) => ({ default: m.NewsSection })),
+);
+const SettingsSection = lazy(() =>
+  import("@/components/admin/SettingsSection").then((m) => ({ default: m.SettingsSection })),
+);
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated/admin")({
@@ -148,14 +170,23 @@ function AdminPage() {
           })}
         </div>
 
-        {tab === "overview" && <OverviewSection />}
-        {tab === "members" && <MembersSection />}
-        {tab === "payments" && <PaymentsSection />}
-        {tab === "opportunities" && <OpportunitiesSection />}
-        {tab === "news" && <NewsSection />}
-        {tab === "notifications" && <NotificationsSection />}
-        {tab === "gallery" && <GallerySection />}
-        {tab === "settings" && <SettingsSection />}
+        <Suspense
+          fallback={
+            <div className="flex justify-center py-16" role="status" aria-live="polite">
+              <Loader2 className="h-6 w-6 animate-spin text-baba-blue" />
+              <span className="sr-only">Loading section…</span>
+            </div>
+          }
+        >
+          {tab === "overview" && <OverviewSection />}
+          {tab === "members" && <MembersSection />}
+          {tab === "payments" && <PaymentsSection />}
+          {tab === "opportunities" && <OpportunitiesSection />}
+          {tab === "news" && <NewsSection />}
+          {tab === "notifications" && <NotificationsSection />}
+          {tab === "gallery" && <GallerySection />}
+          {tab === "settings" && <SettingsSection />}
+        </Suspense>
       </section>
     </PageShell>
   );
