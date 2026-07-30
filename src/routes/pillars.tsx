@@ -16,14 +16,21 @@ import { PageShell } from "@/components/PageShell";
 export const Route = createFileRoute("/pillars")({
   head: () => ({
     meta: [
-      { title: "Our Five Strategic Pillars | Buy Africa Build Africa (BABA)" },
+      { title: "Our Five Strategic Pillars | BABA" },
       {
         name: "description",
         content:
-          "Explore the five strategic pillars of BABA: the Membership & Industry Network, Capacity Building Hub, Sustainability & Green Building Initiative, Events & Recognition Platform, and Research, Innovation & Implementation Hub.",
+          "Explore BABA's five strategic pillars: Membership & Industry Network, Capacity Building Hub, Sustainability Initiative, Events & Recognition, and Research & Innovation.",
       },
+      { property: "og:title", content: "The Five Strategic Pillars of BABA" },
+      {
+        property: "og:description",
+        content:
+          "Membership & Industry Network, Capacity Building, Sustainability, Events & Recognition, and Research & Innovation — how BABA builds Africa.",
+      },
+      { property: "og:url", content: "https://buyafricabuildafrica.org/pillars" },
     ],
-    links: [{ rel: "canonical", href: "/pillars" }],
+    links: [{ rel: "canonical", href: "https://buyafricabuildafrica.org/pillars" }],
   }),
   component: PillarsPage,
 });
