@@ -179,6 +179,13 @@ const ubuntuCommunities: { country: string; flag: string; chapters: string[] }[]
     flag: "🇳🇬",
     chapters: ["We Dey Abuja Nigeria", "We Dey Lagos Nigeria"],
   },
+  { country: "Ghana", flag: "🇬🇭", chapters: ["Accra Ghana"] },
+  { country: "Egypt", flag: "🇪🇬", chapters: ["Cairo Egypt"] },
+  {
+    country: "South Africa",
+    flag: "🇿🇦",
+    chapters: ["Johannesburg South Africa", "Cape Town South Africa"],
+  },
 ];
 
 function Home() {
