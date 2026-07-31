@@ -124,14 +124,9 @@ export function Header() {
             to="/register"
             className="rounded-full baba-cta px-4 py-2 text-sm font-semibold text-white"
           >
-            Join as Artisans
+            Join Us
           </Link>
-          <Link
-            to="/register"
-            className="rounded-full border-2 border-baba-blue px-4 py-2 text-sm font-semibold text-baba-blue transition-colors hover:bg-baba-blue hover:text-baba-cream"
-          >
-            Join as Professional
-          </Link>
+
           <Link
             to="/partners"
             className="rounded-full border-2 border-baba-copper px-4 py-2 text-sm font-semibold text-baba-copper-dark transition-colors hover:bg-baba-copper hover:text-baba-slate"
@@ -204,15 +199,9 @@ export function Header() {
               onClick={() => setOpen(false)}
               className="rounded-full baba-cta px-4 py-2.5 text-center text-sm font-semibold text-white"
             >
-              Join as Artisans
+              Join Us
             </Link>
-            <Link
-              to="/register"
-              onClick={() => setOpen(false)}
-              className="rounded-full border-2 border-baba-blue px-4 py-2.5 text-center text-sm font-semibold text-baba-blue"
-            >
-              Join as Professional
-            </Link>
+
             <Link
               to="/partners"
               onClick={() => setOpen(false)}
