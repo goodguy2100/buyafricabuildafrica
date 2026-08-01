@@ -234,7 +234,7 @@ function AuthPage() {
         return;
       }
 
-      const syntheticEmail = idToEmail(id);
+      const syntheticEmail = id ? idToEmail(id) : nameToEmail(name);
       const legacyPassword = idToPassword(id);
 
       const { data: signUpData, error: signUpErr } = await supabase.auth.signUp({
@@ -244,9 +244,8 @@ function AuthPage() {
           emailRedirectTo: window.location.origin,
           data: {
             full_name: name,
-            national_id: id,
+            national_id: id || null,
             contact_email: email.trim() || null,
-            phone: phone.trim() || null,
             category: isOther && otherCategory.trim() ? otherCategory.trim() : chosen.label,
             country: location.country,
             city: location.city.trim(),
@@ -254,6 +253,7 @@ function AuthPage() {
           },
         },
       });
+
       if (signUpErr) {
         if (/already registered|already exists|user already/i.test(signUpErr.message)) {
           const existing = await signInWith(syntheticEmail, pwd);
