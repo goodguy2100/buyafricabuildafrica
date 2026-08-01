@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Mail, Phone, MapPin, Check } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { LocationPicker, EMPTY_LOCATION } from "@/components/LocationPicker";
+import { AFRICA_COUNTRIES } from "@/lib/africa-locations";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
