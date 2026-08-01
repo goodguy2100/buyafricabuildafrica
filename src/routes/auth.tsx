@@ -471,7 +471,7 @@ function AuthPage() {
                 <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-baba-slate/70">
                   <MapPin className="h-3.5 w-3.5" /> Where are you?
                 </span>
-                <LocationPicker value={location} onChange={setLocation} required />
+                <LocationPicker value={location} onChange={setLocation} />
                 <span className="text-[0.7rem] text-baba-slate/50">
                   Pick your country and town, then type your area (e.g. Westlands, South B).
                 </span>
