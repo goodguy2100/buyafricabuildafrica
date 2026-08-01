@@ -70,26 +70,32 @@ function Contact() {
                 setSent(true);
               }}
             >
-              <label htmlFor="query-type" className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
-                Query Type
+              <label htmlFor="country" className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
+                Country
               </label>
-              <input
-                id="query-type"
-                type="text"
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                placeholder="Tell us what your message is about"
-                className="mt-1.5 w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate placeholder:text-baba-slate/40 focus:border-baba-blue focus:outline-none"
-              />
+              <select
+                id="country"
+                required
+                value={country}
+                onChange={(e) => setCountry(e.target.value)}
+                className="mt-1.5 w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
+              >
+                <option value="">Select your country</option>
+                {AFRICA_COUNTRIES.map((c) => (
+                  <option key={c.code} value={c.name}>
+                    {c.name}
+                  </option>
+                ))}
+                <option value="Other">Other</option>
+              </select>
               <p className="mt-1.5 text-xs text-baba-slate/50">
-                General, partnership, government, media, support — or anything else.
+                Where your organisation is based.
               </p>
 
-
               <div className="mt-6 grid gap-5 sm:grid-cols-2">
-                <Field label="Full Name" placeholder="John Doe" required />
-                <Field label="Email (optional)" placeholder="john@example.com" type="email" />
-                <Field label="Organization" placeholder="Optional" />
+                <Field label="Organisation Name" placeholder="Company, organisation or institution" required />
+                <Field label="Contact Person" placeholder="Jane Wanjiru" />
+                <Field label="Email (optional)" placeholder="info@example.com" type="email" />
                 <Field label="Phone" placeholder="+254 746216258" />
               </div>
 
