@@ -188,8 +188,8 @@ function AuthPage() {
       return setError("Please type your password (6 letters or numbers or more).");
     }
     if (mode === "join") {
-      if (id.replace(/[^a-zA-Z0-9]/g, "").length < 4) {
-        return setError("Please type your National Identification No.");
+      if (id && id.replace(/[^a-zA-Z0-9]/g, "").length < 4) {
+        return setError("That National Identification No looks too short. Leave it blank if unsure.");
       }
       if (scorePassword(pwd).score < 2) {
         return setError("Please pick a stronger password. Make it longer, or add a number.");
@@ -197,13 +197,11 @@ function AuthPage() {
       if (pwd !== confirmPassword) {
         return setError("The two passwords are not the same. Please type them again.");
       }
-      if (!location.country || !location.city.trim()) {
-        return setError("Please pick your country and town or city.");
-      }
       if (isOther && !otherCategory.trim()) {
         return setError("Please type the work you do.");
       }
     }
+
 
     setLoading(true);
     try {
