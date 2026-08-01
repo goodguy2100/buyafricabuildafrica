@@ -7,12 +7,20 @@ import { LocationPicker, EMPTY_LOCATION } from "@/components/LocationPicker";
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact | Buy Africa Build Africa (BABA)" },
+      { title: "Partner with BABA | Buy Africa Build Africa (BABA)" },
       {
         name: "description",
         content:
-          "Get in touch with BABA for general inquiries, partnerships, government collaboration, media or member support.",
+          "Partner with BABA — companies, organisations, institutions and government bodies working with us on skills, local content and opportunities across Africa.",
       },
+      { property: "og:title", content: "Partner with BABA" },
+      {
+        property: "og:description",
+        content:
+          "Tell us about your company, organisation or institution and our partnerships team will get back to you.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [{ rel: "canonical", href: "/contact" }],
   }),
@@ -20,7 +28,7 @@ export const Route = createFileRoute("/contact")({
 });
 
 function Contact() {
-  const [category, setCategory] = useState("");
+  const [country, setCountry] = useState("");
   const [loc, setLoc] = useState(EMPTY_LOCATION);
   const [sent, setSent] = useState(false);
 
@@ -29,14 +37,14 @@ function Contact() {
       <section className="border-b border-baba-blue/10 bg-baba-blue/5">
         <div className="mx-auto max-w-7xl px-5 py-16 lg:px-8">
           <span className="text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">
-            Get In Touch
+            Collaboration
           </span>
           <h1 className="mt-2 font-display text-4xl font-extrabold text-baba-slate sm:text-5xl">
-            Contact BABA
+            Partner with BABA
           </h1>
           <p className="mt-4 max-w-2xl text-baba-slate/70">
-            Whether you're an artisan, partner or institution, our team is ready to help you
-            build with us.
+            Companies, organisations, institutions and government bodies — tell us who you are and
+            our team will get back to you.
           </p>
         </div>
       </section>
