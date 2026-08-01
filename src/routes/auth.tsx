@@ -19,18 +19,19 @@ export const Route = createFileRoute("/auth")({
       {
         name: "description",
         content:
-          "Join Buy Africa Build Africa (BABA) free. Pick your work, add your name and a password. Log in with your full name and password.",
+          "Join Buy Africa Build Africa (BABA). Pick your work, add your name and a password. Log in with your full name and password.",
       },
       { property: "og:title", content: "Join Us or Log In | Buy Africa Build Africa" },
       {
         property: "og:description",
-        content: "Free to join. Pick your work, add your name and a password.",
+        content: "Pick your work, add your name and a password.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [{ rel: "canonical", href: "/auth" }],
   }),
+
   component: AuthPage,
 });
 
@@ -89,6 +90,13 @@ function idToPassword(id: string): string {
   const clean = id.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
   return `baba-${clean}`;
 }
+/** Members can join without an ID number, so build a login address from the name. */
+function nameToEmail(name: string): string {
+  const slug = name.trim().toLowerCase().replace(/[^a-z0-9]+/g, "").slice(0, 24) || "member";
+  const suffix = Math.random().toString(36).slice(2, 8);
+  return `${slug}${suffix}@baba.local`;
+}
+
 
 function AuthPage() {
   const navigate = useNavigate();
@@ -101,7 +109,6 @@ function AuthPage() {
   const [fullName, setFullName] = useState("");
   const [idNumber, setIdNumber] = useState("");
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [categoryLabel, setCategoryLabel] = useState(JOIN_CATEGORIES[0].label);
@@ -132,7 +139,6 @@ function AuthPage() {
             fullName: name,
             nationalId: id,
             email: email.trim() || null,
-            phone: phone.trim() || null,
             category: label,
             occupation: label,
             trade: chosen.role === "artisan" ? label : undefined,
@@ -148,7 +154,6 @@ function AuthPage() {
       await saveProfile({
         data: {
           full_name: name,
-          phone: phone.trim() || undefined,
           country: loc.country || undefined,
           city: loc.city.trim() || undefined,
           area: loc.area.trim() || undefined,
@@ -180,8 +185,8 @@ function AuthPage() {
       return setError("Please type your password (6 letters or numbers or more).");
     }
     if (mode === "join") {
-      if (id.replace(/[^a-zA-Z0-9]/g, "").length < 4) {
-        return setError("Please type your National Identification No.");
+      if (id && id.replace(/[^a-zA-Z0-9]/g, "").length < 4) {
+        return setError("That National Identification No looks too short. Leave it blank if unsure.");
       }
       if (scorePassword(pwd).score < 2) {
         return setError("Please pick a stronger password. Make it longer, or add a number.");
@@ -189,13 +194,11 @@ function AuthPage() {
       if (pwd !== confirmPassword) {
         return setError("The two passwords are not the same. Please type them again.");
       }
-      if (!location.country || !location.city.trim()) {
-        return setError("Please pick your country and town or city.");
-      }
       if (isOther && !otherCategory.trim()) {
         return setError("Please type the work you do.");
       }
     }
+
 
     setLoading(true);
     try {
@@ -228,7 +231,7 @@ function AuthPage() {
         return;
       }
 
-      const syntheticEmail = idToEmail(id);
+      const syntheticEmail = id ? idToEmail(id) : nameToEmail(name);
       const legacyPassword = idToPassword(id);
 
       const { data: signUpData, error: signUpErr } = await supabase.auth.signUp({
@@ -238,9 +241,8 @@ function AuthPage() {
           emailRedirectTo: window.location.origin,
           data: {
             full_name: name,
-            national_id: id,
+            national_id: id || null,
             contact_email: email.trim() || null,
-            phone: phone.trim() || null,
             category: isOther && otherCategory.trim() ? otherCategory.trim() : chosen.label,
             country: location.country,
             city: location.city.trim(),
@@ -248,6 +250,7 @@ function AuthPage() {
           },
         },
       });
+
       if (signUpErr) {
         if (/already registered|already exists|user already/i.test(signUpErr.message)) {
           const existing = await signInWith(syntheticEmail, pwd);
@@ -296,7 +299,7 @@ function AuthPage() {
           </h1>
           <p className="mt-2 text-baba-slate/70">
             {mode === "join"
-              ? "It is free. Pick your work, then add your name, place and a password."
+              ? "Pick your work, then add your name and a password."
               : "Log in with your full name and your password."}
           </p>
         </div>
@@ -394,18 +397,14 @@ function AuthPage() {
           {(mode === "join" || askForId) && (
             <label className="grid gap-1.5">
               <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
-                National Identification No
-                {mode === "signin" && (
-                  <span className="font-normal normal-case text-baba-slate/50">
-                    {" "}
-                    (only to tell you apart)
-                  </span>
-                )}
+                National Identification No{" "}
+                <span className="font-normal normal-case text-baba-slate/50">
+                  {mode === "signin" ? "(only to tell you apart)" : "(optional)"}
+                </span>
               </span>
               <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
                 <IdCard className="h-4 w-4 text-baba-slate/40" />
                 <input
-                  required={mode === "join"}
                   inputMode="numeric"
                   value={idNumber}
                   onChange={(e) => setIdNumber(e.target.value)}
@@ -415,12 +414,13 @@ function AuthPage() {
               </div>
               {mode === "join" && (
                 <span className="text-[0.7rem] text-baba-slate/50">
-                  You log in with your name and password — not this number. You can add a photo of
-                  your ID later from your profile.
+                  You can skip this now — but your profile is only complete once you add your ID
+                  number and phone number in your profile.
                 </span>
               )}
             </label>
           )}
+
 
           <label className="grid gap-1.5">
             <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
@@ -471,25 +471,12 @@ function AuthPage() {
                 <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-baba-slate/70">
                   <MapPin className="h-3.5 w-3.5" /> Where are you?
                 </span>
-                <LocationPicker value={location} onChange={setLocation} required />
+                <LocationPicker value={location} onChange={setLocation} />
                 <span className="text-[0.7rem] text-baba-slate/50">
                   Pick your country and town, then type your area (e.g. Westlands, South B).
                 </span>
               </div>
 
-              <label className="grid gap-1.5">
-                <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
-                  Phone Number{" "}
-                  <span className="font-normal normal-case text-baba-slate/50">(optional)</span>
-                </span>
-                <input
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  inputMode="tel"
-                  className="rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
-                  placeholder="e.g. 0712 345 678"
-                />
-              </label>
 
               <label className="grid gap-1.5">
                 <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
@@ -525,7 +512,7 @@ function AuthPage() {
             className="mt-2 flex items-center justify-center gap-2 rounded-lg baba-cta py-2.5 text-sm font-semibold text-white transition-colors hover:bg-baba-blue-dark disabled:opacity-60"
           >
             {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-            {mode === "join" ? (intent === "member" ? "Join us — it's free" : "Partner with us") : "Log In"}
+            {mode === "join" ? (intent === "member" ? "Join us" : "Partner with us") : "Log In"}
           </button>
         </form>
 

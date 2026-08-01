@@ -43,7 +43,7 @@ export function useVerificationGate() {
         <DialogHeader>
           <DialogTitle>Sign in to continue</DialogTitle>
           <DialogDescription>
-            It looks like you're not signed in yet. Please sign in (or create a free
+            It looks like you're not signed in yet. Please sign in (or create an
             account) so we can link this to your profile.
           </DialogDescription>
         </DialogHeader>
