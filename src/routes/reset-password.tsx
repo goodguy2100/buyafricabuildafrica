@@ -110,14 +110,20 @@ function ResetPasswordPage() {
           </div>
         ) : !ready ? (
           <p className="mt-8 rounded-xl border border-amber-200 bg-amber-50 p-5 text-sm text-amber-800">
-            Waiting for your reset link. Open this page from the email we sent you — if you got here another way,
-            request a new link from the{" "}
+            {error ? (
+              <span className="mb-1 block font-semibold">{error}</span>
+            ) : (
+              "Checking your reset link… "
+            )}
+            Open this page from the email we sent you — if you got here another way, or the link has
+            expired, ask for a new one on the{" "}
             <Link to="/forgot-password" className="font-semibold underline">
               forgot password page
             </Link>
             .
           </p>
         ) : (
+
           <form onSubmit={submit} className="mt-8 grid gap-4">
             <label className="grid gap-1.5">
               <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">New password</span>
