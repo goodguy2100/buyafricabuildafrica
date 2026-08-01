@@ -160,31 +160,17 @@ const impactStats = [
 ];
 
 const ubuntuCommunities: { country: string; flag: string; chapters: string[] }[] = [
-  {
-    country: "Kenya",
-    flag: "🇰🇪",
-    chapters: [
-      "Abandu ba Western Kenya",
-      "Team Nairobi Kenya",
-      "Mtu wa Eastern Kenya",
-      "Wetu wa Central Kenya",
-      "Watu wa Mombasa Kenya",
-    ],
-  },
-  { country: "Uganda", flag: "🇺🇬", chapters: ["Bantu ba Kampala Uganda"] },
-  { country: "Tanzania", flag: "🇹🇿", chapters: ["Sisi Kutoka Dar es Salaam Tanzania"] },
-  { country: "Ethiopia", flag: "🇪🇹", chapters: ["Addis Ababa Ethiopia"] },
-  {
-    country: "Nigeria",
-    flag: "🇳🇬",
-    chapters: ["We Dey Abuja Nigeria", "We Dey Lagos Nigeria"],
-  },
-  { country: "Ghana", flag: "🇬🇭", chapters: ["Accra Ghana"] },
-  { country: "Egypt", flag: "🇪🇬", chapters: ["Cairo Egypt"] },
+  { country: "Kenya", flag: "🇰🇪", chapters: ["Nairobi", "Mombasa", "Kisumu"] },
+  { country: "Uganda", flag: "🇺🇬", chapters: ["Kampala", "Entebbe", "Jinja"] },
+  { country: "Tanzania", flag: "🇹🇿", chapters: ["Dar es Salaam", "Dodoma", "Arusha"] },
+  { country: "Ethiopia", flag: "🇪🇹", chapters: ["Addis Ababa", "Dire Dawa", "Hawassa"] },
+  { country: "Nigeria", flag: "🇳🇬", chapters: ["Lagos", "Abuja", "Port Harcourt"] },
+  { country: "Ghana", flag: "🇬🇭", chapters: ["Accra", "Kumasi", "Takoradi"] },
+  { country: "Egypt", flag: "🇪🇬", chapters: ["Cairo", "Alexandria", "Giza"] },
   {
     country: "South Africa",
     flag: "🇿🇦",
-    chapters: ["Johannesburg South Africa", "Cape Town South Africa"],
+    chapters: ["Johannesburg", "Cape Town", "Durban"],
   },
 ];
 

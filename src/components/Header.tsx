@@ -26,7 +26,7 @@ const moreLinks = [
   { to: "/directory", label: "National Directory" },
   { to: "/opportunities", label: "Opportunities" },
   { to: "/news", label: "News" },
-  { to: "/contact", label: "Contact" },
+  { to: "/contact", label: "Partner with BABA" },
 ] as const;
 
 const navLinks = [...primaryLinks, ...moreLinks] as const;

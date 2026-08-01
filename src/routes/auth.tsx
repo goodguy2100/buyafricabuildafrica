@@ -111,13 +111,20 @@ function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [categoryLabel, setCategoryLabel] = useState(JOIN_CATEGORIES[0].label);
+  const [categoryLabel, setCategoryLabel] = useState("");
   const [otherCategory, setOtherCategory] = useState("");
   const [location, setLocation] = useState<LocationValue>(EMPTY_LOCATION);
   const [askForId, setAskForId] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Arriving from "Become a Partner" opens the organisation form straight away.
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("intent") === "partner") {
+      setIntent("partner");
+    }
+  }, []);
 
   const list = intent === "member" ? JOIN_CATEGORIES : PARTNER_CATEGORIES;
   const chosen = list.find((c) => c.label === categoryLabel) ?? list[0];
@@ -299,7 +306,9 @@ function AuthPage() {
           </h1>
           <p className="mt-2 text-baba-slate/70">
             {mode === "join"
-              ? "Pick your work, then add your name and a password."
+              ? intent === "member"
+                ? "Are you studying or working? Sign up below and create your account."
+                : "Company, organisation or institution? Sign up below and create your account."
               : "Log in with your full name and your password."}
           </p>
         </div>
@@ -308,11 +317,16 @@ function AuthPage() {
           <div className="mt-6 grid gap-3 sm:grid-cols-2">
             {(
               [
-                { key: "member", label: "Join us", hint: "I work or study", icon: Users },
+                {
+                  key: "member",
+                  label: "Join us",
+                  hint: "I am working or studying",
+                  icon: Users,
+                },
                 {
                   key: "partner",
                   label: "Partner with us",
-                  hint: "We are an organisation",
+                  hint: "Company, organisation or institution",
                   icon: Building2,
                 },
               ] as const
@@ -322,9 +336,7 @@ function AuthPage() {
                 type="button"
                 onClick={() => {
                   setIntent(opt.key);
-                  setCategoryLabel(
-                    (opt.key === "member" ? JOIN_CATEGORIES : PARTNER_CATEGORIES)[0].label,
-                  );
+                  setCategoryLabel("");
                   setOtherCategory("");
                 }}
                 className={`flex items-center gap-3 rounded-xl border-2 p-4 text-left transition-colors ${
@@ -350,10 +362,16 @@ function AuthPage() {
                 {intent === "member" ? "What work do you do?" : "What kind of organisation?"}
               </span>
               <select
+                required
                 value={categoryLabel}
                 onChange={(e) => setCategoryLabel(e.target.value)}
                 className="rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
               >
+                <option value="">
+                  {intent === "member"
+                    ? "Select — e.g. Interior Designer"
+                    : "Select — e.g. Financial Institution"}
+                </option>
                 {list.map((c) => (
                   <option key={c.label} value={c.label}>
                     {c.label}

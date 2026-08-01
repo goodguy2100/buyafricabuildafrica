@@ -3,16 +3,25 @@ import { useState } from "react";
 import { Mail, Phone, MapPin, Check } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { LocationPicker, EMPTY_LOCATION } from "@/components/LocationPicker";
+import { AFRICA_COUNTRIES } from "@/lib/africa-locations";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact | Buy Africa Build Africa (BABA)" },
+      { title: "Partner with BABA | Buy Africa Build Africa (BABA)" },
       {
         name: "description",
         content:
-          "Get in touch with BABA for general inquiries, partnerships, government collaboration, media or member support.",
+          "Partner with BABA — companies, organisations, institutions and government bodies working with us on skills, local content and opportunities across Africa.",
       },
+      { property: "og:title", content: "Partner with BABA" },
+      {
+        property: "og:description",
+        content:
+          "Tell us about your company, organisation or institution and our partnerships team will get back to you.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [{ rel: "canonical", href: "/contact" }],
   }),
@@ -20,7 +29,7 @@ export const Route = createFileRoute("/contact")({
 });
 
 function Contact() {
-  const [category, setCategory] = useState("");
+  const [country, setCountry] = useState("");
   const [loc, setLoc] = useState(EMPTY_LOCATION);
   const [sent, setSent] = useState(false);
 
@@ -29,14 +38,14 @@ function Contact() {
       <section className="border-b border-baba-blue/10 bg-baba-blue/5">
         <div className="mx-auto max-w-7xl px-5 py-16 lg:px-8">
           <span className="text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">
-            Get In Touch
+            Collaboration
           </span>
           <h1 className="mt-2 font-display text-4xl font-extrabold text-baba-slate sm:text-5xl">
-            Contact BABA
+            Partner with BABA
           </h1>
           <p className="mt-4 max-w-2xl text-baba-slate/70">
-            Whether you're an artisan, partner or institution, our team is ready to help you
-            build with us.
+            Companies, organisations, institutions and government bodies — tell us who you are and
+            our team will get back to you.
           </p>
         </div>
       </section>
@@ -62,26 +71,32 @@ function Contact() {
                 setSent(true);
               }}
             >
-              <label htmlFor="query-type" className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
-                Query Type
+              <label htmlFor="country" className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
+                Country
               </label>
-              <input
-                id="query-type"
-                type="text"
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                placeholder="Tell us what your message is about"
-                className="mt-1.5 w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate placeholder:text-baba-slate/40 focus:border-baba-blue focus:outline-none"
-              />
+              <select
+                id="country"
+                required
+                value={country}
+                onChange={(e) => setCountry(e.target.value)}
+                className="mt-1.5 w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
+              >
+                <option value="">Select your country</option>
+                {AFRICA_COUNTRIES.map((c) => (
+                  <option key={c.code} value={c.name}>
+                    {c.name}
+                  </option>
+                ))}
+                <option value="Other">Other</option>
+              </select>
               <p className="mt-1.5 text-xs text-baba-slate/50">
-                General, partnership, government, media, support — or anything else.
+                Where your organisation is based.
               </p>
 
-
               <div className="mt-6 grid gap-5 sm:grid-cols-2">
-                <Field label="Full Name" placeholder="John Doe" required />
-                <Field label="Email (optional)" placeholder="john@example.com" type="email" />
-                <Field label="Organization" placeholder="Optional" />
+                <Field label="Organisation Name" placeholder="Company, organisation or institution" required />
+                <Field label="Contact Person" placeholder="Jane Wanjiru" />
+                <Field label="Email (optional)" placeholder="info@example.com" type="email" />
                 <Field label="Phone" placeholder="+254 746216258" />
               </div>
 
@@ -101,7 +116,7 @@ function Contact() {
                 <textarea
                   required
                   rows={5}
-                  placeholder="How can we help?"
+                  placeholder="Tell us how you would like to partner with BABA"
                   className="mt-1.5 w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate placeholder:text-baba-slate/40 focus:border-baba-blue focus:outline-none"
                 />
               </div>

@@ -212,19 +212,13 @@ export function Events() {
           <div className="relative">
             <Calendar className="mx-auto h-8 w-8 text-white" />
             <h3 className="mt-3 font-display text-2xl font-bold">Join the Movement</h3>
-            <p className="mx-auto mt-2 max-w-xl text-sm text-white/80">There's a place for everyone in BABA. Become a member, list your business in the directory, explore live opportunities, or partner with us on our flagship events.</p>
+            <p className="mx-auto mt-2 max-w-xl text-sm text-white/80">There's a place for everyone in BABA. Become a member, or partner with us on our flagship events.</p>
             <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
               <Link to="/register" className="inline-flex items-center gap-2 rounded-xl bg-white px-7 py-3.5 text-sm font-semibold text-baba-blue shadow-lg transition-transform hover:scale-[1.03]">
                 Become a Member <ArrowRight className="h-4 w-4" />
               </Link>
-              <Link to="/opportunities" className="inline-flex items-center gap-2 rounded-xl bg-baba-copper px-7 py-3.5 text-sm font-semibold text-white shadow-lg transition-transform hover:scale-[1.03]">
-                View Opportunities <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link to="/directory" className="inline-flex items-center gap-2 rounded-xl border border-white/40 px-7 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-white/10">
-                Join the Directory
-              </Link>
-              <Link to="/contact" className="inline-flex items-center gap-2 rounded-xl border border-white/40 px-7 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-white/10">
-                Partner With Us
+              <Link to="/partners" className="inline-flex items-center gap-2 rounded-xl border border-white/40 px-7 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-white/10">
+                Become a Partner
               </Link>
             </div>
           </div>

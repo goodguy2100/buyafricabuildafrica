@@ -21,7 +21,7 @@ const columns = [
       { to: "/register", label: "Become a Member" },
       { to: "/partners", label: "Become a Partner" },
       { to: "/contact", label: "Member Support" },
-      { to: "/contact", label: "Contact Us" },
+      { to: "/contact", label: "Partner with BABA" },
     ],
   },
 ] as const;
