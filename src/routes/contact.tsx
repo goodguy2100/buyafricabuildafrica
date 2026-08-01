@@ -116,7 +116,7 @@ function Contact() {
                 <textarea
                   required
                   rows={5}
-                  placeholder="How can we help?"
+                  placeholder="Tell us how you would like to partner with BABA"
                   className="mt-1.5 w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate placeholder:text-baba-slate/40 focus:border-baba-blue focus:outline-none"
                 />
               </div>
