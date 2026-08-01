@@ -32,7 +32,7 @@ export const Route = createFileRoute("/register")({
       {
         name: "description",
         content:
-          "Join the Buy Africa Build Africa network for free. Sign up as an individual, artisan, professional, or corporate partner to access skills, opportunities and events.",
+          "Join the Buy Africa Build Africa network. Sign up as an individual, artisan, professional, or corporate partner to access skills, opportunities and events.",
       },
     ],
     links: [{ rel: "canonical", href: "/register" }],
@@ -204,8 +204,8 @@ function GetStarted() {
           </span>
           <h1 className="mt-6 font-display text-3xl font-extrabold text-baba-blue">Get Started</h1>
           <p className="mt-3 text-baba-slate/70">
-            Create a free login or sign in first — this links your registration to your account so you
-            can track it anytime. Signing up is completely free.
+            Create a login or sign in first — this links your registration to your account so you
+            can track it anytime.
           </p>
           <Link
             to="/auth"
@@ -242,7 +242,7 @@ function GetStarted() {
             <div className="text-center">
               <h1 className="font-display text-3xl font-extrabold text-baba-blue">Get Started</h1>
               <p className="mt-2 text-baba-slate/70">
-                Signing up is completely free. Choose the path that fits you.
+                Choose the path that fits you.
               </p>
             </div>
             <div className="mt-8 grid gap-5 sm:grid-cols-2">
@@ -311,7 +311,7 @@ function GetStarted() {
               {role === "corporate" && "Corporate Sign Up"}
             </h1>
             <p className="mt-2 text-baba-slate/70">
-              Fields marked with <span className="text-baba-copper-dark">*</span> are required. Signing up is free.
+              Fields marked with <span className="text-baba-copper-dark">*</span> are required.
             </p>
 
             <div className="mt-6 grid gap-5 sm:grid-cols-2">
@@ -340,7 +340,7 @@ function GetStarted() {
                 className="flex items-center gap-2 rounded-lg baba-cta px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-baba-blue-dark disabled:opacity-60"
               >
                 {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
-                Create Free Account
+                Create Account
               </button>
             </div>
           </div>
