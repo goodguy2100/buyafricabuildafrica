@@ -166,11 +166,11 @@ const ubuntuCommunities: { country: string; flag: string; chapters: string[] }[]
   { country: "Ethiopia", flag: "🇪🇹", chapters: ["Addis Ababa", "Dire Dawa", "Hawassa"] },
   { country: "Nigeria", flag: "🇳🇬", chapters: ["Lagos", "Abuja", "Port Harcourt"] },
   { country: "Ghana", flag: "🇬🇭", chapters: ["Accra", "Kumasi", "Takoradi"] },
-  { country: "Egypt", flag: "🇪🇬", chapters: ["Cairo Egypt"] },
+  { country: "Egypt", flag: "🇪🇬", chapters: ["Cairo", "Alexandria", "Giza"] },
   {
     country: "South Africa",
     flag: "🇿🇦",
-    chapters: ["Johannesburg South Africa", "Cape Town South Africa"],
+    chapters: ["Johannesburg", "Cape Town", "Durban"],
   },
 ];
 
