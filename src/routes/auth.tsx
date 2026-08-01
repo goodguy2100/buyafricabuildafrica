@@ -19,18 +19,19 @@ export const Route = createFileRoute("/auth")({
       {
         name: "description",
         content:
-          "Join Buy Africa Build Africa (BABA) free. Pick your work, add your name and a password. Log in with your full name and password.",
+          "Join Buy Africa Build Africa (BABA). Pick your work, add your name and a password. Log in with your full name and password.",
       },
       { property: "og:title", content: "Join Us or Log In | Buy Africa Build Africa" },
       {
         property: "og:description",
-        content: "Free to join. Pick your work, add your name and a password.",
+        content: "Pick your work, add your name and a password.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [{ rel: "canonical", href: "/auth" }],
   }),
+
   component: AuthPage,
 });
 
