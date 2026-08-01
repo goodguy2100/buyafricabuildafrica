@@ -119,6 +119,13 @@ function AuthPage() {
   const [notice, setNotice] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // Arriving from "Become a Partner" opens the organisation form straight away.
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("intent") === "partner") {
+      setIntent("partner");
+    }
+  }, []);
+
   const list = intent === "member" ? JOIN_CATEGORIES : PARTNER_CATEGORIES;
   const chosen = list.find((c) => c.label === categoryLabel) ?? list[0];
   const isOther = chosen.label.startsWith("Other");
