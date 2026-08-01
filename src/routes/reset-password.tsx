@@ -25,13 +25,51 @@ function ResetPasswordPage() {
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    // Supabase puts the recovery session in the URL hash; the client parses it automatically.
-    supabase.auth.getSession().then(({ data }) => setReady(!!data.session));
+    let cancelled = false;
+
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session) setReady(true);
+      if (session && !cancelled) setReady(true);
     });
-    return () => sub.subscription.unsubscribe();
+
+    (async () => {
+      const url = new URL(window.location.href);
+      const hash = new URLSearchParams(url.hash.replace(/^#/, ""));
+
+      // Supabase sends either an error, a PKCE ?code=, or #access_token/#token_hash.
+      const errDesc = url.searchParams.get("error_description") ?? hash.get("error_description");
+      if (errDesc) {
+        setError(
+          errDesc.includes("expired")
+            ? "That link has expired. Please ask for a new one."
+            : errDesc,
+        );
+        return;
+      }
+
+      const code = url.searchParams.get("code");
+      if (code) {
+        const { error: exErr } = await supabase.auth.exchangeCodeForSession(code);
+        if (exErr && !cancelled) {
+          setError("That link is no longer valid. Please ask for a new one.");
+          return;
+        }
+      }
+
+      const tokenHash = url.searchParams.get("token_hash") ?? hash.get("token_hash");
+      if (!code && tokenHash) {
+        await supabase.auth.verifyOtp({ type: "recovery", token_hash: tokenHash });
+      }
+
+      const { data } = await supabase.auth.getSession();
+      if (!cancelled && data.session) setReady(true);
+    })();
+
+    return () => {
+      cancelled = true;
+      sub.subscription.unsubscribe();
+    };
   }, []);
+
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
