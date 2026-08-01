@@ -480,19 +480,6 @@ function AuthPage() {
                 </span>
               </div>
 
-              <label className="grid gap-1.5">
-                <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
-                  Phone Number{" "}
-                  <span className="font-normal normal-case text-baba-slate/50">(optional)</span>
-                </span>
-                <input
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  inputMode="tel"
-                  className="rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
-                  placeholder="e.g. 0712 345 678"
-                />
-              </label>
 
               <label className="grid gap-1.5">
                 <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
