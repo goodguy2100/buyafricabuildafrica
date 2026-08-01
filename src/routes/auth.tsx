@@ -109,7 +109,6 @@ function AuthPage() {
   const [fullName, setFullName] = useState("");
   const [idNumber, setIdNumber] = useState("");
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [categoryLabel, setCategoryLabel] = useState(JOIN_CATEGORIES[0].label);
@@ -140,7 +139,6 @@ function AuthPage() {
             fullName: name,
             nationalId: id,
             email: email.trim() || null,
-            phone: phone.trim() || null,
             category: label,
             occupation: label,
             trade: chosen.role === "artisan" ? label : undefined,
@@ -156,7 +154,6 @@ function AuthPage() {
       await saveProfile({
         data: {
           full_name: name,
-          phone: phone.trim() || undefined,
           country: loc.country || undefined,
           city: loc.city.trim() || undefined,
           area: loc.area.trim() || undefined,
@@ -302,7 +299,7 @@ function AuthPage() {
           </h1>
           <p className="mt-2 text-baba-slate/70">
             {mode === "join"
-              ? "It is free. Pick your work, then add your name, place and a password."
+              ? "Pick your work, then add your name and a password."
               : "Log in with your full name and your password."}
           </p>
         </div>
@@ -531,7 +528,7 @@ function AuthPage() {
             className="mt-2 flex items-center justify-center gap-2 rounded-lg baba-cta py-2.5 text-sm font-semibold text-white transition-colors hover:bg-baba-blue-dark disabled:opacity-60"
           >
             {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-            {mode === "join" ? (intent === "member" ? "Join us — it's free" : "Partner with us") : "Log In"}
+            {mode === "join" ? (intent === "member" ? "Join us" : "Partner with us") : "Log In"}
           </button>
         </form>
 
