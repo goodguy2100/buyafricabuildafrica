@@ -245,12 +245,29 @@ function ProfileTab({ profile, role }: { profile: ProfileRow | null; role: RoleV
         Keep your details current. Read-only details come from your registration.
       </p>
 
+      {missing.length > 0 ? (
+        <p className="mt-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+          <strong>Your profile is not complete yet.</strong> Please add your {missing.join(" and ")}{" "}
+          below — we need these to verify you and for opportunities you apply to.
+        </p>
+      ) : (
+        <p className="mt-4 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+          <strong>Your profile is complete.</strong> Thank you.
+        </p>
+      )}
+
       <div className="mt-5 grid gap-4 sm:grid-cols-2">
         <ReadOnly label="Email" value={profile?.email ?? "—"} />
         <Editable label="Full Name" value={fullName} onChange={setFullName} />
-        <Editable label="Phone" value={phone} onChange={setPhone} />
+        <Editable
+          label="National Identification No (required)"
+          value={nationalId}
+          onChange={setNationalId}
+        />
+        <Editable label="Phone (required)" value={phone} onChange={setPhone} />
         <Editable label="Location" value={location} onChange={setLocation} />
       </div>
+
 
       <div className="mt-4 grid gap-4">
         <EditableArea label={pro ? "Professional Summary" : "Bio / About"} value={bio} onChange={setBio} />
