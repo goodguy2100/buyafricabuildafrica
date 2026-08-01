@@ -46,12 +46,20 @@ function Partners() {
             Join a continental coalition of institutions investing in African skills, local
             manufacturing and shared prosperity.
           </p>
-          <Link
-            to="/contact"
-            className="mt-7 inline-block rounded-lg baba-cta px-6 py-3 text-sm font-semibold text-white"
-          >
-            Become a Partner
-          </Link>
+          <div className="mt-7 flex flex-wrap gap-3">
+            <a
+              href="/auth?intent=partner"
+              className="inline-block rounded-lg baba-cta px-6 py-3 text-sm font-semibold text-white"
+            >
+              Become a Partner
+            </a>
+            <Link
+              to="/contact"
+              className="inline-block rounded-lg border-2 border-baba-blue/20 px-6 py-3 text-sm font-semibold text-baba-blue"
+            >
+              Talk to our partnerships team
+            </Link>
+          </div>
         </div>
       </section>
 

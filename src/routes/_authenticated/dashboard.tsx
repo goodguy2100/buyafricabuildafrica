@@ -248,11 +248,13 @@ function ProfileTab({ profile, role }: { profile: ProfileRow | null; role: RoleV
       {missing.length > 0 ? (
         <p className="mt-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
           <strong>Your profile is not complete yet.</strong> Please add your {missing.join(" and ")}{" "}
-          below — we need these to verify you and for opportunities you apply to.
+          below. To be verified you need your National Identification No, your phone number and
+          your membership fee paid.
         </p>
       ) : (
         <p className="mt-4 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
-          <strong>Your profile is complete.</strong> Thank you.
+          <strong>Your profile is complete.</strong> Once your membership fee is paid you are
+          verified.
         </p>
       )}
 
