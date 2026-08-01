@@ -397,18 +397,14 @@ function AuthPage() {
           {(mode === "join" || askForId) && (
             <label className="grid gap-1.5">
               <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
-                National Identification No
-                {mode === "signin" && (
-                  <span className="font-normal normal-case text-baba-slate/50">
-                    {" "}
-                    (only to tell you apart)
-                  </span>
-                )}
+                National Identification No{" "}
+                <span className="font-normal normal-case text-baba-slate/50">
+                  {mode === "signin" ? "(only to tell you apart)" : "(optional)"}
+                </span>
               </span>
               <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
                 <IdCard className="h-4 w-4 text-baba-slate/40" />
                 <input
-                  required={mode === "join"}
                   inputMode="numeric"
                   value={idNumber}
                   onChange={(e) => setIdNumber(e.target.value)}
@@ -418,12 +414,13 @@ function AuthPage() {
               </div>
               {mode === "join" && (
                 <span className="text-[0.7rem] text-baba-slate/50">
-                  You log in with your name and password — not this number. You can add a photo of
-                  your ID later from your profile.
+                  You can skip this now — but your profile is only complete once you add your ID
+                  number and phone number in your profile.
                 </span>
               )}
             </label>
           )}
+
 
           <label className="grid gap-1.5">
             <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
