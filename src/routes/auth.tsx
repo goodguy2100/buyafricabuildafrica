@@ -355,10 +355,16 @@ function AuthPage() {
                 {intent === "member" ? "What work do you do?" : "What kind of organisation?"}
               </span>
               <select
+                required
                 value={categoryLabel}
                 onChange={(e) => setCategoryLabel(e.target.value)}
                 className="rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
               >
+                <option value="">
+                  {intent === "member"
+                    ? "Select — e.g. Interior Designer"
+                    : "Select — e.g. Financial Institution"}
+                </option>
                 {list.map((c) => (
                   <option key={c.label} value={c.label}>
                     {c.label}
