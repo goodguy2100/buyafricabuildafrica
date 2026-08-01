@@ -1,0 +1,1 @@
+UPDATE public.profiles SET full_name = trim(full_name) WHERE full_name <> trim(full_name);
