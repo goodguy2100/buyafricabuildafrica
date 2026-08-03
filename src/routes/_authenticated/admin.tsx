@@ -11,10 +11,12 @@ import {
   Bell,
   Images,
   Newspaper,
+  LifeBuoy,
   Settings,
 } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { getIsAdmin } from "@/lib/registrations.functions";
+import { listSupportRequests } from "@/lib/admin.functions";
 // Each admin section is loaded on demand so opening the dashboard doesn't pull
 // in charting/upload code for tabs the admin never visits.
 const OverviewSection = lazy(() =>
@@ -41,6 +43,9 @@ const GallerySection = lazy(() =>
 );
 const NewsSection = lazy(() =>
   import("@/components/admin/NewsSection").then((m) => ({ default: m.NewsSection })),
+);
+const SupportSection = lazy(() =>
+  import("@/components/admin/SupportSection").then((m) => ({ default: m.SupportSection })),
 );
 const SettingsSection = lazy(() =>
   import("@/components/admin/SettingsSection").then((m) => ({ default: m.SettingsSection })),
@@ -79,6 +84,7 @@ const NAV = [
   { key: "news", label: "News", icon: Newspaper },
   { key: "notifications", label: "Notifications", icon: Bell },
   { key: "gallery", label: "Gallery", icon: Images },
+  { key: "support", label: "Support", icon: LifeBuoy },
   { key: "settings", label: "Settings", icon: Settings },
 ] as const;
 
@@ -109,6 +115,13 @@ function AdminPage() {
   const isAdminFn = useServerFn(getIsAdmin);
   const adminQuery = useQuery({ queryKey: ["is-admin"], queryFn: () => isAdminFn() });
   const [tab, setTab] = useState<NavKey>("overview");
+  const supportFn = useServerFn(listSupportRequests);
+  const supportQuery = useQuery({
+    queryKey: ["support-requests"],
+    queryFn: () => supportFn(),
+    enabled: adminQuery.data === true,
+  });
+  const openSupport = (supportQuery.data ?? []).filter((r) => r.status !== "resolved").length;
 
   if (adminQuery.isLoading) {
     return (
@@ -165,6 +178,11 @@ function AdminPage() {
               >
                 <Icon className="h-4 w-4" />
                 {n.label}
+                {n.key === "support" && openSupport > 0 && (
+                  <span className="ml-1 rounded-full bg-amber-400 px-2 py-0.5 text-[11px] font-bold text-amber-950">
+                    {openSupport}
+                  </span>
+                )}
               </button>
             );
           })}
@@ -185,6 +203,7 @@ function AdminPage() {
           {tab === "news" && <NewsSection />}
           {tab === "notifications" && <NotificationsSection />}
           {tab === "gallery" && <GallerySection />}
+          {tab === "support" && <SupportSection />}
           {tab === "settings" && <SettingsSection />}
         </Suspense>
       </section>
