@@ -22,8 +22,9 @@ export const Route = createFileRoute("/news/")({
       },
       { property: "og:type", content: "article" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:url", content: "https://buyafricabuildafrica.org/news" },
     ],
-    links: [{ rel: "canonical", href: "/news" }],
+    links: [{ rel: "canonical", href: "https://buyafricabuildafrica.org/news" }],
   }),
   component: NewsIndex,
 });
