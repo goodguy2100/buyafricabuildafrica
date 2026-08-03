@@ -736,3 +736,110 @@ export const removeAdmin = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true };
   });
+
+// ----------------------------------------------------------------------------
+// SUPPORT — help requests (incl. "forgot password, no email" cases)
+// ----------------------------------------------------------------------------
+
+export interface SupportRequest {
+  id: string;
+  name: string;
+  email: string | null;
+  phone: string | null;
+  organization: string | null;
+  query_type: string | null;
+  message: string;
+  status: string;
+  created_at: string;
+}
+
+export const listSupportRequests = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }): Promise<SupportRequest[]> => {
+    const { supabase } = await assertAdmin(context);
+    const { data, error } = await supabase
+      .from("contact_messages")
+      .select("id, name, email, phone, organization, query_type, message, status, created_at")
+      .order("created_at", { ascending: false })
+      .limit(500);
+    if (error) throw new Error(error.message);
+    return (data ?? []) as SupportRequest[];
+  });
+
+export const updateSupportRequest = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) =>
+    z
+      .object({ id: z.string().uuid(), status: z.enum(["new", "in_progress", "resolved"]) })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { supabase } = await assertAdmin(context);
+    const { error } = await supabase
+      .from("contact_messages")
+      .update({ status: data.status })
+      .eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export interface MemberMatch {
+  user_id: string;
+  full_name: string | null;
+  national_id: string | null;
+  phone: string | null;
+  email: string | null;
+}
+
+/** Find members by name or national ID so an admin can help them log back in. */
+export const findMemberForReset = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) => z.object({ q: z.string().min(2).max(120) }).parse(input))
+  .handler(async ({ data, context }): Promise<MemberMatch[]> => {
+    const { supabase } = await assertAdmin(context);
+    const term = data.q.trim();
+    const { data: rows, error } = await supabase
+      .from("registrations")
+      .select("user_id, full_name, national_id, phone, email")
+      .or(`full_name.ilike.%${term}%,national_id.ilike.%${term}%,phone.ilike.%${term}%`)
+      .limit(20);
+    if (error) throw new Error(error.message);
+    return (rows ?? []) as MemberMatch[];
+  });
+
+function randomTempPassword(): string {
+  const words = ["Baba", "Ubuntu", "Africa", "Build", "Rise", "Unity"];
+  const w = words[Math.floor(Math.random() * words.length)];
+  const n = Math.floor(1000 + Math.random() * 9000);
+  return `${w}${n}!`;
+}
+
+/**
+ * Set a new password for a member who cannot use email recovery.
+ * Returns the temporary password so the admin can pass it on by phone/SMS.
+ */
+export const adminResetMemberPassword = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) =>
+    z
+      .object({
+        user_id: z.string().uuid(),
+        new_password: z.string().min(8).max(72).optional(),
+        request_id: z.string().uuid().optional(),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { supabase } = await assertAdmin(context);
+    const password = data.new_password || randomTempPassword();
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin.auth.admin.updateUserById(data.user_id, { password });
+    if (error) throw new Error(error.message);
+    if (data.request_id) {
+      await supabase
+        .from("contact_messages")
+        .update({ status: "resolved" })
+        .eq("id", data.request_id);
+    }
+    return { ok: true, password };
+  });
