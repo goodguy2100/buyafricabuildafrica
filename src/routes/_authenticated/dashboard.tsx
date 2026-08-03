@@ -288,7 +288,7 @@ function ProfileTab({
         <ReadOnly label="Email" value={profile?.email ?? "—"} />
         <Editable label="Full Name" value={fullName} onChange={setFullName} />
         <Editable
-          label="National Identification No (required)"
+          label={`${idLabel} (required)`}
           value={nationalId}
           onChange={setNationalId}
         />
