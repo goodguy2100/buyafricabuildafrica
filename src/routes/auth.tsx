@@ -10,9 +10,8 @@ import { LocationPicker, EMPTY_LOCATION, type LocationValue } from "@/components
 import { PasswordStrength, scorePassword } from "@/components/PasswordStrength";
 
 export const Route = createFileRoute("/auth")({
-  validateSearch: (search: Record<string, unknown>) => ({
-    redirect: typeof search.redirect === "string" ? search.redirect : undefined,
-  }),
+  validateSearch: (search: Record<string, unknown>): { redirect?: string } =>
+    typeof search.redirect === "string" ? { redirect: search.redirect } : {},
   head: () => ({
     meta: [
       { title: "Join Us or Log In | Buy Africa Build Africa (BABA)" },
