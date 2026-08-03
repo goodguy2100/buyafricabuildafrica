@@ -54,6 +54,8 @@ export function MembersSection() {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [detailId, setDetailId] = useState<string | null>(null);
   const [confirmApprove, setConfirmApprove] = useState(false);
+  const [composeOpen, setComposeOpen] = useState(false);
+
 
   const containersQuery = useQuery({
     queryKey: ["admin-containers"],
