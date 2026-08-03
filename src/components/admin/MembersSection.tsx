@@ -259,6 +259,14 @@ export function MembersSection() {
         }}
       />
 
+      <MessageMembersDialog
+        open={composeOpen}
+        ids={[...selected]}
+        names={members.filter((m) => selected.has(m.id)).map((m) => m.full_name ?? "Member")}
+        onClose={() => setComposeOpen(false)}
+      />
+
+
       <AlertDialog open={confirmApprove} onOpenChange={setConfirmApprove}>
         <AlertDialogContent>
           <AlertDialogHeader>
