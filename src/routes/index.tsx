@@ -51,8 +51,8 @@ export const Route = createFileRoute("/")({
           "A Pan-African platform connecting people, industries, institutions, skills and opportunities to drive growth across Africa.",
       },
       { property: "og:url", content: "https://buyafricabuildafrica.org/" },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/cnSUIEtJ7wUkpmtI1OlzTnY67gk1/social-images/social-1780435793299-WhatsApp_Image_2026-05-30_at_11.07.37_PM.webp" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/cnSUIEtJ7wUkpmtI1OlzTnY67gk1/social-images/social-1780435793299-WhatsApp_Image_2026-05-30_at_11.07.37_PM.webp" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/cnSUIEtJ7wUkpmtI1OlzTnY67gk1/social-images/social-1785773579644-social-image.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/cnSUIEtJ7wUkpmtI1OlzTnY67gk1/social-images/social-1785773579644-social-image.webp" },
     ],
     links: [{ rel: "canonical", href: "https://buyafricabuildafrica.org/" }],
     scripts: [
