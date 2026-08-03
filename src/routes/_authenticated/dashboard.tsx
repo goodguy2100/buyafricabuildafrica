@@ -201,7 +201,17 @@ function DashboardPage() {
 
 /* ------------------------------ Profile tab ------------------------------- */
 
-function ProfileTab({ profile, role }: { profile: ProfileRow | null; role: RoleValue }) {
+function ProfileTab({
+  profile,
+  role,
+  registeredNationalId,
+  registeredPhone,
+}: {
+  profile: ProfileRow | null;
+  role: RoleValue;
+  registeredNationalId?: string | null;
+  registeredPhone?: string | null;
+}) {
   const saveFn = useServerFn(updateMyProfile);
   const queryClient = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
@@ -209,8 +219,10 @@ function ProfileTab({ profile, role }: { profile: ProfileRow | null; role: RoleV
 
   const extra = (profile?.extra ?? {}) as Record<string, unknown>;
   const [fullName, setFullName] = useState(profile?.full_name ?? "");
-  const [phone, setPhone] = useState(profile?.phone ?? "");
-  const [nationalId, setNationalId] = useState((extra.national_id as string) ?? "");
+  const [phone, setPhone] = useState(profile?.phone ?? registeredPhone ?? "");
+  const [nationalId, setNationalId] = useState(
+    registeredNationalId ?? (extra.national_id as string) ?? "",
+  );
   const [location, setLocation] = useState(profile?.location ?? "");
   const [bio, setBio] = useState(profile?.bio ?? "");
   const [skills, setSkills] = useState((extra.skills as string) ?? "");
@@ -218,9 +230,11 @@ function ProfileTab({ profile, role }: { profile: ProfileRow | null; role: RoleV
   const [certifications, setCertifications] = useState((extra.certifications as string) ?? "");
   const [cvName, setCvName] = useState(profile?.cv_url ?? "");
 
+  const idLabel = role === "corporate" ? "Registration / ID No" : "National Identification No";
+
   // A profile only counts as complete once we have the ID number and phone number.
   const missing = [
-    !nationalId.trim() ? "National Identification No" : null,
+    !nationalId.trim() ? idLabel : null,
     !phone.trim() ? "phone number" : null,
   ].filter(Boolean) as string[];
 
@@ -233,11 +247,16 @@ function ProfileTab({ profile, role }: { profile: ProfileRow | null; role: RoleV
           location,
           bio,
           cv_url: cvName,
+          national_id: nationalId,
           extra: { ...extra, skills, industries, certifications, national_id: nationalId },
         },
       }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["my-profile"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["my-profile"] });
+      queryClient.invalidateQueries({ queryKey: ["my-registrations"] });
+    },
   });
+
 
 
   const onPickCv = (e: React.ChangeEvent<HTMLInputElement>) => {
