@@ -174,6 +174,7 @@ export const getMyProfile = createServerFn({ method: "GET" })
 const profileUpdateInput = z.object({
   full_name: z.string().max(200).optional(),
   phone: z.string().max(60).optional(),
+  national_id: z.string().max(60).optional(),
   location: z.string().max(200).optional(),
   country: z.string().max(80).optional(),
   city: z.string().max(120).optional(),
@@ -217,8 +218,22 @@ export const updateMyProfile = createServerFn({ method: "POST" })
       .select("*")
       .single();
     if (error) throw new Error(error.message);
+
+    // Keep the canonical registration record in sync — admin lists, exports and
+    // the name-collision login lookup all read these columns, not profiles.extra.
+    const regPatch: { national_id?: string; phone?: string; full_name?: string } = {};
+    if (data.national_id !== undefined && data.national_id.trim())
+      regPatch.national_id = data.national_id.trim();
+    if (data.phone !== undefined && data.phone.trim()) regPatch.phone = data.phone.trim();
+    if (data.full_name !== undefined && data.full_name.trim())
+      regPatch.full_name = data.full_name.trim();
+    if (Object.keys(regPatch).length) {
+      await supabase.from("registrations").update(regPatch).eq("user_id", userId);
+    }
+
     return row as ProfileRow;
   });
+
 
 /** Whether the signed-in user has the admin role. */
 export const getIsAdmin = createServerFn({ method: "GET" })
