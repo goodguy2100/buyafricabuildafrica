@@ -44,7 +44,7 @@ export const Route = createFileRoute("/")({
         content:
           "A Pan-African platform connecting people, industries, institutions, skills and opportunities to drive growth across Africa.",
       },
-      { property: "og:title", content: "Buy Africa Build Africa (BABA) — Building Africa's Future by Africans" },
+      { property: "og:title", content: "Buy Africa Build Africa (BABA) | Building Africa's Future" },
       {
         property: "og:description",
         content:

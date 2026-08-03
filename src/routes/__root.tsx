@@ -79,28 +79,30 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Buy Africa Build Africa (BABA)" },
+      { title: "Buy Africa Build Africa (BABA) | Building Africa's Future" },
       {
         name: "description",
         content:
-          "BABA connects Africa's workforce, professionals, institutions and industry into one ecosystem for skills, jobs and sustainable growth.",
+          "A Pan-African platform connecting people, industries, institutions, skills and opportunities to drive growth across Africa.",
       },
       { name: "author", content: "Buy Africa Build Africa" },
       { property: "og:site_name", content: "Buy Africa Build Africa (BABA)" },
-      { property: "og:title", content: "Buy Africa Build Africa (BABA)" },
+      { property: "og:title", content: "Buy Africa Build Africa (BABA) | Building Africa's Future" },
       {
         property: "og:description",
         content:
-          "Connecting Africa's workforce, professionals, institutions and industry — skills, jobs, manufacturing and sustainable development.",
+          "A Pan-African platform connecting people, industries, institutions, skills and opportunities to drive growth across Africa.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Buy Africa Build Africa (BABA)" },
+      { name: "twitter:title", content: "Buy Africa Build Africa (BABA) | Building Africa's Future" },
       {
         name: "twitter:description",
         content:
-          "Connecting Africa's workforce, professionals, institutions and industry — skills, jobs, manufacturing and sustainable development.",
+          "A Pan-African platform connecting people, industries, institutions, skills and opportunities to drive growth across Africa.",
       },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/cnSUIEtJ7wUkpmtI1OlzTnY67gk1/social-images/social-1780435793299-WhatsApp_Image_2026-05-30_at_11.07.37_PM.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/cnSUIEtJ7wUkpmtI1OlzTnY67gk1/social-images/social-1780435793299-WhatsApp_Image_2026-05-30_at_11.07.37_PM.webp" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
