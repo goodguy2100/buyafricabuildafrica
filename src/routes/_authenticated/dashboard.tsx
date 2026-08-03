@@ -274,7 +274,7 @@ function ProfileTab({
       {missing.length > 0 ? (
         <p className="mt-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
           <strong>Your profile is not complete yet.</strong> Please add your {missing.join(" and ")}{" "}
-          below. To be verified you need your National Identification No, your phone number and
+          below. To be verified you need your {idLabel}, your phone number and
           your membership fee paid.
         </p>
       ) : (
