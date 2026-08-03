@@ -131,12 +131,24 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
           )
         }
 
+        // Password recovery links must land on our own reset page. Supabase's
+        // default verify URL falls back to the site root when the redirect
+        // target isn't allow-listed, so we build the link ourselves from the
+        // one-time token hash and let /reset-password verify it.
+        const tokenHash = payload.data.token_hash
+        const confirmationUrl =
+          emailType === 'recovery' && tokenHash
+            ? `https://${ROOT_DOMAIN}/reset-password?token_hash=${encodeURIComponent(
+                tokenHash,
+              )}&type=recovery`
+            : payload.data.url
+
         // Build template props from payload.data (HookData structure)
         const templateProps = {
           siteName: SITE_NAME,
           siteUrl: `https://${ROOT_DOMAIN}`,
           recipient: payload.data.email,
-          confirmationUrl: payload.data.url,
+          confirmationUrl,
           token: payload.data.token,
           email: payload.data.email,
           oldEmail: payload.data.old_email,
