@@ -142,6 +142,23 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
 
+  // Older recovery links can land on any page with the tokens in the URL.
+  // Forward those to the reset page so the user can actually set a password.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const { pathname, search, hash } = window.location;
+    if (pathname === "/reset-password") return;
+    const q = new URLSearchParams(search);
+    const h = new URLSearchParams(hash.replace(/^#/, ""));
+    const isRecovery =
+      q.get("type") === "recovery" ||
+      h.get("type") === "recovery" ||
+      (h.get("access_token") && h.get("refresh_token") && h.get("type") === "recovery");
+    if (isRecovery) {
+      window.location.replace(`/reset-password${search}${hash}`);
+    }
+  }, []);
+
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((event) => {
       if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
@@ -150,6 +167,7 @@ function RootComponent() {
     });
     return () => data.subscription.unsubscribe();
   }, [queryClient, router]);
+
 
   return (
     <QueryClientProvider client={queryClient}>
