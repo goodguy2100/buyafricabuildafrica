@@ -173,7 +173,14 @@ function DashboardPage() {
               )}
             </div>
 
-            {tab === "profile" && <ProfileTab profile={profile} role={role} />}
+            {tab === "profile" && (
+              <ProfileTab
+                profile={profile}
+                role={role}
+                registeredNationalId={registrations[0]?.national_id ?? null}
+                registeredPhone={registrations[0]?.phone ?? null}
+              />
+            )}
             {tab === "opportunities" && (
               <OpportunitiesTab
                 verified={verified}
