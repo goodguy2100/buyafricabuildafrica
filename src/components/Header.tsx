@@ -26,6 +26,7 @@ const moreLinks = [
   { to: "/directory", label: "National Directory" },
   { to: "/opportunities", label: "Opportunities" },
   { to: "/news", label: "News" },
+  { to: "/search", label: "Search" },
   { to: "/contact", label: "Partner with BABA" },
 ] as const;
 
