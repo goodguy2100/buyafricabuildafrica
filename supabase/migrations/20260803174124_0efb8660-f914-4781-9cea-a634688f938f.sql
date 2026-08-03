@@ -1,0 +1,2 @@
+ALTER TABLE public.notifications_sent DROP CONSTRAINT IF EXISTS notifications_recipient_type_check;
+ALTER TABLE public.notifications_sent ADD CONSTRAINT notifications_recipient_type_check CHECK (recipient_type IN ('container','all','applicants','selected'));
