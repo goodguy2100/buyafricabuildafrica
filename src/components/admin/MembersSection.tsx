@@ -35,6 +35,8 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Checkbox } from "@/components/ui/checkbox";
+import { MessageMembersDialog } from "./MessageMembersDialog";
+
 import {
   LoadingBlock,
   ErrorBlock,
