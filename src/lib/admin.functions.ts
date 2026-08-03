@@ -474,7 +474,40 @@ export const listNotifications = createServerFn({ method: "GET" })
     return (data ?? []) as NotificationRow[];
   });
 
+export const messageMembers = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) =>
+    z
+      .object({
+        ids: z.array(z.string()).min(1).max(500),
+        title: z.string().min(1).max(300),
+        body: z.string().max(8000).optional(),
+        message_type: z.enum(["text", "popup", "email", "all"]).default("text"),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data, context }): Promise<NotificationRow> => {
+    const { supabase } = await assertAdmin(context);
+    const { data: row, error } = await supabase
+      .from("notifications_sent")
+      .insert({
+        title: data.title,
+        body: data.body ?? null,
+        recipient_type: "selected",
+        recipient_container: null,
+        message_type: data.message_type,
+        sent_count: data.ids.length,
+        status: "delivered",
+        is_popup: data.message_type === "popup" || data.message_type === "all",
+      })
+      .select("*")
+      .single();
+    if (error) throw new Error(error.message);
+    return row as NotificationRow;
+  });
+
 export const sendNotification = createServerFn({ method: "POST" })
+
   .middleware([requireSupabaseAuth])
   .inputValidator((input) =>
     z
