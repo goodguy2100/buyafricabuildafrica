@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Loader2, Plus, Trash2, Search } from "lucide-react";
+import { Loader2, Plus, Trash2, Search, Upload, Images } from "lucide-react";
 import {
   listOpportunities,
   listGalleryMedia,
@@ -12,6 +12,7 @@ import {
   type GalleryMedia,
   type Opportunity,
 } from "@/lib/admin.functions";
+import { supabase } from "@/integrations/supabase/client";
 import { Switch } from "@/components/ui/switch";
 import { LoadingBlock, EmptyState } from "./shared";
 
@@ -19,6 +20,9 @@ const TABS = [
   { key: "galleries", label: "Event Galleries" },
   { key: "library", label: "Content Library" },
 ] as const;
+
+/** Signed URL lifetime for private gallery files (10 years). */
+const SIGNED_URL_TTL = 315_360_000;
 
 export function GallerySection() {
   const [tab, setTab] = useState<(typeof TABS)[number]["key"]>("galleries");
@@ -46,65 +50,89 @@ function GalleriesTab() {
   const oppsFn = useServerFn(listOpportunities);
   const opps = useQuery({ queryKey: ["admin-opportunities"], queryFn: () => oppsFn() });
   const [selected, setSelected] = useState<Opportunity | null>(null);
+  const [general, setGeneral] = useState(false);
 
-  const completedEvents = (opps.data ?? []).filter((o) => o.kind === "event" && o.completed);
+  const events = (opps.data ?? []).filter((o) => o.kind === "event");
 
   if (opps.isLoading) return <LoadingBlock />;
 
-  if (selected) {
-    return <EventGallery event={selected} onBack={() => setSelected(null)} />;
-  }
+  if (general) return <EventGallery event={null} onBack={() => setGeneral(false)} />;
+  if (selected) return <EventGallery event={selected} onBack={() => setSelected(null)} />;
 
-  return completedEvents.length === 0 ? (
-    <EmptyState>
-      No completed events yet. Mark an event as completed in the Opportunities tab to build its
-      gallery.
-    </EmptyState>
-  ) : (
+  return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {completedEvents.map((e) => (
-        <button
-          key={e.id}
-          onClick={() => setSelected(e)}
-          className="rounded-2xl border border-baba-blue/10 bg-card p-5 text-left hover:border-baba-blue/30"
-        >
-          <h3 className="font-display text-lg font-bold text-baba-slate">{e.title}</h3>
-          <p className="mt-1 text-xs text-baba-slate/50">
-            {e.event_date ? new Date(e.event_date).toLocaleDateString() : "—"}
-          </p>
-          <p className="mt-3 text-sm font-semibold text-baba-blue">Manage gallery →</p>
-        </button>
-      ))}
+      <button
+        onClick={() => setGeneral(true)}
+        className="rounded-2xl border-2 border-dashed border-baba-blue/25 bg-card p-5 text-left hover:border-baba-blue/50"
+      >
+        <Images className="h-6 w-6 text-baba-blue" />
+        <h3 className="mt-2 font-display text-lg font-bold text-baba-slate">General media</h3>
+        <p className="mt-1 text-xs text-baba-slate/50">
+          Photos and videos that are not tied to a specific event.
+        </p>
+        <p className="mt-3 text-sm font-semibold text-baba-blue">Upload media →</p>
+      </button>
+
+      {events.length === 0 ? (
+        <div className="sm:col-span-2">
+          <EmptyState>
+            No events yet. Create one in the Opportunities tab to give it its own gallery — or use
+            General media to upload right away.
+          </EmptyState>
+        </div>
+      ) : (
+        events.map((e) => (
+          <button
+            key={e.id}
+            onClick={() => setSelected(e)}
+            className="rounded-2xl border border-baba-blue/10 bg-card p-5 text-left hover:border-baba-blue/30"
+          >
+            <h3 className="font-display text-lg font-bold text-baba-slate">{e.title}</h3>
+            <p className="mt-1 text-xs text-baba-slate/50">
+              {e.event_date ? new Date(e.event_date).toLocaleDateString() : "—"}
+              {e.completed ? " · completed" : ""}
+            </p>
+            <p className="mt-3 text-sm font-semibold text-baba-blue">Manage gallery →</p>
+          </button>
+        ))
+      )}
     </div>
   );
 }
 
-function EventGallery({ event, onBack }: { event: Opportunity; onBack: () => void }) {
+function EventGallery({ event, onBack }: { event: Opportunity | null; onBack: () => void }) {
   const queryClient = useQueryClient();
   const listFn = useServerFn(listGalleryMedia);
   const addFn = useServerFn(addGalleryMedia);
   const updateFn = useServerFn(updateGalleryMedia);
   const deleteFn = useServerFn(deleteGalleryMedia);
+  const fileInput = useRef<HTMLInputElement>(null);
 
+  const key = event?.id ?? "general";
   const q = useQuery({
-    queryKey: ["gallery", event.id],
-    queryFn: () => listFn({ data: { opportunity_id: event.id } }),
+    queryKey: ["gallery", key],
+    queryFn: () => listFn(event ? { data: { opportunity_id: event.id } } : { data: {} }),
+    select: (rows) => (event ? rows : rows.filter((r) => !r.opportunity_id)),
   });
 
   const [url, setUrl] = useState("");
   const [caption, setCaption] = useState("");
   const [mediaType, setMediaType] = useState<"image" | "video">("image");
+  const [uploading, setUploading] = useState(false);
 
-  const invalidate = () => queryClient.invalidateQueries({ queryKey: ["gallery", event.id] });
+  const invalidate = () => {
+    queryClient.invalidateQueries({ queryKey: ["gallery", key] });
+    queryClient.invalidateQueries({ queryKey: ["gallery-all"] });
+  };
 
   const addMut = useMutation({
-    mutationFn: () =>
+    mutationFn: (payload: { media_url: string; media_type: "image" | "video"; caption: string }) =>
       addFn({
         data: {
-          opportunity_id: event.id,
-          media_url: url,
-          caption,
-          media_type: mediaType,
+          ...(event ? { opportunity_id: event.id } : {}),
+          media_url: payload.media_url,
+          caption: payload.caption,
+          media_type: payload.media_type,
           published: false,
         },
       }),
@@ -116,6 +144,36 @@ function EventGallery({ event, onBack }: { event: Opportunity; onBack: () => voi
     },
     onError: (e: Error) => toast.error(e.message),
   });
+
+  const handleFiles = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    setUploading(true);
+    try {
+      for (const file of Array.from(files)) {
+        const ext = file.name.split(".").pop() ?? "bin";
+        const path = `${key}/${crypto.randomUUID()}.${ext}`;
+        const { error: upErr } = await supabase.storage
+          .from("gallery")
+          .upload(path, file, { cacheControl: "31536000", upsert: false });
+        if (upErr) throw new Error(upErr.message);
+        const { data: signed, error: signErr } = await supabase.storage
+          .from("gallery")
+          .createSignedUrl(path, SIGNED_URL_TTL);
+        if (signErr || !signed) throw new Error(signErr?.message ?? "Could not link the file");
+        await addMut.mutateAsync({
+          media_url: signed.signedUrl,
+          media_type: file.type.startsWith("video") ? "video" : "image",
+          caption: caption || file.name,
+        });
+      }
+      toast.success("Upload complete");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Upload failed");
+    } finally {
+      setUploading(false);
+      if (fileInput.current) fileInput.current.value = "";
+    }
+  };
 
   const pubMut = useMutation({
     mutationFn: (v: { id: string; published: boolean }) => updateFn({ data: v }),
@@ -139,11 +197,41 @@ function EventGallery({ event, onBack }: { event: Opportunity; onBack: () => voi
       <button onClick={onBack} className="mb-4 text-sm font-semibold text-baba-blue">
         ← Back to galleries
       </button>
-      <h2 className="font-display text-xl font-extrabold text-baba-blue">{event.title} — gallery</h2>
+      <h2 className="font-display text-xl font-extrabold text-baba-blue">
+        {event ? `${event.title} — gallery` : "General media"}
+      </h2>
 
+      {/* Upload from device */}
+      <div className="mt-4 rounded-2xl border-2 border-dashed border-baba-blue/25 bg-card p-5 text-center">
+        <input
+          ref={fileInput}
+          type="file"
+          accept="image/*,video/*"
+          multiple
+          hidden
+          onChange={(e) => handleFiles(e.target.files)}
+        />
+        <Upload className="mx-auto h-6 w-6 text-baba-blue" />
+        <p className="mt-2 text-sm font-semibold text-baba-slate">
+          Upload photos or videos from your device
+        </p>
+        <p className="text-xs text-baba-slate/50">You can pick several files at once.</p>
+        <button
+          disabled={uploading}
+          onClick={() => fileInput.current?.click()}
+          className="mt-3 inline-flex items-center gap-2 rounded-lg baba-cta px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
+        >
+          {uploading && <Loader2 className="h-4 w-4 animate-spin" />}
+          {uploading ? "Uploading…" : "Choose files"}
+        </button>
+      </div>
+
+      {/* Or paste a link */}
       <div className="mt-4 flex flex-wrap items-end gap-2 rounded-2xl border border-baba-blue/10 bg-card p-4">
         <label className="text-sm">
-          <span className="mb-1 block text-xs font-semibold text-baba-slate/60">Media URL</span>
+          <span className="mb-1 block text-xs font-semibold text-baba-slate/60">
+            Or paste a media link
+          </span>
           <input
             value={url}
             onChange={(e) => setUrl(e.target.value)}
@@ -163,7 +251,7 @@ function EventGallery({ event, onBack }: { event: Opportunity; onBack: () => voi
           <span className="mb-1 block text-xs font-semibold text-baba-slate/60">Type</span>
           <select
             value={mediaType}
-            onChange={(e) => setMediaType(e.target.value as any)}
+            onChange={(e) => setMediaType(e.target.value as "image" | "video")}
             className="rounded-lg border border-baba-blue/15 bg-card px-3 py-2 text-sm"
           >
             <option value="image">Image</option>
@@ -172,10 +260,14 @@ function EventGallery({ event, onBack }: { event: Opportunity; onBack: () => voi
         </label>
         <button
           disabled={!url || addMut.isPending}
-          onClick={() => addMut.mutate()}
+          onClick={() => addMut.mutate({ media_url: url, media_type: mediaType, caption })}
           className="flex items-center gap-1.5 rounded-lg baba-cta px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
         >
-          {addMut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+          {addMut.isPending ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Plus className="h-4 w-4" />
+          )}
           Add media
         </button>
       </div>
@@ -184,7 +276,7 @@ function EventGallery({ event, onBack }: { event: Opportunity; onBack: () => voi
         <LoadingBlock />
       ) : media.length === 0 ? (
         <div className="mt-4">
-          <EmptyState>No media yet. Add photos or videos above.</EmptyState>
+          <EmptyState>No media yet. Upload photos or videos above.</EmptyState>
         </div>
       ) : (
         <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -224,7 +316,7 @@ function MediaCard({
           <label className="flex items-center gap-1.5 text-xs text-baba-slate/60">
             <Switch checked={m.published} onCheckedChange={onTogglePublish} /> Published
           </label>
-          <button onClick={onDelete} className="text-red-500">
+          <button onClick={onDelete} className="text-red-500" aria-label="Delete media">
             <Trash2 className="h-4 w-4" />
           </button>
         </div>
