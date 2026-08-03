@@ -164,13 +164,12 @@ export function MembersSection() {
             </button>
             <button
               disabled={selected.size === 0}
-              onClick={() =>
-                toast.info("Open the Notifications tab to message this container in bulk.")
-              }
+              onClick={() => setComposeOpen(true)}
               className="flex items-center gap-1.5 rounded-lg border-2 border-baba-blue/15 px-3 py-2 text-sm font-semibold text-baba-blue disabled:opacity-50"
             >
-              <Send className="h-4 w-4" /> Message
+              <Send className="h-4 w-4" /> Message ({selected.size})
             </button>
+
             <button
               onClick={doExport}
               className="flex items-center gap-1.5 rounded-lg border-2 border-baba-blue/15 px-3 py-2 text-sm font-semibold text-baba-blue"
