@@ -9,8 +9,6 @@ const columns = [
     to: "/pillars",
     links: [
       { to: "/pillars", label: "The Five Pillars" },
-      { to: "/directory", label: "National Directory" },
-      { to: "/opportunities", label: "Opportunities" },
       { to: "/about", label: "About BABA" },
     ],
   },
@@ -21,7 +19,6 @@ const columns = [
       { to: "/register", label: "Become a Member" },
       { to: "/partners", label: "Become a Partner" },
       { to: "/contact", label: "Member Support" },
-      { to: "/contact", label: "Partner with BABA" },
     ],
   },
 ] as const;

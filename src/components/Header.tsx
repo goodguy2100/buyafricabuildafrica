@@ -23,11 +23,8 @@ const primaryLinks = [
 ] as const;
 
 const moreLinks = [
-  { to: "/directory", label: "National Directory" },
-  { to: "/opportunities", label: "Opportunities" },
   { to: "/news", label: "News" },
-  { to: "/search", label: "Search" },
-  { to: "/contact", label: "Partner with BABA" },
+  { to: "/partners", label: "Partner with Us" },
 ] as const;
 
 const navLinks = [...primaryLinks, ...moreLinks] as const;

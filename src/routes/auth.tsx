@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { User, IdCard, Mail, Loader2, Lock, MapPin, Users, Building2 } from "lucide-react";
+import { User, IdCard, Mail, Loader2, Lock, MapPin, Users, Building2, Phone } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { supabase } from "@/integrations/supabase/client";
 import { createRegistration, updateMyProfile, type RoleValue } from "@/lib/registrations.functions";
@@ -40,6 +40,8 @@ type Category = { label: string; role: RoleValue; trade?: string; orgType?: stri
 
 /** "Join us" — people who work with their hands, study, or practise a profession. */
 const JOIN_CATEGORIES: Category[] = [
+  { label: "Architect", role: "professional_exp" },
+  { label: "Interior Designer", role: "professional_exp" },
   { label: "Carpenter", role: "artisan", trade: "carpenter" },
   { label: "Mason", role: "artisan", trade: "mason" },
   { label: "Plumber", role: "artisan", trade: "plumber" },
@@ -53,8 +55,6 @@ const JOIN_CATEGORIES: Category[] = [
   { label: "Glass & Aluminium Fitter", role: "artisan", trade: "other" },
   { label: "Metal Fabricator", role: "artisan", trade: "other" },
   { label: "Landscaper", role: "artisan", trade: "other" },
-  { label: "Interior Designer", role: "professional_exp" },
-  { label: "Architect", role: "professional_exp" },
   { label: "Engineer", role: "professional_exp" },
   { label: "Quantity Surveyor", role: "professional_exp" },
   { label: "Project Manager", role: "professional_exp" },
@@ -107,6 +107,7 @@ function AuthPage() {
   const [intent, setIntent] = useState<"member" | "partner">("member");
   const [fullName, setFullName] = useState("");
   const [idNumber, setIdNumber] = useState("");
+  const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -134,7 +135,7 @@ function AuthPage() {
 
   const pause = (ms: number) => new Promise<void>((resolve) => window.setTimeout(resolve, ms));
 
-  const finishRegistrationSetup = async (name: string, id: string, loc: LocationValue) => {
+  const finishRegistrationSetup = async (name: string, id: string, phoneNumber: string, loc: LocationValue) => {
     const label = isOther && otherCategory.trim() ? otherCategory.trim() : chosen.label;
     try {
       await submitRegistration({
@@ -144,6 +145,7 @@ function AuthPage() {
           data: {
             fullName: name,
             nationalId: id,
+            phone: phoneNumber,
             email: email.trim() || null,
             category: label,
             occupation: label,
@@ -160,6 +162,7 @@ function AuthPage() {
       await saveProfile({
         data: {
           full_name: name,
+          phone: phoneNumber,
           country: loc.country || undefined,
           city: loc.city.trim() || undefined,
           area: loc.area.trim() || undefined,
@@ -187,6 +190,10 @@ function AuthPage() {
     const id = idNumber.trim();
     const pwd = password;
     if (!name) return setError("Please type your full name.");
+    if (!phone.trim()) return setError("Please type your phone number.");
+    if (phone.replace(/[^0-9]/g, "").length < 9) {
+      return setError("That phone number looks too short - please type it fully, e.g. 0712 345 678.");
+    }
     if (!pwd || pwd.length < 6) {
       return setError("Please type your password (6 letters or numbers or more).");
     }
@@ -248,6 +255,7 @@ function AuthPage() {
           data: {
             full_name: name,
             national_id: id || null,
+            phone: phone.trim() || null,
             contact_email: email.trim() || null,
             category: isOther && otherCategory.trim() ? otherCategory.trim() : chosen.label,
             country: location.country,
@@ -282,7 +290,7 @@ function AuthPage() {
         }
       }
 
-      const setup = finishRegistrationSetup(name, id, location);
+      const setup = finishRegistrationSetup(name, id, phone, location);
       await Promise.race([setup, pause(2500)]);
       await navigate({ to: destination, replace: true });
     } catch (err) {
@@ -313,44 +321,43 @@ function AuthPage() {
         </div>
 
         {mode === "join" && (
-          <div className="mt-6 grid gap-3 sm:grid-cols-2">
-            {(
-              [
-                {
-                  key: "member",
-                  label: "Join us",
-                  hint: "I am working or studying",
-                  icon: Users,
-                },
-                {
-                  key: "partner",
-                  label: "Partner with us",
-                  hint: "Company, organisation or institution",
-                  icon: Building2,
-                },
-              ] as const
-            ).map((opt) => (
+          <div className="mt-6">
+            <button
+              type="button"
+              onClick={() => {
+                setIntent("member");
+                setCategoryLabel("");
+                setOtherCategory("");
+              }}
+              className={`flex w-full items-center gap-3 rounded-xl border-2 p-4 text-left transition-colors ${
+                intent === "member"
+                  ? "border-baba-blue bg-baba-blue/5"
+                  : "border-baba-blue/15 hover:border-baba-blue/40"
+              }`}
+            >
+              <Users className="h-5 w-5 text-baba-blue" />
+              <span>
+                <span className="block text-sm font-bold text-baba-slate">Join us</span>
+                <span className="block text-xs text-baba-slate/60">I am working or studying</span>
+              </span>
+            </button>
+            <div className="mt-3 border-t border-baba-blue/10 pt-3 text-center">
               <button
-                key={opt.key}
                 type="button"
                 onClick={() => {
-                  setIntent(opt.key);
+                  setIntent("partner");
                   setCategoryLabel("");
                   setOtherCategory("");
                 }}
-                className={`flex items-center gap-3 rounded-xl border-2 p-4 text-left transition-colors ${
-                  intent === opt.key
-                    ? "border-baba-blue bg-baba-blue/5"
-                    : "border-baba-blue/15 hover:border-baba-blue/40"
+                className={`inline-flex items-center gap-2 text-sm font-semibold transition-colors ${
+                  intent === "partner"
+                    ? "text-baba-blue"
+                    : "text-baba-slate/60 hover:text-baba-blue"
                 }`}
               >
-                <opt.icon className="h-5 w-5 text-baba-blue" />
-                <span>
-                  <span className="block text-sm font-bold text-baba-slate">{opt.label}</span>
-                  <span className="block text-xs text-baba-slate/60">{opt.hint}</span>
-                </span>
+                <Building2 className="h-4 w-4" /> Partner with us - company, organisation or institution
               </button>
-            ))}
+            </div>
           </div>
         )}
 
@@ -368,7 +375,7 @@ function AuthPage() {
               >
                 <option value="">
                   {intent === "member"
-                    ? "Select — e.g. Interior Designer"
+                    ? "Select - e.g. Architect"
                     : "Select — e.g. Financial Institution"}
                 </option>
                 {list.map((c) => (
@@ -414,6 +421,26 @@ function AuthPage() {
               </span>
             )}
           </label>
+
+          {mode === "join" && (
+            <label className="grid gap-1.5">
+              <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
+                Phone Number <span className="font-normal normal-case text-baba-slate/50">(required)</span>
+              </span>
+              <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
+                <Phone className="h-4 w-4 text-baba-slate/40" />
+                <input
+                  required
+                  type="tel"
+                  inputMode="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
+                  placeholder="e.g. 0712 345 678"
+                />
+              </div>
+            </label>
+          )}
 
           {(mode === "join" || askForId) && (
             <label className="grid gap-1.5">
