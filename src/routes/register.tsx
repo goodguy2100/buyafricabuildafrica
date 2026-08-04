@@ -258,12 +258,20 @@ function GetStarted() {
                 desc="Career-focused — job and training access."
                 onClick={() => setProChoosing(true)}
               />
-              <RoleCard
-                icon={Building2}
-                title="Corporate"
-                desc="Business registration and talent access."
-                onClick={() => chooseRole("corporate")}
-              />
+            </div>
+            {/* Partner path - kept, but moved below the individual paths */}
+            <div className="mt-8 border-t border-baba-blue/10 pt-6">
+              <p className="text-center text-xs font-bold uppercase tracking-[0.25em] text-baba-slate/50">
+                For companies & institutions
+              </p>
+              <div className="mx-auto mt-4 max-w-sm">
+                <RoleCard
+                  icon={Building2}
+                  title="Partner with Us"
+                  desc="Company, organisation or institution."
+                  onClick={() => chooseRole("corporate")}
+                />
+              </div>
             </div>
           </div>
         )}
@@ -411,24 +419,24 @@ function RoleCard({
 function requiredFields(role: RoleValue, form: FormState): string[] {
   const loc = ["country", "city"];
   if (role === "individual") {
-    return ["fullName", "phone", "nationalId", "occupation", ...loc];
+    return ["fullName", "phone", "occupation", ...loc];
   }
   if (role === "professional_young") {
     return [
-      "fullName", "phone", "nationalId", "occupation", "yearsField",
+      "fullName", "phone", "occupation", "yearsField",
       "education", "institutionName", "fieldOfStudy", ...loc,
     ];
   }
   if (role === "professional_exp") {
     const base = [
-      "fullName", "phone", "nationalId", "occupation", "yearsField",
+      "fullName", "phone", "occupation", "yearsField",
       "employmentStatus", "education", "institutionName", "fieldOfStudy", ...loc,
     ];
     if (form.employmentStatus === "Employed") base.push("organizationName", "jobTitle", "yearsAtOrg");
     return base;
   }
   if (role === "artisan") {
-    return ["fullName", "phone", "nationalId", "trade", "yearsTrade", ...loc, "canTravel"];
+    return ["fullName", "phone", "trade", "yearsTrade", ...loc, "canTravel"];
   }
   return [
     "corporateName", "contactPerson", "contactPhone", "yearsInOperation",
@@ -450,7 +458,7 @@ function IndividualFields({ form, errors, set, toggle }: FieldProps) {
     <>
       <Field label="Full Name" name="fullName" required {...{ form, errors, set }} />
       <Field label="Phone Number" name="phone" required {...{ form, errors, set }} />
-      <Field label="National Identification No" name="nationalId" required {...{ form, errors, set }} />
+      <Field label="National Identification No" name="nationalId" {...{ form, errors, set }} />
       <SelectField label="Primary Occupation / Skill Area" name="occupation" required options={OCCUPATIONS} {...{ form, errors, set }} />
       <LocationField required form={form} set={set} />
       <MultiSelect label="Industries Interested In" name="industries" options={INDUSTRIES} {...{ form, toggle }} />
@@ -467,7 +475,7 @@ function YoungProFields({ form, errors, set, toggle }: FieldProps) {
     <>
       <Field label="Full Name" name="fullName" required {...{ form, errors, set }} />
       <Field label="Phone Number" name="phone" required {...{ form, errors, set }} />
-      <Field label="National Identification No" name="nationalId" required {...{ form, errors, set }} />
+      <Field label="National Identification No" name="nationalId" {...{ form, errors, set }} />
       <SelectField label="Primary Occupation" name="occupation" required options={OCCUPATIONS} {...{ form, errors, set }} />
       <SelectField label="Experience" name="yearsField" required
         options={EXPERIENCE_LEVELS} {...{ form, errors, set }} />
@@ -490,7 +498,7 @@ function ExpProFields({ form, errors, set, toggle }: FieldProps) {
     <>
       <Field label="Full Name" name="fullName" required {...{ form, errors, set }} />
       <Field label="Phone Number" name="phone" required {...{ form, errors, set }} />
-      <Field label="National Identification No" name="nationalId" required {...{ form, errors, set }} />
+      <Field label="National Identification No" name="nationalId" {...{ form, errors, set }} />
       <SelectField label="Primary Occupation" name="occupation" required options={OCCUPATIONS} {...{ form, errors, set }} />
       <SelectField label="Experience" name="yearsField" required
         options={EXPERIENCE_LEVELS} {...{ form, errors, set }} />
@@ -523,7 +531,7 @@ function ArtisanFields({ form, errors, set, toggle }: FieldProps) {
     <>
       <Field label="Full Name" name="fullName" required {...{ form, errors, set }} />
       <Field label="Phone Number" name="phone" required {...{ form, errors, set }} />
-      <Field label="National Identification No" name="nationalId" required {...{ form, errors, set }} />
+      <Field label="National Identification No" name="nationalId" {...{ form, errors, set }} />
       <SelectField label="Role" name="trade" required options={TRADES} {...{ form, errors, set }} />
       <SelectField label="Experience" name="yearsTrade" required options={EXPERIENCE_LEVELS} {...{ form, errors, set }} />
       <LocationField required form={form} set={set} nameKey="areasServed" label="Areas you serve" />
@@ -666,7 +674,7 @@ function SelectField({
           errors[name] ? "border-destructive" : "border-input"
         }`}
       >
-        <option value="">Select…</option>
+        <option value="">{name === "occupation" ? "Select — e.g. Architect" : "Select…"}</option>
         {options.map((o) => (
           <option key={o} value={o}>{o}</option>
         ))}
