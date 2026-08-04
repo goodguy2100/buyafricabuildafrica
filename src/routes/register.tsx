@@ -373,10 +373,10 @@ function GetStarted() {
                 Go to Dashboard
               </Link>
               <Link
-                to="/opportunities"
+                to="/events"
                 className="rounded-full border-2 border-baba-copper px-6 py-3 text-sm font-semibold text-baba-copper-dark transition-colors hover:bg-baba-copper hover:text-baba-slate"
               >
-                Explore Opportunities
+                Explore Events
               </Link>
             </div>
           </div>
