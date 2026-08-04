@@ -710,8 +710,8 @@ function RegistrationsTab({ registrations }: { registrations: RegistrationRow[] 
       <div className="rounded-2xl border border-dashed border-baba-blue/20 bg-card p-10 text-center">
         <p className="text-baba-slate/60">
           You haven't registered for anything yet.{" "}
-          <Link to="/opportunities" className="font-semibold text-baba-copper-dark hover:underline">
-            Explore opportunities.
+          <Link to="/events" className="font-semibold text-baba-copper-dark hover:underline">
+            Explore upcoming events.
           </Link>
         </p>
       </div>
