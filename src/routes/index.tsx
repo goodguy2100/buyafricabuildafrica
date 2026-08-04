@@ -215,9 +215,9 @@ function Home() {
                 <p className="text-xs text-baba-slate/60">The numbers we're working towards as the BABA ecosystem grows.</p>
               </div>
               <div data-stack className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-3">
-                <Counter target={50000} label="Members" suffix="+" tone="dark" />
-                <Counter target={30000} label="Tradespeople" suffix="+" tone="dark" />
-                <Counter target={9000} label="Professionals" suffix="+" tone="dark" />
+                <Counter target={200000} label="Members" suffix="+" tone="dark" />
+                <Counter target={70000} label="Tradespeople" suffix="+" tone="dark" />
+                <Counter target={15000} label="Professionals" suffix="+" tone="dark" />
                 <Counter target={3500} label="Contractors" suffix="+" tone="dark" />
                 <Counter target={1000} label="Suppliers" suffix="+" tone="dark" />
                 <Counter target={100} label="Partners" suffix="+" tone="dark" />
