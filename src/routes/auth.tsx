@@ -401,7 +401,11 @@ function AuthPage() {
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
-                placeholder="e.g. Jane Wanjiru"
+                placeholder={
+                  mode === "join" && intent === "partner"
+                    ? "e.g. Financial organization"
+                    : "e.g. Jane Wanjiru"
+                }
               />
             </div>
             {mode === "signin" && (
