@@ -418,7 +418,9 @@ function AuthPage() {
           {(mode === "join" || askForId) && (
             <label className="grid gap-1.5">
               <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
-                National Identification No{" "}
+                {mode === "join" && intent === "partner"
+                  ? "ORGANIZATION REGISTRATION NO\u00a0"
+                  : "National Identification No "}
                 <span className="font-normal normal-case text-baba-slate/50">
                   {mode === "signin" ? "(only to tell you apart)" : "(optional)"}
                 </span>
