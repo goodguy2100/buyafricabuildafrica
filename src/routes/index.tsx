@@ -8,8 +8,6 @@ import {
   Target,
   Eye,
   Heart,
-  Globe,
-  Award,
   Calendar,
   BookOpen,
   Wrench,
@@ -31,6 +29,8 @@ import {
 import { PageShell } from "@/components/PageShell";
 import { NewsHomePreview } from "@/components/NewsHomePreview";
 import { Counter } from "@/components/Counter";
+import { EventsSlideshow } from "@/components/EventsSlideshow";
+import { upcomingEvents } from "@/data/upcoming-events";
 import { pillars } from "@/data/pillars";
 
 import kenyaPulse from "@/assets/kenya-pulse.mp4.asset.json";
@@ -297,6 +297,7 @@ function Home() {
           <p className="mt-3 text-baba-slate/70">
             From professionals and artisans to manufacturers, institutions and governments, our ecosystem is built to scale wherever African development is happening.
           </p>
+          <EventsSlideshow />
         </div>
       </section>
 
@@ -568,33 +569,19 @@ function Home() {
       <section className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <span className="text-xs font-bold uppercase tracking-[0.25em] text-baba-copper-dark">Events</span>
-          <h2 className="mt-2 font-display text-3xl font-extrabold text-baba-slate sm:text-4xl">Our Annual Events</h2>
+          <h2 className="mt-2 font-display text-3xl font-extrabold text-baba-slate sm:text-4xl">Upcoming Events</h2>
         </div>
         <div data-stack className="mt-10 grid gap-6 sm:grid-cols-3">
-          <div className="rounded-2xl border border-baba-blue/10 bg-white p-6 baba-card-hover">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-baba-blue/10">
-              <Building className="h-6 w-6 text-baba-blue" />
+          {upcomingEvents.map((event) => (
+            <div key={event.title} className="rounded-2xl border border-baba-blue/10 bg-white p-6 baba-card-hover">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-baba-blue/10">
+                <event.icon className="h-6 w-6 text-baba-blue" />
+              </div>
+              <h3 className="mt-4 font-display text-lg font-bold text-baba-slate">{event.title}</h3>
+              <p className="mt-1 text-sm font-semibold text-baba-copper-dark">{event.date}</p>
+              <p className="mt-2 text-sm text-baba-slate/65">{event.description}</p>
             </div>
-            <h3 className="mt-4 font-display text-lg font-bold text-baba-slate">Corporate Strategy Summit</h3>
-            <p className="mt-1 text-sm font-semibold text-baba-copper-dark">Every January</p>
-            <p className="mt-2 text-sm text-baba-slate/65">High-level platform for governments, investors, development partners, banks, corporates, and industry leaders.</p>
-          </div>
-          <div className="rounded-2xl border border-baba-blue/10 bg-white p-6 baba-card-hover">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-baba-copper/10">
-              <Globe className="h-6 w-6 text-baba-copper-dark" />
-            </div>
-            <h3 className="mt-4 font-display text-lg font-bold text-baba-slate">Expo & Conference</h3>
-            <p className="mt-1 text-sm font-semibold text-baba-copper-dark">Every July / August</p>
-            <p className="mt-2 text-sm text-baba-slate/65">Africa's marketplace of ideas, products and opportunities. Product exhibitions, supplier showcases, keynotes, and industry panels.</p>
-          </div>
-          <div className="rounded-2xl border border-baba-blue/10 bg-white p-6 baba-card-hover">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-baba-blue/10">
-              <Award className="h-6 w-6 text-baba-blue" />
-            </div>
-            <h3 className="mt-4 font-display text-lg font-bold text-baba-slate">Excellence Awards</h3>
-            <p className="mt-1 text-sm font-semibold text-baba-copper-dark">Every December</p>
-            <p className="mt-2 text-sm text-baba-slate/65">Celebrating those building Africa — professionals, artisans, businesses, sustainability champions, and youth.</p>
-          </div>
+          ))}
         </div>
         <div className="mt-8 text-center">
           <Link to="/events" className="inline-flex items-center gap-1.5 text-sm font-semibold text-baba-blue hover:text-baba-blue-dark">

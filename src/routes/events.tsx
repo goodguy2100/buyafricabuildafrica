@@ -1,37 +1,21 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Calendar, Award, Globe, Building, ArrowRight, MapPin, Clock, Leaf, Sparkles } from "lucide-react";
+import { Calendar, Globe, ArrowRight, MapPin, Clock } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 
 
-const upcomingEvents = [
-  {
-    icon: Leaf, title: "Gardens Expo & Conference",
-    date: "August 26–30, 2026", location: "Sarit Centre, Nairobi",
-    description: "A celebration of landscaping, garden design and sustainable green spaces — bringing together exhibitors, professionals and enthusiasts.",
-  },
-  {
-    icon: Sparkles, title: "Official BABA Launch",
-    date: "End of September 2026", location: "Nairobi, Kenya",
-    description: "The official launch of Buy Africa Build Africa — unveiling our mission, pillars and the movement to build Africa's future.",
-  },
-  {
-    icon: Award, title: "BABA Excellence Awards",
-    date: "1st December 2026 (to confirm)", location: "To be announced",
-    description: "An evening gala celebrating those building Africa across professional, artisan, business, sustainability and youth categories.",
-  },
-];
+import { upcomingEvents } from "@/data/upcoming-events";
 
 
 export const Route = createFileRoute("/events")({
   head: () => ({
     meta: [
       { title: "Events | Buy Africa Build Africa (BABA)" },
-      { name: "description", content: "BABA's three annual events — Corporate Strategy Summit, Expo & Conference, and Excellence Awards." },
-      { property: "og:title", content: "BABA Events — Summit, Expo & Excellence Awards" },
+      { name: "description", content: "Upcoming events in Kenya's built environment — plus BABA's flagship Expo & Conference." },
+      { property: "og:title", content: "BABA Events — Upcoming & Annual" },
       {
         property: "og:description",
         content:
-          "The BABA Corporate Strategy Summit, Expo & Conference and Excellence Awards — Africa's annual gatherings for industry and professionals.",
+          "The events BABA is tracking — Build Expo, The Showground and The Big 5 — plus BABA's flagship Expo & Conference for Africa's built environment.",
       },
       { property: "og:url", content: "https://buyafricabuildafrica.org/events" },
     ],
@@ -39,35 +23,15 @@ export const Route = createFileRoute("/events")({
     scripts: [
       {
         type: "application/ld+json",
-        children: JSON.stringify([
-          {
-            "@context": "https://schema.org",
-            "@type": "Event",
-            name: "BABA Corporate Strategy Summit",
-            description:
-              "Annual leadership platform bringing together governments, investors, development partners, corporates and professionals to shape Africa's economic development agenda.",
-            location: { "@type": "Place", name: "Nairobi, Kenya", address: "Nairobi, Kenya" },
-            organizer: { "@type": "Organization", name: "Buy Africa Build Africa (BABA)", url: "https://buyafricabuildafrica.org/" },
-          },
-          {
-            "@context": "https://schema.org",
-            "@type": "Event",
-            name: "BABA Expo & Conference",
-            description:
-              "Africa's marketplace of ideas, products and opportunities — exhibitions, supplier showcases, keynotes and industry panels.",
-            location: { "@type": "Place", name: "Rotating African cities", address: "Africa" },
-            organizer: { "@type": "Organization", name: "Buy Africa Build Africa (BABA)", url: "https://buyafricabuildafrica.org/" },
-          },
-          {
-            "@context": "https://schema.org",
-            "@type": "Event",
-            name: "BABA Excellence Awards",
-            description:
-              "Annual awards celebrating individuals and organizations creating impact across Africa's built environment and industry.",
-            location: { "@type": "Place", name: "Nairobi, Kenya", address: "Nairobi, Kenya" },
-            organizer: { "@type": "Organization", name: "Buy Africa Build Africa (BABA)", url: "https://buyafricabuildafrica.org/" },
-          },
-        ]),
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Event",
+          name: "BABA Expo & Conference",
+          description:
+            "BABA's flagship annual gathering — a leadership platform for governments, investors and industry, combined with Africa's marketplace of products, ideas and opportunities.",
+          location: { "@type": "Place", name: "Nairobi, Kenya", address: "Nairobi, Kenya" },
+          organizer: { "@type": "Organization", name: "Buy Africa Build Africa (BABA)", url: "https://buyafricabuildafrica.org/" },
+        }),
       },
     ],
   }),
@@ -76,29 +40,10 @@ export const Route = createFileRoute("/events")({
 
 const annualEvents = [
   {
-    icon: Building, title: "BABA Corporate Strategy Summit",
-    date: "Every January", time: "Full-day", location: "Nairobi, Kenya",
-    description: "Annual leadership platform bringing together governments, investors, development partners, banks, corporates, manufacturers, industry leaders, and professionals to shape Africa's economic development agenda.",
-    highlights: ["Policy Dialogue", "Investment Opportunities", "Industry Collaboration", "Economic Development Strategies"],
-  },
-  {
     icon: Globe, title: "BABA Expo & Conference",
-    date: "Every July / August", time: "Multi-day", location: "Rotating African cities",
-    description: "Africa's marketplace of ideas, products and opportunities. Featuring product exhibitions, supplier showcases, technology demonstrations, construction innovations, and manufacturing exhibitions. Conference includes keynote speakers, industry panels, sustainability forums, urban development discussions, and entrepreneurship sessions. Awards nominations officially open during the Expo.",
-    highlights: ["Product Exhibitions & Supplier Showcases", "Keynote Speakers & Industry Panels", "Sustainability & Urban Development Forums", "Awards Nominations Launch", "Networking with Industry Leaders"],
-  },
-  {
-    icon: Award, title: "BABA Excellence Awards",
-    date: "Every December", time: "Evening gala", location: "To be announced",
-    description: "Celebrating those building Africa. Recognizing outstanding achievements across professional, artisan, business, sustainability, youth, and special recognition categories.",
-    categories: [
-      { title: "Professional", awards: ["Architect of the Year", "Interior Designer of the Year", "Engineer of the Year", "Quantity Surveyor of the Year", "Project Manager of the Year"] },
-      { title: "Artisan", awards: ["Plumber of the Year", "Electrician of the Year", "Carpenter of the Year", "Welder of the Year", "Mason of the Year"] },
-      { title: "Business", awards: ["SME of the Year", "Manufacturer of the Year", "Supplier of the Year", "Emerging Business of the Year"] },
-      { title: "Sustainability", awards: ["Green Building Project of the Year", "Sustainability Champion", "Climate Innovation Award"] },
-      { title: "Youth", awards: ["Young Professional of the Year", "Young Entrepreneur of the Year", "Emerging Artisan of the Year"] },
-      { title: "Special Recognition", awards: ["Women in Leadership Award", "Community Impact Award", "African Excellence Award", "Lifetime Achievement Award"] },
-    ],
+    date: "Every July / August", time: "Multi-day", location: "Nairobi, Kenya",
+    description: "BABA's flagship annual gathering — the Corporate Strategy Summit and the Expo & Conference as one. A leadership platform bringing together governments, investors, development partners, banks, corporates, manufacturers and industry leaders, combined with Africa's marketplace of ideas, products and opportunities: product exhibitions, supplier showcases, technology demonstrations, construction innovations, manufacturing exhibitions, keynote speakers, industry panels, sustainability forums and entrepreneurship sessions.",
+    highlights: ["Policy Dialogue", "Investment Opportunities", "Product Exhibitions & Supplier Showcases", "Keynote Speakers & Industry Panels", "Sustainability & Urban Development Forums", "Networking with Industry Leaders"],
   },
 ];
 
@@ -116,7 +61,7 @@ export function Events() {
               <Calendar className="h-4 w-4" /> Our Annual Events
             </span>
             <h1 className="mt-6 font-display text-4xl font-extrabold text-white sm:text-5xl lg:text-6xl">BABA Annual Events</h1>
-            <p className="mt-4 max-w-2xl text-lg text-white/80">Three flagship events that bring together the entire built environment community across Africa.</p>
+            <p className="mt-4 max-w-2xl text-lg text-white/80">Our flagship Expo & Conference, plus the events the BABA community is tracking across Kenya's built environment.</p>
           </div>
         </div>
         <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-baba-cream to-transparent" />
@@ -186,18 +131,6 @@ export function Events() {
                         ))}
                       </ul>
                     </>
-                  )}
-
-                  {event.categories && (
-                    <div className="mt-4">
-                      <h4 className="mb-2 text-xs font-bold uppercase tracking-wider text-baba-blue">Award Categories</h4>
-                      {event.categories.map((cat) => (
-                        <div key={cat.title} className="mb-2">
-                          <p className="text-[10px] font-bold uppercase tracking-wide text-baba-copper-dark">{cat.title}</p>
-                          <p className="text-[11px] text-baba-slate/70">{cat.awards.join(" · ")}</p>
-                        </div>
-                      ))}
-                    </div>
                   )}
                 </div>
               </div>
