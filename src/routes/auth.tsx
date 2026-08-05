@@ -263,12 +263,9 @@ function AuthPage() {
         if (/already registered|already exists|user already/i.test(signUpErr.message)) {
           const existing = await signInWith(syntheticEmail, pwd);
           if (existing.error) {
-            const legacy = await signInWith(syntheticEmail, legacyPassword);
-            if (legacy.error) {
-              throw new Error(
-                "You already have an account. Tap “Log in” and use your full name and password.",
-              );
-            }
+            throw new Error(
+              "You already have an account. Tap “Log in” and use your full name and password.",
+            );
           }
           setNotice("You are already a member — we have logged you in. Welcome back!");
           await navigate({ to: destination, replace: true });
