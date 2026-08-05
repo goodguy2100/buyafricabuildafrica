@@ -15,7 +15,7 @@ export const Route = createFileRoute("/events")({
       {
         property: "og:description",
         content:
-          "The events BABA is tracking — Build Expo, The Showground and The Big 5 — plus BABA's flagship Expo & Conference for Africa's built environment.",
+          "The events BABA is tracking — Build Expo and The Showground — plus BABA's flagship Expo & Conference for Africa's built environment.",
       },
       { property: "og:url", content: "https://buyafricabuildafrica.org/events" },
     ],

@@ -462,9 +462,6 @@ function IndividualFields({ form, errors, set, toggle }: FieldProps) {
       <SelectField label="Primary Occupation / Skill Area" name="occupation" required options={OCCUPATIONS} {...{ form, errors, set }} />
       <LocationField required form={form} set={set} />
       <MultiSelect label="Industries Interested In" name="industries" options={INDUSTRIES} {...{ form, toggle }} />
-      <MultiSelect label="What are you looking for?" name="lookingFor"
-        options={["Skills Training", "Job Opportunities", "Event Notifications", "Networking", "Other"]}
-        {...{ form, toggle }} />
       <Field label="Email (optional)" name="email" type="email" {...{ form, errors, set }} />
     </>
   );
@@ -485,9 +482,6 @@ function YoungProFields({ form, errors, set, toggle }: FieldProps) {
       <Field label="Field of Study" name="fieldOfStudy" required {...{ form, errors, set }} />
       <LocationField required form={form} set={set} />
       <MultiSelect label="Industries Interested In" name="industries" options={INDUSTRIES} {...{ form, toggle }} />
-      <MultiSelect label="What are you looking for?" name="lookingFor"
-        options={["Job opportunities", "Training/courses", "Networking", "Mentorship", "Other"]}
-        {...{ form, toggle }} />
       <Field label="Email (optional)" name="email" type="email" {...{ form, errors, set }} />
     </>
   );
@@ -518,9 +512,6 @@ function ExpProFields({ form, errors, set, toggle }: FieldProps) {
       <Field label="Professional Certifications (if any)" name="certifications" {...{ form, errors, set }} />
       <LocationField required form={form} set={set} />
       <MultiSelect label="Industries Interested In" name="industries" options={INDUSTRIES} {...{ form, toggle }} />
-      <MultiSelect label="What are you looking for?" name="lookingFor"
-        options={["Senior roles", "Consulting work", "Training/mentorship", "Board positions", "Networking", "Other"]}
-        {...{ form, toggle }} />
       <Field label="Email (optional)" name="email" type="email" {...{ form, errors, set }} />
     </>
   );
@@ -538,9 +529,6 @@ function ArtisanFields({ form, errors, set, toggle }: FieldProps) {
       <SelectField label="Can travel for work?" name="canTravel" required options={["Yes", "No"]} {...{ form, errors, set }} />
       <TextField label="Certifications / Training completed" name="trainingCompleted" {...{ form, set }} />
       <TextField label="Services offered (brief description)" name="services" {...{ form, set }} />
-      <MultiSelect label="Interested in" name="lookingFor"
-        options={["Skills training", "Job opportunities", "Certification programs", "Networking"]}
-        {...{ form, toggle }} />
       <Field label="Email (optional)" name="email" type="email" {...{ form, errors, set }} />
     </>
   );

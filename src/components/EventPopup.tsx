@@ -5,19 +5,19 @@ import { Bell, Calendar, MapPin, X } from "lucide-react";
 const upcomingEvents = [
   {
     title: "Gardens Expo & Conference",
-    date: "August 26–30, 2026",
+    date: "August 28, 2026",
     location: "Sarit Centre, Nairobi",
     description: "A celebration of landscaping, garden design and sustainable green spaces.",
-    start: "20260826",
-    end: "20260830",
+    start: "20260828",
+    end: "20260828",
   },
   {
     title: "Official BABA Launch",
-    date: "End of September 2026",
+    date: "1st week of December 2026",
     location: "Nairobi, Kenya",
     description: "The official launch of Buy Africa Build Africa.",
-    start: "20260930",
-    end: "20260930",
+    start: "20261201",
+    end: "20261201",
   },
   {
     title: "BABA Excellence Awards",

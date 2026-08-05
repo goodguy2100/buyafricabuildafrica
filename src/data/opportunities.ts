@@ -152,9 +152,9 @@ export const opportunities: Opp[] = [
     title: "Gardens Expo & Conference",
     org: "Buy Africa Build Africa",
     location: "Sarit Centre, Nairobi",
-    meta: "26–30 Aug 2026 · Register",
+    meta: "28 Aug 2026 · Register",
     description:
-      "A flagship five-day expo and conference bringing together the entire BABA ecosystem — exhibitors, professionals, artisans, partners and buyers.",
+      "A flagship expo and conference bringing together the entire BABA ecosystem — exhibitors, professionals, artisans, partners and buyers.",
     requirements: ["Open to all", "Register to attend or exhibit"],
     cta: "register",
   },
