@@ -22,10 +22,14 @@ export const lookupLoginEmail = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const name = data.fullName.trim();
 
+    // Escape LIKE metacharacters so the caller cannot submit a wildcard pattern
+    // and enumerate members — this must stay an exact (case-insensitive) match.
+    const pattern = name.replace(/([\\%_])/g, "\\$1");
+
     const { data: profs } = await supabaseAdmin
       .from("profiles")
       .select("id, email")
-      .ilike("full_name", name)
+      .ilike("full_name", pattern)
       .limit(25);
 
     const matches = (profs ?? []).filter(
