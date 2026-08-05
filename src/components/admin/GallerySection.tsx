@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -21,8 +21,37 @@ const TABS = [
   { key: "library", label: "Content Library" },
 ] as const;
 
-/** Signed URL lifetime for private gallery files (10 years). */
-const SIGNED_URL_TTL = 315_360_000;
+/**
+ * Private gallery files are stored as `storage:<path>` and signed on demand with a
+ * short lifetime. Long-lived links could not be revoked when a photo is unpublished.
+ */
+const SIGNED_URL_TTL = 3600;
+const STORAGE_PREFIX = "storage:";
+
+/** Resolve a stored media reference into a currently-valid displayable URL. */
+function useMediaSrc(mediaUrl: string): string | undefined {
+  const [src, setSrc] = useState<string | undefined>(
+    mediaUrl.startsWith(STORAGE_PREFIX) ? undefined : mediaUrl,
+  );
+  useEffect(() => {
+    let active = true;
+    if (!mediaUrl.startsWith(STORAGE_PREFIX)) {
+      setSrc(mediaUrl);
+      return;
+    }
+    setSrc(undefined);
+    supabase.storage
+      .from("gallery")
+      .createSignedUrl(mediaUrl.slice(STORAGE_PREFIX.length), SIGNED_URL_TTL)
+      .then(({ data }) => {
+        if (active && data?.signedUrl) setSrc(data.signedUrl);
+      });
+    return () => {
+      active = false;
+    };
+  }, [mediaUrl]);
+  return src;
+}
 
 export function GallerySection() {
   const [tab, setTab] = useState<(typeof TABS)[number]["key"]>("galleries");
@@ -156,12 +185,10 @@ function EventGallery({ event, onBack }: { event: Opportunity | null; onBack: ()
           .from("gallery")
           .upload(path, file, { cacheControl: "31536000", upsert: false });
         if (upErr) throw new Error(upErr.message);
-        const { data: signed, error: signErr } = await supabase.storage
-          .from("gallery")
-          .createSignedUrl(path, SIGNED_URL_TTL);
-        if (signErr || !signed) throw new Error(signErr?.message ?? "Could not link the file");
+        // Store the object path, not a long-lived signed link: access is granted
+        // per view so unpublishing/deleting actually revokes access.
         await addMut.mutateAsync({
-          media_url: signed.signedUrl,
+          media_url: `${STORAGE_PREFIX}${path}`,
           media_type: file.type.startsWith("video") ? "video" : "image",
           caption: caption || file.name,
         });
@@ -303,12 +330,13 @@ function MediaCard({
   onTogglePublish: (pub: boolean) => void;
   onDelete: () => void;
 }) {
+  const src = useMediaSrc(m.media_url);
   return (
     <div className="overflow-hidden rounded-xl border border-baba-blue/10 bg-card">
       {m.media_type === "video" ? (
-        <video src={m.media_url} className="h-32 w-full object-cover" controls />
+        <video src={src} className="h-32 w-full object-cover" controls />
       ) : (
-        <img src={m.media_url} alt={m.caption ?? ""} className="h-32 w-full object-cover" />
+        <img src={src} alt={m.caption ?? ""} className="h-32 w-full object-cover" />
       )}
       <div className="p-3">
         <p className="truncate text-sm text-baba-slate">{m.caption || "Untitled"}</p>
@@ -367,17 +395,24 @@ function LibraryTab() {
       ) : (
         <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-5">
           {media.map((m) => (
-            <div key={m.id} className="overflow-hidden rounded-xl border border-baba-blue/10 bg-card">
-              {m.media_type === "video" ? (
-                <video src={m.media_url} className="h-28 w-full object-cover" />
-              ) : (
-                <img src={m.media_url} alt={m.caption ?? ""} className="h-28 w-full object-cover" />
-              )}
-              <p className="truncate p-2 text-xs text-baba-slate/70">{m.caption || "Untitled"}</p>
-            </div>
+            <LibraryCard key={m.id} m={m} />
           ))}
         </div>
       )}
+    </div>
+  );
+}
+
+function LibraryCard({ m }: { m: GalleryMedia }) {
+  const src = useMediaSrc(m.media_url);
+  return (
+    <div className="overflow-hidden rounded-xl border border-baba-blue/10 bg-card">
+      {m.media_type === "video" ? (
+        <video src={src} className="h-28 w-full object-cover" />
+      ) : (
+        <img src={src} alt={m.caption ?? ""} className="h-28 w-full object-cover" />
+      )}
+      <p className="truncate p-2 text-xs text-baba-slate/70">{m.caption || "Untitled"}</p>
     </div>
   );
 }

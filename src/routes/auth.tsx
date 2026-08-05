@@ -85,10 +85,8 @@ function idToEmail(id: string): string {
   const clean = id.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
   return `id${clean}@baba.local`;
 }
-function idToPassword(id: string): string {
-  const clean = id.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
-  return `baba-${clean}`;
-}
+
+
 /** Members can join without an ID number, so build a login address from the name. */
 function nameToEmail(name: string): string {
   const slug = name.trim().toLowerCase().replace(/[^a-z0-9]+/g, "").slice(0, 24) || "member";
@@ -232,11 +230,7 @@ function AuthPage() {
             "We could not find that name. Check the spelling, or tap Join us to make an account.",
           );
         }
-        let res = await signInWith(found.email, pwd);
-        if (res.error && id) {
-          const legacy = await signInWith(found.email, idToPassword(id));
-          if (!legacy.error) res = legacy;
-        }
+        const res = await signInWith(found.email, pwd);
         if (res.error) {
           throw new Error("Wrong password. Tap “Forgot your password?” below to get a new one.");
         }
@@ -245,7 +239,7 @@ function AuthPage() {
       }
 
       const syntheticEmail = id ? idToEmail(id) : nameToEmail(name);
-      const legacyPassword = idToPassword(id);
+
 
       const { data: signUpData, error: signUpErr } = await supabase.auth.signUp({
         email: syntheticEmail,
@@ -269,12 +263,9 @@ function AuthPage() {
         if (/already registered|already exists|user already/i.test(signUpErr.message)) {
           const existing = await signInWith(syntheticEmail, pwd);
           if (existing.error) {
-            const legacy = await signInWith(syntheticEmail, legacyPassword);
-            if (legacy.error) {
-              throw new Error(
-                "You already have an account. Tap “Log in” and use your full name and password.",
-              );
-            }
+            throw new Error(
+              "You already have an account. Tap “Log in” and use your full name and password.",
+            );
           }
           setNotice("You are already a member — we have logged you in. Welcome back!");
           await navigate({ to: destination, replace: true });
