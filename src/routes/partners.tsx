@@ -47,19 +47,17 @@ function Partners() {
             manufacturing and shared prosperity.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
-            <a
-              href="/auth?intent=partner"
-              className="inline-block rounded-lg baba-cta px-6 py-3 text-sm font-semibold text-white"
-            >
-              Become a Partner
-            </a>
             <Link
               to="/contact"
-              className="inline-block rounded-lg border-2 border-baba-blue/20 px-6 py-3 text-sm font-semibold text-baba-blue"
+              className="inline-block rounded-lg baba-cta px-6 py-3 text-sm font-semibold text-white"
             >
               Talk to our partnerships team
             </Link>
           </div>
+          <p className="mt-3 max-w-2xl text-sm text-baba-slate/60">
+            Share your organisation's details with our partnerships team. Until your partnership is
+            approved, any account you hold with BABA remains a standard member account.
+          </p>
         </div>
       </section>
 
