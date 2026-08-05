@@ -160,6 +160,7 @@ function AuthPage() {
       await saveProfile({
         data: {
           full_name: name,
+          email: email.trim() || undefined,
           phone: phoneNumber,
           country: loc.country || undefined,
           city: loc.city.trim() || undefined,
