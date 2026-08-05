@@ -185,12 +185,10 @@ function EventGallery({ event, onBack }: { event: Opportunity | null; onBack: ()
           .from("gallery")
           .upload(path, file, { cacheControl: "31536000", upsert: false });
         if (upErr) throw new Error(upErr.message);
-        const { data: signed, error: signErr } = await supabase.storage
-          .from("gallery")
-          .createSignedUrl(path, SIGNED_URL_TTL);
-        if (signErr || !signed) throw new Error(signErr?.message ?? "Could not link the file");
+        // Store the object path, not a long-lived signed link: access is granted
+        // per view so unpublishing/deleting actually revokes access.
         await addMut.mutateAsync({
-          media_url: signed.signedUrl,
+          media_url: `${STORAGE_PREFIX}${path}`,
           media_type: file.type.startsWith("video") ? "video" : "image",
           caption: caption || file.name,
         });
