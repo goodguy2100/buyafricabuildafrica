@@ -402,3 +402,17 @@ function LibraryTab() {
     </div>
   );
 }
+
+function LibraryCard({ m }: { m: GalleryMedia }) {
+  const src = useMediaSrc(m.media_url);
+  return (
+    <div className="overflow-hidden rounded-xl border border-baba-blue/10 bg-card">
+      {m.media_type === "video" ? (
+        <video src={src} className="h-28 w-full object-cover" />
+      ) : (
+        <img src={src} alt={m.caption ?? ""} className="h-28 w-full object-cover" />
+      )}
+      <p className="truncate p-2 text-xs text-baba-slate/70">{m.caption || "Untitled"}</p>
+    </div>
+  );
+}
