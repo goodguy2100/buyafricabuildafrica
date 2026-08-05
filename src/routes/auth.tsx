@@ -85,10 +85,8 @@ function idToEmail(id: string): string {
   const clean = id.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
   return `id${clean}@baba.local`;
 }
-function idToPassword(id: string): string {
-  const clean = id.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
-  return `baba-${clean}`;
-}
+
+
 /** Members can join without an ID number, so build a login address from the name. */
 function nameToEmail(name: string): string {
   const slug = name.trim().toLowerCase().replace(/[^a-z0-9]+/g, "").slice(0, 24) || "member";
