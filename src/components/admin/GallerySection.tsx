@@ -395,14 +395,7 @@ function LibraryTab() {
       ) : (
         <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-5">
           {media.map((m) => (
-            <div key={m.id} className="overflow-hidden rounded-xl border border-baba-blue/10 bg-card">
-              {m.media_type === "video" ? (
-                <video src={m.media_url} className="h-28 w-full object-cover" />
-              ) : (
-                <img src={m.media_url} alt={m.caption ?? ""} className="h-28 w-full object-cover" />
-              )}
-              <p className="truncate p-2 text-xs text-baba-slate/70">{m.caption || "Untitled"}</p>
-            </div>
+            <LibraryCard key={m.id} m={m} />
           ))}
         </div>
       )}
