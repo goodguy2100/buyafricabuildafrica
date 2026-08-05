@@ -228,9 +228,11 @@ export const updateMyProfile = createServerFn({ method: "POST" })
 
     // Keep the canonical registration record in sync — admin lists, exports and
     // the name-collision login lookup all read these columns, not profiles.extra.
-    const regPatch: { national_id?: string; phone?: string; full_name?: string } = {};
+    const regPatch: { national_id?: string; phone?: string; full_name?: string; email?: string } =
+      {};
     if (data.national_id !== undefined && data.national_id.trim())
       regPatch.national_id = data.national_id.trim();
+    if (patch.email) regPatch.email = patch.email;
     if (data.phone !== undefined && data.phone.trim()) regPatch.phone = data.phone.trim();
     if (data.full_name !== undefined && data.full_name.trim())
       regPatch.full_name = data.full_name.trim();
