@@ -193,7 +193,6 @@ export const updateMyProfile = createServerFn({ method: "POST" })
     const { supabase, userId } = context;
     const patch: {
       full_name?: string;
-      email?: string;
       phone?: string;
       location?: string;
       country?: string;
@@ -204,11 +203,6 @@ export const updateMyProfile = createServerFn({ method: "POST" })
       extra?: Json;
     } = {};
     if (data.full_name !== undefined) patch.full_name = data.full_name;
-    // Only store real contact addresses — never the internal login address.
-    if (data.email !== undefined) {
-      const e = data.email.trim().toLowerCase();
-      if (e && !e.endsWith("@baba.local") && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e)) patch.email = e;
-    }
     if (data.phone !== undefined) patch.phone = data.phone;
     if (data.location !== undefined) patch.location = data.location;
     if (data.country !== undefined) patch.country = data.country;
@@ -232,7 +226,13 @@ export const updateMyProfile = createServerFn({ method: "POST" })
       {};
     if (data.national_id !== undefined && data.national_id.trim())
       regPatch.national_id = data.national_id.trim();
-    if (patch.email) regPatch.email = patch.email;
+    // profiles.email holds the internal login address, so the member's real
+    // contact email lives on the registration record instead.
+    if (data.email !== undefined) {
+      const e = data.email.trim().toLowerCase();
+      if (e && !e.endsWith("@baba.local") && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e))
+        regPatch.email = e;
+    }
     if (data.phone !== undefined && data.phone.trim()) regPatch.phone = data.phone.trim();
     if (data.full_name !== undefined && data.full_name.trim())
       regPatch.full_name = data.full_name.trim();
