@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -21,8 +21,37 @@ const TABS = [
   { key: "library", label: "Content Library" },
 ] as const;
 
-/** Signed URL lifetime for private gallery files (10 years). */
-const SIGNED_URL_TTL = 315_360_000;
+/**
+ * Private gallery files are stored as `storage:<path>` and signed on demand with a
+ * short lifetime. Long-lived links could not be revoked when a photo is unpublished.
+ */
+const SIGNED_URL_TTL = 3600;
+const STORAGE_PREFIX = "storage:";
+
+/** Resolve a stored media reference into a currently-valid displayable URL. */
+function useMediaSrc(mediaUrl: string): string | undefined {
+  const [src, setSrc] = useState<string | undefined>(
+    mediaUrl.startsWith(STORAGE_PREFIX) ? undefined : mediaUrl,
+  );
+  useEffect(() => {
+    let active = true;
+    if (!mediaUrl.startsWith(STORAGE_PREFIX)) {
+      setSrc(mediaUrl);
+      return;
+    }
+    setSrc(undefined);
+    supabase.storage
+      .from("gallery")
+      .createSignedUrl(mediaUrl.slice(STORAGE_PREFIX.length), SIGNED_URL_TTL)
+      .then(({ data }) => {
+        if (active && data?.signedUrl) setSrc(data.signedUrl);
+      });
+    return () => {
+      active = false;
+    };
+  }, [mediaUrl]);
+  return src;
+}
 
 export function GallerySection() {
   const [tab, setTab] = useState<(typeof TABS)[number]["key"]>("galleries");
