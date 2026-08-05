@@ -193,6 +193,7 @@ export const updateMyProfile = createServerFn({ method: "POST" })
     const { supabase, userId } = context;
     const patch: {
       full_name?: string;
+      email?: string;
       phone?: string;
       location?: string;
       country?: string;
@@ -203,6 +204,11 @@ export const updateMyProfile = createServerFn({ method: "POST" })
       extra?: Json;
     } = {};
     if (data.full_name !== undefined) patch.full_name = data.full_name;
+    // Only store real contact addresses — never the internal login address.
+    if (data.email !== undefined) {
+      const e = data.email.trim().toLowerCase();
+      if (e && !e.endsWith("@baba.local") && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e)) patch.email = e;
+    }
     if (data.phone !== undefined) patch.phone = data.phone;
     if (data.location !== undefined) patch.location = data.location;
     if (data.country !== undefined) patch.country = data.country;
