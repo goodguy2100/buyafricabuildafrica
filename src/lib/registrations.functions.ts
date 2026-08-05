@@ -173,6 +173,7 @@ export const getMyProfile = createServerFn({ method: "GET" })
 
 const profileUpdateInput = z.object({
   full_name: z.string().max(200).optional(),
+  email: z.string().max(320).optional(),
   phone: z.string().max(60).optional(),
   national_id: z.string().max(60).optional(),
   location: z.string().max(200).optional(),
@@ -221,9 +222,17 @@ export const updateMyProfile = createServerFn({ method: "POST" })
 
     // Keep the canonical registration record in sync — admin lists, exports and
     // the name-collision login lookup all read these columns, not profiles.extra.
-    const regPatch: { national_id?: string; phone?: string; full_name?: string } = {};
+    const regPatch: { national_id?: string; phone?: string; full_name?: string; email?: string } =
+      {};
     if (data.national_id !== undefined && data.national_id.trim())
       regPatch.national_id = data.national_id.trim();
+    // profiles.email holds the internal login address, so the member's real
+    // contact email lives on the registration record instead.
+    if (data.email !== undefined) {
+      const e = data.email.trim().toLowerCase();
+      if (e && !e.endsWith("@baba.local") && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e))
+        regPatch.email = e;
+    }
     if (data.phone !== undefined && data.phone.trim()) regPatch.phone = data.phone.trim();
     if (data.full_name !== undefined && data.full_name.trim())
       regPatch.full_name = data.full_name.trim();

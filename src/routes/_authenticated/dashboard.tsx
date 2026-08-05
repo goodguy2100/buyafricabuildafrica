@@ -60,6 +60,12 @@ function DashboardError({ error, reset }: { error: Error; reset: () => void }) {
   );
 }
 
+/** Internal login addresses are not real contact emails — never show them. */
+function realEmail(value?: string | null): string {
+  const v = (value ?? "").trim();
+  return v && !v.toLowerCase().endsWith("@baba.local") ? v : "";
+}
+
 type Tab = "profile" | "opportunities" | "registrations" | "settings";
 
 const TABS: { id: Tab; label: string; icon: typeof UserCircle }[] = [
@@ -104,7 +110,7 @@ function DashboardPage() {
   }
 
   const profile = profileQuery.data ?? null;
-  const displayName = profile?.full_name || profile?.email || "Your account";
+  const displayName = profile?.full_name || realEmail(profile?.email) || "Your account";
 
   return (
     <PageShell>
@@ -179,6 +185,7 @@ function DashboardPage() {
                 role={role}
                 registeredNationalId={registrations[0]?.national_id ?? null}
                 registeredPhone={registrations[0]?.phone ?? null}
+                registeredEmail={registrations[0]?.email ?? null}
               />
             )}
             {tab === "opportunities" && (
@@ -206,11 +213,13 @@ function ProfileTab({
   role,
   registeredNationalId,
   registeredPhone,
+  registeredEmail,
 }: {
   profile: ProfileRow | null;
   role: RoleValue;
   registeredNationalId?: string | null;
   registeredPhone?: string | null;
+  registeredEmail?: string | null;
 }) {
   const saveFn = useServerFn(updateMyProfile);
   const queryClient = useQueryClient();
@@ -223,6 +232,7 @@ function ProfileTab({
   const [nationalId, setNationalId] = useState(
     registeredNationalId ?? (extra.national_id as string) ?? "",
   );
+  const [email, setEmail] = useState(realEmail(profile?.email) || realEmail(registeredEmail));
   const [location, setLocation] = useState(profile?.location ?? "");
   const [bio, setBio] = useState(profile?.bio ?? "");
   const [skills, setSkills] = useState((extra.skills as string) ?? "");
@@ -243,6 +253,7 @@ function ProfileTab({
       saveFn({
         data: {
           full_name: fullName,
+          email,
           phone,
           location,
           bio,
@@ -285,7 +296,7 @@ function ProfileTab({
       )}
 
       <div className="mt-5 grid gap-4 sm:grid-cols-2">
-        <ReadOnly label="Email" value={profile?.email ?? "—"} />
+        <Editable label="Email (optional)" value={email} onChange={setEmail} />
         <Editable label="Full Name" value={fullName} onChange={setFullName} />
         <Editable
           label={`${idLabel} (required)`}
@@ -753,7 +764,7 @@ function RegistrationsTab({ registrations }: { registrations: RegistrationRow[] 
 
 function SettingsTab({ profile }: { profile: ProfileRow | null }) {
   const [password, setPassword] = useState("");
-  const [email, setEmail] = useState(profile?.email ?? "");
+  const [email, setEmail] = useState(realEmail(profile?.email));
   const [pwMsg, setPwMsg] = useState("");
   const [emailMsg, setEmailMsg] = useState("");
   const [pwBusy, setPwBusy] = useState(false);
