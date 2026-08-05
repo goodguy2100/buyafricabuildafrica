@@ -330,12 +330,13 @@ function MediaCard({
   onTogglePublish: (pub: boolean) => void;
   onDelete: () => void;
 }) {
+  const src = useMediaSrc(m.media_url);
   return (
     <div className="overflow-hidden rounded-xl border border-baba-blue/10 bg-card">
       {m.media_type === "video" ? (
-        <video src={m.media_url} className="h-32 w-full object-cover" controls />
+        <video src={src} className="h-32 w-full object-cover" controls />
       ) : (
-        <img src={m.media_url} alt={m.caption ?? ""} className="h-32 w-full object-cover" />
+        <img src={src} alt={m.caption ?? ""} className="h-32 w-full object-cover" />
       )}
       <div className="p-3">
         <p className="truncate text-sm text-baba-slate">{m.caption || "Untitled"}</p>
