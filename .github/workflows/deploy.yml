@@ -36,44 +36,44 @@ jobs:
       - name: Build
         run: bun run build
 
-      - name: Fix asset paths and create index.html
+      - name: Generate index.html with real asset hashes
         run: |
-          # Fix absolute asset paths in JS files - add subdirectory prefix
-          echo "Fixing asset paths in built files..."
-          find dist/client -name "*.js" -exec sed -i 's|"/assets/|"/buyafricabuildafrica/assets/|g' {} +
-          find dist/client -name "*.css" -exec sed -i 's|url("/assets/|url("/buyafricabuildafrica/assets/|g' {} +
-          find dist/client -name "*.js" -exec sed -i "s|'/assets/|'/buyafricabuildafrica/assets/|g" {} +
-          
-          # Create index.html
-          JS=$(ls dist/client/assets/index-*.js | head -1 | xargs basename)
-          CSS=$(ls dist/client/assets/styles-*.css | head -1 | xargs basename)
+          # The build (TanStack Start + nitro) outputs client assets to .output/public/assets
+          # Entry JS = the bundle that contains __vite__mapDeps (all other chunks import from it)
+          JS=$(grep -l "__vite__mapDeps" .output/public/assets/index-*.js | head -1 | xargs basename)
+          if [ -z "$JS" ]; then
+            JS=$(ls -S .output/public/assets/index-*.js | head -1 | xargs basename)
+          fi
+          CSS=$(ls .output/public/assets/styles-*.css | head -1 | xargs basename)
           echo "JS=$JS CSS=$CSS"
-          
-          cat > dist/client/index.html << HTML
+
+          # Custom domain serves at root -> root-relative /assets/ paths are correct.
+          cat > .output/public/index.html << HTML
           <!DOCTYPE html>
           <html lang="en">
           <head>
             <meta charset="utf-8" />
             <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-            <title>Buy Africa Build Africa (BABA)</title>
+            <title>Buy Africa Build Africa (BABA) | Connecting Local Talent to Continental Opportunity</title>
+            <meta name="description" content="A Pan-African platform connecting professionals, artisans, institutions, and opportunities to drive economic growth and sustainable development across Africa." />
             <link rel="preconnect" href="https://fonts.googleapis.com" />
             <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
             <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-            <link rel="stylesheet" href="/buyafricabuildafrica/assets/${CSS}" />
+            <link rel="stylesheet" href="/assets/${CSS}" />
           </head>
           <body>
             <div id="root"></div>
-            <script type="module" crossorigin src="/buyafricabuildafrica/assets/${JS}"></script>
+            <script type="module" crossorigin src="/assets/${JS}"></script>
           </body>
           </html>
           HTML
           echo "--- index.html ---"
-          cat dist/client/index.html
+          cat .output/public/index.html
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist/client
+          path: .output/public
 
       - name: Deploy to GitHub Pages
         id: deployment
