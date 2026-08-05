@@ -109,19 +109,19 @@ export default defineTool({
         isError: true,
       };
     }
+    if (isBlockedHost(parsed.hostname)) {
+      return {
+        content: [
+          { type: "text", text: "Blocked: internal or private network addresses are not allowed." },
+        ],
+        isError: true,
+      };
+    }
 
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 15000);
     try {
-      const res = await fetch(parsed.toString(), {
-        method: "GET",
-        headers: {
-          "User-Agent": "BABA-MCP-Bot/1.0 (+https://buyafricabuildafrica.org)",
-          Accept: "text/html,application/xhtml+xml,text/plain;q=0.9,*/*;q=0.5",
-        },
-        redirect: "follow",
-        signal: controller.signal,
-      });
+      const res = await safeFetch(parsed, controller.signal);
       const contentType = res.headers.get("content-type") ?? "";
       const raw = await res.text();
       if (!res.ok) {
