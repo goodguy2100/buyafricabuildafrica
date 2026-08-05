@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { User, IdCard, Mail, Loader2, Lock, MapPin, Users, Building2, Phone } from "lucide-react";
+import { User, IdCard, Mail, Loader2, Lock, MapPin, Users, Phone } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { supabase } from "@/integrations/supabase/client";
 import { createRegistration, updateMyProfile, type RoleValue } from "@/lib/registrations.functions";
@@ -332,23 +332,6 @@ function AuthPage() {
                 <span className="block text-xs text-baba-slate/60">I am working or studying</span>
               </span>
             </button>
-            <div className="mt-3 border-t border-baba-blue/10 pt-3 text-center">
-              <button
-                type="button"
-                onClick={() => {
-                  setIntent("partner");
-                  setCategoryLabel("");
-                  setOtherCategory("");
-                }}
-                className={`inline-flex items-center gap-2 text-sm font-semibold transition-colors ${
-                  intent === "partner"
-                    ? "text-baba-blue"
-                    : "text-baba-slate/60 hover:text-baba-blue"
-                }`}
-              >
-                <Building2 className="h-4 w-4" /> Partner with us - company, organisation or institution
-              </button>
-            </div>
           </div>
         )}
 
