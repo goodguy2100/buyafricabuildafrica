@@ -173,6 +173,7 @@ export const getMyProfile = createServerFn({ method: "GET" })
 
 const profileUpdateInput = z.object({
   full_name: z.string().max(200).optional(),
+  email: z.string().max(320).optional(),
   phone: z.string().max(60).optional(),
   national_id: z.string().max(60).optional(),
   location: z.string().max(200).optional(),
