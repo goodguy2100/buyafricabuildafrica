@@ -20,7 +20,9 @@ import {
   Briefcase,
   GraduationCap,
   Check,
+  Bell,
 } from "lucide-react";
+import { NotificationsTab } from "@/components/NotificationsTab";
 import { PageShell } from "@/components/PageShell";
 import { supabase } from "@/integrations/supabase/client";
 import {
