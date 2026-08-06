@@ -12,6 +12,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { supabase } from "@/integrations/supabase/client";
+import { NotificationPopup } from "@/components/NotificationPopup";
 import { MotionProvider } from "@/lib/motion";
 
 function NotFoundComponent() {
@@ -176,7 +177,9 @@ function RootComponent() {
       <MotionProvider>
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />
+        <NotificationPopup />
       </MotionProvider>
+
     </QueryClientProvider>
   );
 }

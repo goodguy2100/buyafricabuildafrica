@@ -488,6 +488,21 @@ export const messageMembers = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }): Promise<NotificationRow> => {
     const { supabase } = await assertAdmin(context);
+    const { getRequest } = await import("@tanstack/react-start/server");
+    const { deliverNotification } = await import("@/lib/notify.server");
+
+    const { data: regs, error: regErr } = await supabase
+      .from("registrations")
+      .select("user_id, email, full_name")
+      .in("id", data.ids);
+    if (regErr) throw new Error(regErr.message);
+    const recipients = (regs ?? []) as {
+      user_id: string;
+      email: string | null;
+      full_name: string | null;
+    }[];
+
+    const isPopup = data.message_type === "popup" || data.message_type === "all";
     const { data: row, error } = await supabase
       .from("notifications_sent")
       .insert({
@@ -496,13 +511,27 @@ export const messageMembers = createServerFn({ method: "POST" })
         recipient_type: "selected",
         recipient_container: null,
         message_type: data.message_type,
-        sent_count: data.ids.length,
+        sent_count: recipients.length,
         status: "delivered",
-        is_popup: data.message_type === "popup" || data.message_type === "all",
+        is_popup: isPopup,
       })
       .select("*")
       .single();
     if (error) throw new Error(error.message);
+
+    const request = getRequest();
+    await deliverNotification({
+      supabase,
+      notificationId: (row as NotificationRow).id,
+      recipients,
+      title: data.title,
+      body: data.body ?? null,
+      isPopup,
+      sendEmail: data.message_type === "email" || data.message_type === "all",
+      authHeader: request?.headers.get("authorization") ?? null,
+      origin: new URL(request!.url).origin,
+    });
+
     return row as NotificationRow;
   });
 
@@ -522,25 +551,42 @@ export const sendNotification = createServerFn({ method: "POST" })
       .parse(input),
   )
   .handler(async ({ data, context }): Promise<NotificationRow> => {
-    const { supabase, userId } = await assertAdmin(context);
+    const { supabase } = await assertAdmin(context);
+    const { getRequest } = await import("@tanstack/react-start/server");
+    const { deliverNotification } = await import("@/lib/notify.server");
+    const { containerTypeFor: ctFor } = await import("@/lib/roles");
 
-    // compute recipient count
-    let sentCount = 0;
-    if (data.recipient_type === "all") {
-      const { count } = await supabase
+    // Resolve the actual audience so delivery matches the recorded count.
+    let recipients: { user_id: string; email: string | null; full_name: string | null }[] = [];
+    if (data.recipient_type === "applicants") {
+      const { data: apps } = await supabase
+        .from("opportunity_applications")
+        .select("user_id, applicant_email, applicant_name");
+      recipients = (apps ?? []).map((a: any) => ({
+        user_id: a.user_id,
+        email: a.applicant_email ?? null,
+        full_name: a.applicant_name ?? null,
+      }));
+    } else {
+      const { data: regs, error: regErr } = await supabase
         .from("registrations")
-        .select("id", { count: "exact", head: true });
-      sentCount = count ?? 0;
-    } else if (data.recipient_type === "container" && data.recipient_container) {
-      const { data: c } = await supabase
-        .from("role_containers")
-        .select("member_count")
-        .eq("container_type", data.recipient_container)
-        .maybeSingle();
-      sentCount = c?.member_count ?? 0;
+        .select("user_id, email, full_name, user_role, role, artisan_type");
+      if (regErr) throw new Error(regErr.message);
+      recipients = (regs ?? [])
+        .filter((r: any) =>
+          data.recipient_type === "container" && data.recipient_container
+            ? ctFor(r.user_role ?? r.role, r.artisan_type ?? null) === data.recipient_container
+            : true,
+        )
+        .map((r: any) => ({
+          user_id: r.user_id,
+          email: r.email ?? null,
+          full_name: r.full_name ?? null,
+        }));
     }
 
-    const scheduled = data.scheduled_for && new Date(data.scheduled_for) > new Date();
+    const scheduled = !!(data.scheduled_for && new Date(data.scheduled_for) > new Date());
+    const isPopup = data.message_type === "popup" || data.message_type === "all";
     const { data: row, error } = await supabase
       .from("notifications_sent")
       .insert({
@@ -550,15 +596,32 @@ export const sendNotification = createServerFn({ method: "POST" })
         recipient_container: data.recipient_container ?? null,
         message_type: data.message_type,
         scheduled_for: data.scheduled_for || null,
-        sent_count: sentCount,
+        sent_count: recipients.length,
         status: scheduled ? "scheduled" : "delivered",
-        is_popup: data.message_type === "popup" || data.message_type === "all",
+        is_popup: isPopup,
       })
       .select("*")
       .single();
     if (error) throw new Error(error.message);
+
+    if (!scheduled) {
+      const request = getRequest();
+      await deliverNotification({
+        supabase,
+        notificationId: (row as NotificationRow).id,
+        recipients,
+        title: data.title,
+        body: data.body ?? null,
+        isPopup,
+        sendEmail: data.message_type === "email" || data.message_type === "all",
+        authHeader: request?.headers.get("authorization") ?? null,
+        origin: new URL(request!.url).origin,
+      });
+    }
+
     return row as NotificationRow;
   });
+
 
 const popupInput = z.object({
   title: z.string().min(1).max(300),
