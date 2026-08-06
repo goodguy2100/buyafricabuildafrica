@@ -686,6 +686,53 @@ export type Database = {
           },
         ]
       }
+      user_notifications: {
+        Row: {
+          banner_url: string | null
+          body: string | null
+          created_at: string
+          id: string
+          is_popup: boolean
+          link_url: string | null
+          notification_id: string | null
+          read_at: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          banner_url?: string | null
+          body?: string | null
+          created_at?: string
+          id?: string
+          is_popup?: boolean
+          link_url?: string | null
+          notification_id?: string | null
+          read_at?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          banner_url?: string | null
+          body?: string | null
+          created_at?: string
+          id?: string
+          is_popup?: boolean
+          link_url?: string | null
+          notification_id?: string | null
+          read_at?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_notifications_notification_id_fkey"
+            columns: ["notification_id"]
+            isOneToOne: false
+            referencedRelation: "notifications_sent"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
