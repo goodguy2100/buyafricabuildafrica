@@ -66,14 +66,16 @@ function realEmail(value?: string | null): string {
   return v && !v.toLowerCase().endsWith("@baba.local") ? v : "";
 }
 
-type Tab = "profile" | "opportunities" | "registrations" | "settings";
+type Tab = "profile" | "notifications" | "opportunities" | "registrations" | "settings";
 
 const TABS: { id: Tab; label: string; icon: typeof UserCircle }[] = [
   { id: "profile", label: "My Profile", icon: UserCircle },
+  { id: "notifications", label: "Notifications", icon: Bell },
   { id: "opportunities", label: "Opportunities", icon: Compass },
   { id: "registrations", label: "My Registrations", icon: ClipboardList },
   { id: "settings", label: "Settings", icon: SettingsIcon },
 ];
+
 
 function DashboardPage() {
   const profileFn = useServerFn(getMyProfile);
