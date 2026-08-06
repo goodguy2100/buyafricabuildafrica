@@ -189,9 +189,11 @@ function AuthPage() {
     const id = idNumber.trim();
     const pwd = password;
     if (!name) return setError("Please type your full name.");
-    if (!phone.trim()) return setError("Please type your phone number.");
-    if (phone.replace(/[^0-9]/g, "").length < 9) {
-      return setError("That phone number looks too short - please type it fully, e.g. 0712 345 678.");
+    if (mode === "join") {
+      if (!phone.trim()) return setError("Please type your phone number.");
+      if (phone.replace(/[^0-9]/g, "").length < 9) {
+        return setError("That phone number looks too short - please type it fully, e.g. 0712 345 678.");
+      }
     }
     if (!pwd || pwd.length < 6) {
       return setError("Please type your password (6 letters or numbers or more).");
