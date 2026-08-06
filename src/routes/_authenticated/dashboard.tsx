@@ -192,6 +192,8 @@ function DashboardPage() {
                 registeredEmail={registrations[0]?.email ?? null}
               />
             )}
+            {tab === "notifications" && <NotificationsTab />}
+
             {tab === "opportunities" && (
               <OpportunitiesTab
                 verified={verified}
