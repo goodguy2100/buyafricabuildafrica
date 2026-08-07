@@ -96,6 +96,7 @@ export function PageShell({
         <Footer />
       </div>
       <EventPopup />
+      <WhatsAppButton />
     </div>
   );
 }
