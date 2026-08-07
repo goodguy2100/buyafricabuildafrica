@@ -118,12 +118,14 @@ export function Header() {
 
         <div className="hidden items-center gap-2.5 xl:flex">
           <MotionToggle />
-          <Link
-            to="/register"
-            className="rounded-full baba-cta px-4 py-2 text-sm font-semibold text-white"
-          >
-            Join Us
-          </Link>
+          {!signedIn && (
+            <Link
+              to="/register"
+              className="rounded-full baba-cta px-4 py-2 text-sm font-semibold text-white"
+            >
+              Join Us
+            </Link>
+          )}
 
           <Link
             to="/partners"
@@ -192,13 +194,15 @@ export function Header() {
             ))}
           </nav>
           <div className="mt-3 flex flex-col gap-2">
-            <Link
-              to="/register"
-              onClick={() => setOpen(false)}
-              className="rounded-full baba-cta px-4 py-2.5 text-center text-sm font-semibold text-white"
-            >
-              Join Us
-            </Link>
+            {!signedIn && (
+              <Link
+                to="/register"
+                onClick={() => setOpen(false)}
+                className="rounded-full baba-cta px-4 py-2.5 text-center text-sm font-semibold text-white"
+              >
+                Join Us
+              </Link>
+            )}
 
             <Link
               to="/partners"
