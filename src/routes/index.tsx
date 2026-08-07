@@ -42,13 +42,13 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "A Pan-African platform connecting people, industries, institutions, skills and opportunities to drive growth across Africa.",
+          "Baba is an ecosystem connecting people, industries, institutions, skills and opportunities to drive growth across Africa.",
       },
       { property: "og:title", content: "Buy Africa Build Africa (BABA) | Building Africa's Future" },
       {
         property: "og:description",
         content:
-          "A Pan-African platform connecting people, industries, institutions, skills and opportunities to drive growth across Africa.",
+          "Baba is an ecosystem connecting people, industries, institutions, skills and opportunities to drive growth across Africa.",
       },
       { property: "og:url", content: "https://buyafricabuildafrica.org/" },
       { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/cnSUIEtJ7wUkpmtI1OlzTnY67gk1/social-images/social-1785773579644-social-image.webp" },
@@ -65,7 +65,7 @@ export const Route = createFileRoute("/")({
           alternateName: "BABA",
           url: "https://buyafricabuildafrica.org/",
           description:
-            "A Pan-African platform connecting people, industries, institutions, skills, innovation and opportunities to drive economic growth and sustainable development across Africa.",
+            "Baba is an ecosystem connecting people, industries, institutions, skills and opportunities to drive growth across Africa.",
           areaServed: "Africa",
           sameAs: [
             "https://www.instagram.com/buyafrica.buildafrica",
