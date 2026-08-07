@@ -84,7 +84,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "A Pan-African platform connecting people, industries, institutions, skills and opportunities to drive growth across Africa.",
+          "Baba is an ecosystem connecting people, industries, institutions, skills and opportunities to drive growth across Africa.",
       },
       { name: "author", content: "Buy Africa Build Africa" },
       { property: "og:site_name", content: "Buy Africa Build Africa (BABA)" },
@@ -92,7 +92,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         property: "og:description",
         content:
-          "A Pan-African platform connecting people, industries, institutions, skills and opportunities to drive growth across Africa.",
+          "Baba is an ecosystem connecting people, industries, institutions, skills and opportunities to drive growth across Africa.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -100,7 +100,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "twitter:description",
         content:
-          "A Pan-African platform connecting people, industries, institutions, skills and opportunities to drive growth across Africa.",
+          "Baba is an ecosystem connecting people, industries, institutions, skills and opportunities to drive growth across Africa.",
       },
       { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/cnSUIEtJ7wUkpmtI1OlzTnY67gk1/social-images/social-1785773579644-social-image.webp" },
       { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/cnSUIEtJ7wUkpmtI1OlzTnY67gk1/social-images/social-1785773579644-social-image.webp" },
