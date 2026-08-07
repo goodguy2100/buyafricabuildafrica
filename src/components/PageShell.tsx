@@ -2,6 +2,7 @@ import { useEffect, type ReactNode } from "react";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { EventPopup } from "./EventPopup";
+import { WhatsAppButton } from "./WhatsAppButton";
 import { FloatingShapes, type ShapePreset } from "./FloatingShapes";
 import { useMotion } from "@/lib/motion";
 
