@@ -21,6 +21,8 @@ import { LocationPicker } from "@/components/LocationPicker";
 import {
   createRegistration,
   updateMyProfile,
+  getMyProfile,
+  getMyRegistrations,
   type RoleValue,
 } from "@/lib/registrations.functions";
 import { appendMemberRowToSheet } from "@/lib/sheets.functions";
@@ -76,11 +78,14 @@ function GetStarted() {
   const submitRegistration = useServerFn(createRegistration);
   const saveProfile = useServerFn(updateMyProfile);
   const appendToSheet = useServerFn(appendMemberRowToSheet);
+  const loadProfile = useServerFn(getMyProfile);
+  const loadRegistrations = useServerFn(getMyRegistrations);
   const [authState, setAuthState] = useState<"checking" | "in" | "out">("checking");
   const [step, setStep] = useState(0); // 0 role, 1 form, 2 welcome
   const [proChoosing, setProChoosing] = useState(false);
   const [role, setRole] = useState<RoleValue | null>(null);
   const [form, setForm] = useState<FormState>({});
+  const [prefill, setPrefill] = useState<Record<string, string>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
@@ -94,6 +99,48 @@ function GetStarted() {
     });
     return () => sub.subscription.unsubscribe();
   }, []);
+
+  // Reuse what the member already gave us at sign-up so they only fill in
+  // the extra questions for the path they pick.
+  useEffect(() => {
+    if (authState !== "in") return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const [profile, regs] = await Promise.all([
+          loadProfile({}).catch(() => null),
+          loadRegistrations({}).catch(() => []),
+        ]);
+        if (cancelled) return;
+        const p = (profile ?? {}) as Record<string, unknown>;
+        const last = ((regs ?? []) as Record<string, unknown>[])[0] ?? {};
+        const pick = (...vals: unknown[]) => {
+          for (const v of vals) {
+            if (typeof v === "string" && v.trim() && !v.trim().endsWith("@baba.local")) {
+              return v.trim();
+            }
+          }
+          return "";
+        };
+        const next: Record<string, string> = {
+          fullName: pick(p.full_name, last.full_name),
+          phone: pick(p.phone, last.phone),
+          email: pick(last.email, p.email),
+          nationalId: pick(last.national_id, (p.extra as Record<string, unknown>)?.national_id),
+          country: pick(p.country, last.country),
+          city: pick(p.city, last.city),
+          area: pick(p.area, last.area),
+          location: pick(p.location, last.location),
+        };
+        setPrefill(Object.fromEntries(Object.entries(next).filter(([, v]) => v)));
+      } catch {
+        // Prefill is a convenience — never block registration.
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [authState, loadProfile, loadRegistrations]);
 
   const set = (key: string, value: string | string[]) => {
     setForm((f) => ({ ...f, [key]: value }));
@@ -109,7 +156,20 @@ function GetStarted() {
 
   const chooseRole = (r: RoleValue) => {
     setRole(r);
-    setForm({});
+    // Seed the role's form with the details captured at sign-up.
+    const base: FormState = { ...prefill };
+    if (r === "corporate") {
+      const { fullName, phone, email, ...rest } = prefill;
+      Object.assign(base, rest, {
+        ...(fullName ? { contactPerson: fullName } : {}),
+        ...(phone ? { contactPhone: phone } : {}),
+        ...(email ? { contactEmail: email } : {}),
+      });
+      delete (base as Record<string, unknown>).fullName;
+      delete (base as Record<string, unknown>).phone;
+      delete (base as Record<string, unknown>).email;
+    }
+    setForm(base);
     setErrors({});
     setProChoosing(false);
     setStep(1);
