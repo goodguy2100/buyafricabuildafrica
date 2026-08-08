@@ -12,6 +12,17 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const redirects = resolve(root, ".output/public/_redirects");
 const wranglerJson = resolve(root, ".output/server/wrangler.json");
 
+/** Read a key from the local .env file ("KEY=value" lines). */
+function envValue(key) {
+  const envPath = resolve(root, ".env");
+  if (!existsSync(envPath)) return undefined;
+  for (const line of readFileSync(envPath, "utf8").split(/\r?\n/)) {
+    const m = line.match(/^([A-Z0-9_]+)="?([^\"]*)"?$/);
+    if (m && m[1] === key) return m[2];
+  }
+  return undefined;
+}
+
 let changed = false;
 
 if (existsSync(redirects)) {
@@ -39,6 +50,19 @@ if (existsSync(wranglerJson)) {
   if (cfg.assets && cfg.assets.not_found_handling !== "single-page-application") {
     cfg.assets.not_found_handling = "single-page-application";
     console.log("[postbuild] set assets.not_found_handling = single-page-application");
+    changed = true;
+  }
+  // Inject runtime env vars from .env so the deployed worker has them without
+  // needing --var at deploy time. Secrets (SERVICE_ROLE etc.) stay out of the
+  // config — set those once with `wrangler secret put`.
+  const envVars = {};
+  for (const k of ["SUPABASE_URL", "SUPABASE_PUBLISHABLE_KEY"]) {
+    const v = envValue(k) ?? envValue(`VITE_${k}`);
+    if (v) envVars[k] = v;
+  }
+  if (Object.keys(envVars).length) {
+    cfg.vars = { ...(cfg.vars ?? {}), ...envVars };
+    console.log(`[postbuild] injected env vars: ${Object.keys(envVars).join(", ")}`);
     changed = true;
   }
   if (changed) writeFileSync(wranglerJson, JSON.stringify(cfg, null, 2));
