@@ -8,6 +8,7 @@ import {
   Users,
   DollarSign,
   Briefcase,
+  CalendarDays,
   Bell,
   Images,
   Newspaper,
@@ -81,6 +82,7 @@ const NAV = [
   { key: "members", label: "Members", icon: Users },
   { key: "payments", label: "Payments", icon: DollarSign },
   { key: "opportunities", label: "Opportunities", icon: Briefcase },
+  { key: "events", label: "Events", icon: CalendarDays },
   { key: "news", label: "News", icon: Newspaper },
   { key: "notifications", label: "Notifications", icon: Bell },
   { key: "gallery", label: "Gallery", icon: Images },
@@ -200,6 +202,7 @@ function AdminPage() {
           {tab === "members" && <MembersSection />}
           {tab === "payments" && <PaymentsSection />}
           {tab === "opportunities" && <OpportunitiesSection />}
+          {tab === "events" && <OpportunitiesSection />}
           {tab === "news" && <NewsSection />}
           {tab === "notifications" && <NotificationsSection />}
           {tab === "gallery" && <GallerySection />}

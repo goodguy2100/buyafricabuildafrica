@@ -1,9 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Calendar, Globe, ArrowRight, MapPin, Clock } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
-
-
-import { upcomingEvents } from "@/data/upcoming-events";
+import { useUpcomingEvents } from "@/lib/use-upcoming-events";
 
 
 export const Route = createFileRoute("/events")({
@@ -15,7 +13,7 @@ export const Route = createFileRoute("/events")({
       {
         property: "og:description",
         content:
-          "The events BABA is tracking — Build Expo and The Showground — plus BABA's flagship Expo & Conference for Africa's built environment.",
+          "The events BABA is tracking — Build Expo and The Showground — plus BABA's flagship Expo & Conference for Africa.",
       },
       { property: "og:url", content: "https://buyafricabuildafrica.org/events" },
     ],
@@ -48,6 +46,7 @@ const annualEvents = [
 ];
 
 export function Events() {
+  const { events } = useUpcomingEvents();
   return (
     <PageShell>
       <section className="relative overflow-hidden bg-gradient-to-br from-baba-blue via-baba-blue-dark to-baba-slate py-24">
@@ -74,8 +73,16 @@ export function Events() {
             <h2 className="mt-2 font-display text-3xl font-extrabold text-baba-slate sm:text-4xl">Upcoming Events</h2>
           </div>
           <div data-stack className="mt-12 grid gap-8 lg:grid-cols-3">
-            {upcomingEvents.map((event) => (
-              <div key={event.title} className="baba-card-hover group relative overflow-hidden rounded-2xl border border-baba-copper/20 bg-white">
+            {events.length === 0 && (
+              <div className="rounded-2xl border border-baba-blue/10 bg-white p-10 text-center lg:col-span-3">
+                <Calendar className="mx-auto h-8 w-8 text-baba-blue/40" />
+                <p className="mt-3 text-sm text-baba-slate/60">
+                  No upcoming events right now — check back soon.
+                </p>
+              </div>
+            )}
+            {events.map((event) => (
+              <div key={event.id} className="baba-card-hover group relative overflow-hidden rounded-2xl border border-baba-copper/20 bg-white">
                 <div className="relative h-44 overflow-hidden bg-gradient-to-br from-baba-blue via-baba-blue-dark to-baba-slate">
                   <div className="absolute inset-0 bg-gradient-to-t from-baba-slate/70 via-transparent to-transparent" />
                   <div className="absolute left-5 top-5 flex h-11 w-11 items-center justify-center rounded-xl bg-white/90 backdrop-blur-sm">

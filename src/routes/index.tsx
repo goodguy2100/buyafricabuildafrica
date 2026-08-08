@@ -30,7 +30,7 @@ import { PageShell } from "@/components/PageShell";
 import { NewsHomePreview } from "@/components/NewsHomePreview";
 import { Counter } from "@/components/Counter";
 import { EventsSlideshow } from "@/components/EventsSlideshow";
-import { upcomingEvents } from "@/data/upcoming-events";
+import { useUpcomingEvents } from "@/lib/use-upcoming-events";
 import { pillars } from "@/data/pillars";
 
 import kenyaPulse from "@/assets/kenya-pulse.mp4.asset.json";
@@ -175,6 +175,7 @@ const ubuntuCommunities: { country: string; flag: string; chapters: string[] }[]
 ];
 
 function Home() {
+  const { events } = useUpcomingEvents();
   return (
     <PageShell preset="home">
       {/* ═══ HERO ═══ */}
@@ -572,8 +573,8 @@ function Home() {
           <h2 className="mt-2 font-display text-3xl font-extrabold text-baba-slate sm:text-4xl">Upcoming Events</h2>
         </div>
         <div data-stack className="mt-10 grid gap-6 sm:grid-cols-3">
-          {upcomingEvents.map((event) => (
-            <div key={event.title} className="rounded-2xl border border-baba-blue/10 bg-white p-6 baba-card-hover">
+          {events.map((event) => (
+            <div key={event.id} className="rounded-2xl border border-baba-blue/10 bg-white p-6 baba-card-hover">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-baba-blue/10">
                 <event.icon className="h-6 w-6 text-baba-blue" />
               </div>

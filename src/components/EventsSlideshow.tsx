@@ -1,23 +1,31 @@
 import { useEffect, useState } from "react";
 import { Calendar, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
-import { upcomingEvents } from "@/data/upcoming-events";
+import { useUpcomingEvents } from "@/lib/use-upcoming-events";
 
 /**
  * Auto-rotating slideshow of the upcoming events BABA is tracking.
  * Pauses on hover; arrows + dots for manual control.
  */
 export function EventsSlideshow() {
+  const { events } = useUpcomingEvents();
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
-  const n = upcomingEvents.length;
+  const n = events.length;
 
   useEffect(() => {
-    if (paused) return;
+    if (n === 0) return;
+    setIndex((i) => Math.min(i, n - 1));
+  }, [n]);
+
+  useEffect(() => {
+    if (paused || n === 0) return;
     const t = setInterval(() => setIndex((i) => (i + 1) % n), 4500);
     return () => clearInterval(t);
   }, [paused, n]);
 
-  const ev = upcomingEvents[index];
+  if (n === 0) return null;
+
+  const ev = events[Math.min(index, n - 1)];
 
   return (
     <div
@@ -59,9 +67,9 @@ export function EventsSlideshow() {
       </button>
 
       <div className="relative flex items-center justify-center gap-2 pb-6">
-        {upcomingEvents.map((e, i) => (
+        {events.map((e, i) => (
           <button
-            key={e.title}
+            key={e.id}
             onClick={() => setIndex(i)}
             aria-label={`Show ${e.title}`}
             className={`h-2 rounded-full transition-all ${

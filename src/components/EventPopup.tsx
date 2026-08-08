@@ -1,33 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Bell, Calendar, MapPin, X } from "lucide-react";
-
-const upcomingEvents = [
-  {
-    title: "Gardens Expo & Conference",
-    date: "August 28, 2026",
-    location: "Sarit Centre, Nairobi",
-    description: "A celebration of landscaping, garden design and sustainable green spaces.",
-    start: "20260828",
-    end: "20260828",
-  },
-  {
-    title: "Official BABA Launch",
-    date: "1st week of December 2026",
-    location: "Nairobi, Kenya",
-    description: "The official launch of Buy Africa Build Africa.",
-    start: "20261201",
-    end: "20261201",
-  },
-  {
-    title: "BABA Excellence Awards",
-    date: "1st December 2026",
-    location: "To be announced",
-    description: "An evening gala celebrating those building Africa.",
-    start: "20261201",
-    end: "20261201",
-  },
-];
+import { useUpcomingEvents, type DisplayEvent } from "@/lib/use-upcoming-events";
 
 function escapeICS(value: string) {
   return value
@@ -37,14 +11,25 @@ function escapeICS(value: string) {
     .replace(/\n/g, "\\n");
 }
 
-function closestEvent() {
-  const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-  return upcomingEvents
-    .filter((e) => e.start >= today)
-    .sort((a, b) => a.start.localeCompare(b.start))[0] ?? upcomingEvents[0];
+function todayKey(): string {
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = String(now.getMonth() + 1).padStart(2, "0");
+  const d = String(now.getDate()).padStart(2, "0");
+  return `${y}${m}${d}`;
 }
 
-function generateICS(event: (typeof upcomingEvents)[number]) {
+function closestEvent(events: DisplayEvent[]): DisplayEvent | null {
+  if (events.length === 0) return null;
+  const today = todayKey();
+  return (
+    events
+      .filter((e) => e.start && e.start >= today)
+      .sort((a, b) => a.start.localeCompare(b.start))[0] ?? events[0]
+  );
+}
+
+function generateICS(event: DisplayEvent) {
   const now = new Date().toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
   const uid = `${event.title.toLowerCase().replace(/\s+/g, "-")}@buyafricabuildafrica.org`;
   return [
@@ -69,10 +54,12 @@ function generateICS(event: (typeof upcomingEvents)[number]) {
 const DISMISS_KEY = "baba.eventPopup.dismissed";
 
 export function EventPopup() {
+  const { events } = useUpcomingEvents();
   const [visible, setVisible] = useState(false);
-  const event = closestEvent();
+  const event = closestEvent(events);
 
   useEffect(() => {
+    if (!event) return;
     try {
       if (sessionStorage.getItem(DISMISS_KEY) === "1") return;
     } catch {
@@ -80,7 +67,7 @@ export function EventPopup() {
     }
     const timer = setTimeout(() => setVisible(true), 1500);
     return () => clearTimeout(timer);
-  }, []);
+  }, [event]);
 
   const handleDismiss = () => {
     setVisible(false);
@@ -92,6 +79,7 @@ export function EventPopup() {
   };
 
   const handleAddToCalendar = () => {
+    if (!event) return;
     const ics = generateICS(event);
     const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
     const url = URL.createObjectURL(blob);
@@ -105,8 +93,9 @@ export function EventPopup() {
     handleDismiss();
   };
 
-  if (!visible) return null;
+  if (!visible || !event) return null;
 
+  const hasDates = Boolean(event.start && event.end);
 
   return (
     <div className="fixed inset-x-0 bottom-0 z-50 p-3 sm:p-4">
@@ -130,12 +119,14 @@ export function EventPopup() {
             </div>
           </div>
           <div className="flex w-full items-center gap-2 sm:w-auto">
-            <button
-              onClick={handleAddToCalendar}
-              className="flex-1 rounded-full bg-white/15 px-3 py-2 text-xs font-semibold text-white backdrop-blur-sm transition hover:bg-white/25 sm:flex-initial"
-            >
-              Add to Calendar
-            </button>
+            {hasDates && (
+              <button
+                onClick={handleAddToCalendar}
+                className="flex-1 rounded-full bg-white/15 px-3 py-2 text-xs font-semibold text-white backdrop-blur-sm transition hover:bg-white/25 sm:flex-initial"
+              >
+                Add to Calendar
+              </button>
+            )}
             <Link
               to="/events"
               className="flex-1 rounded-full bg-white px-3 py-2 text-center text-xs font-semibold text-baba-blue shadow transition hover:bg-white/90 sm:flex-initial"
