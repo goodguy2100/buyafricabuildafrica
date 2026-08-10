@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { User, IdCard, Mail, Loader2, Lock, MapPin, Users, Phone } from "lucide-react";
+import { User, IdCard, Mail, Loader2, Lock, MapPin, Users, Phone, ArrowLeft, ArrowRight, Check } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { supabase } from "@/integrations/supabase/client";
 import { createRegistration, updateMyProfile, type RoleValue } from "@/lib/registrations.functions";
@@ -144,6 +144,7 @@ function AuthPage() {
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [loading, setLoading] = useState(false);
+  const [step, setStep] = useState(1); // member join wizard: 1 do, 2 work, 3 about, 4 password
 
   // Arriving from "Become a Partner" opens the organisation form straight away.
   useEffect(() => {
@@ -248,10 +249,48 @@ function AuthPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  /** Validate the current wizard slide. Returns an error message or null. */
+  const validateStep = (s: number): string | null => {
+    if (s === 1) {
+      if (selected.length === 0) return "Please pick what you do — tap at least one.";
+      if (isOther && !otherProfession.trim()) return "Please type the work you do.";
+    }
+    if (s === 3) {
+      if (!fullName.trim()) return "Please type your full name.";
+      if (!phone.trim()) return "Please type your phone number.";
+      if (phone.replace(/[^0-9]/g, "").length < 9) {
+        return "That phone number looks too short - please type it fully, e.g. 0712 345 678.";
+      }
+      if (idNumber.trim() && idNumber.replace(/[^a-zA-Z0-9]/g, "").length < 4) {
+        return "That National Identification No looks too short. Leave it blank if unsure.";
+      }
+    }
+    if (s === 4) {
+      if (!password || password.length < 6) {
+        return "Please type your password (6 letters or numbers or more).";
+      }
+      if (scorePassword(password).score < 2) {
+        return "Please pick a stronger password. Make it longer, or add a number.";
+      }
+      if (password !== confirmPassword) {
+        return "The two passwords are not the same. Please type them again.";
+      }
+    }
+    return null;
+  };
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setNotice("");
+
+    // Member wizard: advance one slide per submit until the final step.
+    if (mode === "join" && intent === "member" && step < 4) {
+      const stepErr = validateStep(step);
+      if (stepErr) return setError(stepErr);
+      setStep(step + 1);
+      return;
+    }
 
     const name = fullName.trim();
     const id = idNumber.trim();
@@ -482,102 +521,126 @@ function AuthPage() {
         <form onSubmit={submit} className="mt-8 grid gap-4">
           {mode === "join" && intent === "member" && (
             <>
-              <div className="grid gap-1.5">
-                <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
-                  What do you do?
-                </span>
-                <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-                  {PROFESSIONS.map((p) => (
-                    <button
-                      key={p.key}
-                      type="button"
-                      onClick={() => toggleProfession(p.key)}
-                      className={`rounded-xl border-2 px-3 py-2.5 text-left text-sm font-semibold transition-colors ${selected.includes(p.key)
-                        ? "border-baba-blue bg-baba-blue/5 text-baba-blue"
-                        : "border-baba-blue/15 text-baba-slate/70 hover:border-baba-blue/40"}`}
-                    >
-                      {p.label}
-                    </button>
-                  ))}
+              {/* wizard progress */}
+              <div className="flex items-center justify-center gap-2">
+                {[1, 2, 3, 4].map((s) => (
+                  <span
+                    key={s}
+                    className={`h-2 rounded-full transition-all ${step === s ? "w-8 bg-baba-blue" : step > s ? "w-2 bg-baba-copper" : "w-2 bg-baba-blue/20"}`}
+                  />
+                ))}
+              </div>
+
+              {step === 1 && (
+                <div className="rounded-2xl border border-baba-blue/10 bg-card p-6">
+                  <div className="mb-4 text-center">
+                    <h2 className="font-display text-xl font-bold text-baba-slate">What do you do?</h2>
+                    <p className="mt-1 text-sm text-baba-slate/60">
+                      Pick all that apply — up to {MAX_PROFESSIONS}. We count every single one of you.
+                    </p>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                    {PROFESSIONS.map((p) => (
+                      <button
+                        key={p.key}
+                        type="button"
+                        onClick={() => toggleProfession(p.key)}
+                        className={`flex items-center gap-1.5 rounded-xl border-2 px-3 py-2.5 text-left text-sm font-semibold transition-colors ${selected.includes(p.key)
+                          ? "border-baba-blue bg-baba-blue/5 text-baba-blue"
+                          : "border-baba-blue/15 text-baba-slate/70 hover:border-baba-blue/40"}`}
+                      >
+                        {selected.includes(p.key) && <Check className="h-3.5 w-3.5 shrink-0" />}
+                        {p.label}
+                      </button>
+                    ))}
+                  </div>
+                  {isOther && (
+                    <input
+                      value={otherProfession}
+                      onChange={(e) => setOtherProfession(e.target.value)}
+                      placeholder="Type the work you do"
+                      className="mt-3 w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
+                    />
+                  )}
                 </div>
-                <span className="text-[0.7rem] text-baba-slate/50">
-                  Pick all that apply — up to {MAX_PROFESSIONS}. We count every single one of you.
-                </span>
-              </div>
-              {isOther && (
-                <input
-                  value={otherProfession}
-                  onChange={(e) => setOtherProfession(e.target.value)}
-                  placeholder="Type the work you do"
-                  className="rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
-                />
               )}
-              <label className="grid gap-1.5">
-                <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
-                  What have you done?
-                </span>
-                <textarea
-                  rows={3}
-                  value={projects}
-                  onChange={(e) => setProjects(e.target.value)}
-                  placeholder={
-                    isOther && otherProfession.trim()
-                      ? "Tell us something you have made or done that you are proud of."
-                      : (primaryProfession?.example ?? "Tell us something you have made or done that you are proud of.")
-                  }
-                  className="w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
-                />
-                <span className="text-[0.7rem] text-baba-slate/50">
-                  Show off a little — this is your moment. Past work, a project, something you built.
-                </span>
-              </label>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <label className="grid gap-1.5">
-                  <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
-                    Level of education
-                  </span>
-                  <select
-                    value={education}
-                    onChange={(e) => setEducation(e.target.value)}
-                    className="rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
-                  >
-                    <option value="">Select…</option>
-                    {EDUCATION_OPTIONS.map((o) => (
-                      <option key={o} value={o}>{o}</option>
-                    ))}
-                  </select>
-                </label>
-                <label className="grid gap-1.5">
-                  <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
-                    How do you work?
-                  </span>
-                  <select
-                    value={employment}
-                    onChange={(e) => setEmployment(e.target.value)}
-                    className="rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
-                  >
-                    <option value="">Select…</option>
-                    {EMPLOYMENT_OPTIONS.map((o) => (
-                      <option key={o} value={o}>{o}</option>
-                    ))}
-                  </select>
-                </label>
-              </div>
-              <label className="grid gap-1.5">
-                <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
-                  How long have you been doing this?
-                </span>
-                <select
-                  value={years}
-                  onChange={(e) => setYears(e.target.value)}
-                  className="rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
-                >
-                  <option value="">Select…</option>
-                  {YEARS_OPTIONS.map((o) => (
-                    <option key={o} value={o}>{o}</option>
-                  ))}
-                </select>
-              </label>
+
+              {step === 2 && (
+                <div className="rounded-2xl border border-baba-blue/10 bg-card p-6">
+                  <div className="mb-4 text-center">
+                    <h2 className="font-display text-xl font-bold text-baba-slate">Show us your work</h2>
+                    <p className="mt-1 text-sm text-baba-slate/60">This is your moment — show off a little.</p>
+                  </div>
+                  <div className="grid gap-4">
+                    <label className="grid gap-1.5">
+                      <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
+                        What have you done?
+                      </span>
+                      <textarea
+                        rows={3}
+                        value={projects}
+                        onChange={(e) => setProjects(e.target.value)}
+                        placeholder={
+                          isOther && otherProfession.trim()
+                            ? "Tell us something you have made or done that you are proud of."
+                            : (primaryProfession?.example ?? "Tell us something you have made or done that you are proud of.")
+                        }
+                        className="w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
+                      />
+                      <span className="text-[0.7rem] text-baba-slate/50">
+                        Past work, a project, something you built.
+                      </span>
+                    </label>
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <label className="grid gap-1.5">
+                        <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
+                          Level of education
+                        </span>
+                        <select
+                          value={education}
+                          onChange={(e) => setEducation(e.target.value)}
+                          className="rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
+                        >
+                          <option value="">Select…</option>
+                          {EDUCATION_OPTIONS.map((o) => (
+                            <option key={o} value={o}>{o}</option>
+                          ))}
+                        </select>
+                      </label>
+                      <label className="grid gap-1.5">
+                        <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
+                          How do you work?
+                        </span>
+                        <select
+                          value={employment}
+                          onChange={(e) => setEmployment(e.target.value)}
+                          className="rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
+                        >
+                          <option value="">Select…</option>
+                          {EMPLOYMENT_OPTIONS.map((o) => (
+                            <option key={o} value={o}>{o}</option>
+                          ))}
+                        </select>
+                      </label>
+                    </div>
+                    <label className="grid gap-1.5">
+                      <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
+                        How long have you been doing this?
+                      </span>
+                      <select
+                        value={years}
+                        onChange={(e) => setYears(e.target.value)}
+                        className="rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
+                      >
+                        <option value="">Select…</option>
+                        {YEARS_OPTIONS.map((o) => (
+                          <option key={o} value={o}>{o}</option>
+                        ))}
+                      </select>
+                    </label>
+                  </div>
+                </div>
+              )}
             </>
           )}
 
@@ -612,6 +675,10 @@ function AuthPage() {
             </>
           )}
 
+          {mode === "join" && intent === "member" && step === 3 && (
+            <h2 className="text-center font-display text-xl font-bold text-baba-slate">About you</h2>
+          )}
+          {!(mode === "join" && intent === "member" && step < 3) && (
           <label className="grid gap-1.5">
             <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
               {mode === "join" && intent === "partner" ? "Your Name / Organisation Name" : "Full Name"}
@@ -636,8 +703,9 @@ function AuthPage() {
               </span>
             )}
           </label>
+          )}
 
-          {mode === "join" && (
+          {mode === "join" && (intent === "partner" || (intent === "member" && step === 3)) && (
             <label className="grid gap-1.5">
               <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
                 Phone Number <span className="font-normal normal-case text-baba-slate/50">(required)</span>
@@ -657,7 +725,7 @@ function AuthPage() {
             </label>
           )}
 
-          {((mode === "join" && intent === "member") || (mode === "signin" && askForId)) && (
+          {((mode === "join" && intent === "member" && step === 3) || (mode === "signin" && askForId)) && (
             <label className="grid gap-1.5">
               <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
                 National Identification No{" "}
@@ -685,6 +753,10 @@ function AuthPage() {
           )}
 
 
+          {mode === "join" && intent === "member" && step === 4 && (
+            <h2 className="text-center font-display text-xl font-bold text-baba-slate">Make your password</h2>
+          )}
+          {!(mode === "join" && intent === "member" && step < 4) && (
           <label className="grid gap-1.5">
             <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
               Password
@@ -704,9 +776,22 @@ function AuthPage() {
             </div>
             {mode === "join" && <PasswordStrength password={password} />}
           </label>
+          )}
 
-          {mode === "join" && (
+          {mode === "join" && (intent === "partner" || (intent === "member" && step === 4)) && (
             <>
+              {mode === "join" && intent === "member" && chosenProfessions.length > 0 && (
+                <div className="rounded-2xl border border-baba-copper/20 bg-baba-copper/5 p-4">
+                  <p className="mb-2 text-xs font-bold uppercase tracking-wide text-baba-copper-dark">You picked</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {chosenProfessions.map((p) => (
+                      <span key={p.key} className="rounded-full bg-white px-2.5 py-0.5 text-xs font-semibold text-baba-copper-dark">
+                        {professionLabel(p)}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
               <label className="grid gap-1.5">
                 <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
                   Type Password Again
@@ -757,7 +842,7 @@ function AuthPage() {
             </>
           )}
 
-          {mode === "join" && intent === "member" && (
+          {mode === "join" && intent === "member" && step === 3 && (
             <div className="grid gap-1.5">
               <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-baba-slate/70">
                 <MapPin className="h-3.5 w-3.5" /> Where are you?
@@ -776,14 +861,39 @@ function AuthPage() {
             </p>
           )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="mt-2 flex items-center justify-center gap-2 rounded-lg baba-cta py-2.5 text-sm font-semibold text-white transition-colors hover:bg-baba-blue-dark disabled:opacity-60"
-          >
-            {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-            {mode === "join" ? (intent === "member" ? "Join us" : "Partner with us") : "Log In"}
-          </button>
+          {mode === "join" && intent === "member" ? (
+            <div className="mt-2 flex items-center justify-between gap-3">
+              {step > 1 ? (
+                <button
+                  type="button"
+                  onClick={() => setStep(step - 1)}
+                  className="inline-flex items-center gap-1 rounded-lg border border-baba-blue/15 px-4 py-2.5 text-sm font-semibold text-baba-slate/70 transition-colors hover:border-baba-blue/40"
+                >
+                  <ArrowLeft className="h-4 w-4" /> Back
+                </button>
+              ) : (
+                <span />
+              )}
+              <button
+                type="submit"
+                disabled={loading}
+                className="inline-flex items-center gap-1.5 rounded-lg baba-cta px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-baba-blue-dark disabled:opacity-60"
+              >
+                {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+                {step === 4 ? "Join us" : "Next"}
+                {step < 4 && <ArrowRight className="h-4 w-4" />}
+              </button>
+            </div>
+          ) : (
+            <button
+              type="submit"
+              disabled={loading}
+              className="mt-2 flex items-center justify-center gap-2 rounded-lg baba-cta py-2.5 text-sm font-semibold text-white transition-colors hover:bg-baba-blue-dark disabled:opacity-60"
+            >
+              {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+              {mode === "join" ? "Partner with us" : "Log In"}
+            </button>
+          )}
         </form>
 
         {mode === "signin" && (
