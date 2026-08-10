@@ -84,10 +84,37 @@ export async function deliverNotification(args: DeliverArgs): Promise<DeliverRes
   let emails = 0;
   let emailErrors = 0;
   if (sendEmail && authHeader) {
+    const { sendResendEmail } = await import("@/lib/email/resend.server");
+    const hasResend = Boolean(process.env.RESEND_API_KEY);
     for (const r of list) {
       const to = mailable(r.email);
       if (!to) continue;
       try {
+        const templateData = {
+          memberName: r.full_name ?? "Member",
+          title,
+          body: body ?? "",
+          linkUrl: linkUrl ?? `${origin}/dashboard`,
+        };
+
+        if (hasResend) {
+          // Resend path: direct API send (no queue hop).
+          const result = await sendResendEmail({
+            templateName: "member-message",
+            recipientEmail: to,
+            templateData,
+          });
+          if (result) {
+            emails++;
+            console.log("[notify] email sent via Resend", { to, id: result.id });
+          } else {
+            emailErrors++;
+            console.error("[notify] Resend returned no result");
+          }
+          continue;
+        }
+
+        // Fallback: managed queue (Lovable path) when Resend is not configured.
         const res = await fetch(`${origin}/lovable/email/transactional/send`, {
           method: "POST",
           headers: { "Content-Type": "application/json", Authorization: authHeader },
@@ -95,12 +122,7 @@ export async function deliverNotification(args: DeliverArgs): Promise<DeliverRes
             templateName: "member-message",
             recipientEmail: to,
             idempotencyKey: `${notificationId ?? "msg"}:${r.user_id}`,
-            templateData: {
-              memberName: r.full_name ?? "Member",
-              title,
-              body: body ?? "",
-              linkUrl: linkUrl ?? `${origin}/dashboard`,
-            },
+            templateData,
           }),
         });
         if (res.ok) emails++;
