@@ -8,12 +8,14 @@ export const ROLE_LABELS: Record<RoleValue, string> = {
   corporate: "Corporate",
 };
 
-/** One-time verification fee per role, in KSh. */
+/** One-time verification fee per role, in KSh.
+ *  Tiered by profession: student 250, artisan 500, professional 1000.
+ *  Shown only at the verify step — never during signup. */
 export const ROLE_FEES: Record<RoleValue, number> = {
-  individual: 100,
-  professional_young: 100,
-  professional_exp: 300,
-  artisan: 100,
+  individual: 500,
+  professional_young: 250,
+  professional_exp: 1000,
+  artisan: 500,
   corporate: 23000,
 };
 

@@ -522,7 +522,10 @@ export type Database = {
           looking_for: string[]
           national_id: string | null
           occupation: string | null
+          partner_message: string | null
           phone: string | null
+          professions: string[]
+          projects: string | null
           professional_experience: string | null
           role: string
           staff_size: string | null
@@ -558,7 +561,10 @@ export type Database = {
           looking_for?: string[]
           national_id?: string | null
           occupation?: string | null
+          partner_message?: string | null
           phone?: string | null
+          professions?: string[]
+          projects?: string | null
           professional_experience?: string | null
           role: string
           staff_size?: string | null
@@ -594,7 +600,10 @@ export type Database = {
           looking_for?: string[]
           national_id?: string | null
           occupation?: string | null
+          partner_message?: string | null
           phone?: string | null
+          professions?: string[]
+          projects?: string | null
           professional_experience?: string | null
           role?: string
           staff_size?: string | null

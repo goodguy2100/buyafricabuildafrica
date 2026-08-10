@@ -6,6 +6,7 @@ import {
   Loader2,
   LayoutDashboard,
   Users,
+  Building2,
   DollarSign,
   Briefcase,
   CalendarDays,
@@ -25,6 +26,9 @@ const OverviewSection = lazy(() =>
 );
 const MembersSection = lazy(() =>
   import("@/components/admin/MembersSection").then((m) => ({ default: m.MembersSection })),
+);
+const OrganizationsSection = lazy(() =>
+  import("@/components/admin/OrganizationsSection").then((m) => ({ default: m.OrganizationsSection })),
 );
 const PaymentsSection = lazy(() =>
   import("@/components/admin/PaymentsSection").then((m) => ({ default: m.PaymentsSection })),
@@ -80,6 +84,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
 const NAV = [
   { key: "overview", label: "Overview", icon: LayoutDashboard },
   { key: "members", label: "Members", icon: Users },
+  { key: "organizations", label: "Organizations", icon: Building2 },
   { key: "payments", label: "Payments", icon: DollarSign },
   { key: "opportunities", label: "Opportunities", icon: Briefcase },
   { key: "events", label: "Events", icon: CalendarDays },
@@ -200,6 +205,7 @@ function AdminPage() {
         >
           {tab === "overview" && <OverviewSection />}
           {tab === "members" && <MembersSection />}
+          {tab === "organizations" && <OrganizationsSection />}
           {tab === "payments" && <PaymentsSection />}
           {tab === "opportunities" && <OpportunitiesSection />}
           {tab === "events" && <OpportunitiesSection />}

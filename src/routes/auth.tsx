@@ -35,47 +35,66 @@ export const Route = createFileRoute("/auth")({
   component: AuthPage,
 });
 
-/* ------------------------------- categories ------------------------------- */
+/* ------------------------------ professions ------------------------------ */
 
-type Category = { label: string; role: RoleValue; trade?: string; orgType?: string };
+type ProfessionOption = {
+  key: string;
+  label: string; // "I am ..."
+  role: RoleValue;
+  trade?: string;
+  example: string; // ego-glazing example for "what have you done?"
+};
 
-/** "Join us" — people who work with their hands, study, or practise a profession. */
-const JOIN_CATEGORIES: Category[] = [
-  { label: "Architect", role: "professional_exp" },
-  { label: "Interior Designer", role: "professional_exp" },
-  { label: "Carpenter", role: "artisan", trade: "carpenter" },
-  { label: "Mason", role: "artisan", trade: "mason" },
-  { label: "Plumber", role: "artisan", trade: "plumber" },
-  { label: "Electrician", role: "artisan", trade: "electrician" },
-  { label: "Painter", role: "artisan", trade: "painter" },
-  { label: "Welder", role: "artisan", trade: "welder" },
-  { label: "Tiler", role: "artisan", trade: "tiler" },
-  { label: "Gypsum Fabricator", role: "artisan", trade: "gypsum_installer" },
-  { label: "Steel Fixer", role: "artisan", trade: "other" },
-  { label: "Roofer", role: "artisan", trade: "other" },
-  { label: "Glass & Aluminium Fitter", role: "artisan", trade: "other" },
-  { label: "Metal Fabricator", role: "artisan", trade: "other" },
-  { label: "Landscaper", role: "artisan", trade: "other" },
-  { label: "Engineer", role: "professional_exp" },
-  { label: "Quantity Surveyor", role: "professional_exp" },
-  { label: "Project Manager", role: "professional_exp" },
-  { label: "Contractor", role: "professional_exp" },
-  { label: "Student", role: "professional_young" },
-  { label: "Other (type it below)", role: "artisan", trade: "other" },
+/** Every profession we celebrate — the more, the merrier. Nobody is left out. */
+const PROFESSIONS: ProfessionOption[] = [
+  // The big ones
+  { key: "architect", label: "I am an Architect", role: "professional_exp", example: "e.g. I have designed a beautiful building that people love." },
+  { key: "engineer", label: "I am an Engineer", role: "professional_exp", example: "e.g. I have engineered structures that serve my community." },
+  { key: "interior-designer", label: "I am an Interior Designer", role: "professional_exp", example: "e.g. I have turned rooms into stunning, welcoming spaces." },
+  { key: "quantity-surveyor", label: "I am a Quantity Surveyor", role: "professional_exp", example: "e.g. I have kept big projects on budget, down to the last shilling." },
+  { key: "project-manager", label: "I am a Project Manager", role: "professional_exp", example: "e.g. I have led teams that delivered projects on time." },
+  { key: "contractor", label: "I am a Contractor", role: "professional_exp", example: "e.g. I have built projects from the ground up." },
+  // The hands — jobs Africa depends on
+  { key: "welder", label: "I am a Welder", role: "artisan", trade: "welder", example: "e.g. I have welded gates and structures that are strong, clean and artistic." },
+  { key: "plumber", label: "I am a Plumber", role: "artisan", trade: "plumber", example: "e.g. I have done neat, reliable plumbing that never leaks." },
+  { key: "mason", label: "I am a Mason", role: "artisan", trade: "mason", example: "e.g. I have laid bricks and stone that stand tall for years." },
+  { key: "electrician", label: "I am an Electrician", role: "artisan", trade: "electrician", example: "e.g. I have wired homes and shops safely and neatly." },
+  { key: "painter", label: "I am a Painter", role: "artisan", trade: "painter", example: "e.g. I have given walls beautiful, smooth finishes." },
+  { key: "tiler", label: "I am a Tiler", role: "artisan", trade: "tiler", example: "e.g. I have done beautiful bathroom and floor tiling." },
+  { key: "carpenter", label: "I am a Carpenter", role: "artisan", trade: "carpenter", example: "e.g. I have crafted furniture and fittings that last." },
+  { key: "gypsum-fabricator", label: "I am a Gypsum Fabricator", role: "artisan", trade: "gypsum_installer", example: "e.g. I have made ceilings and partitions that look elegant." },
+  { key: "steel-fixer", label: "I am a Steel Fixer", role: "artisan", trade: "other", example: "e.g. I have tied the steel that holds strong buildings together." },
+  { key: "roofer", label: "I am a Roofer", role: "artisan", trade: "other", example: "e.g. I have put up roofs that keep families safe and dry." },
+  { key: "glass-aluminium", label: "I am a Glass & Aluminium Fitter", role: "artisan", trade: "other", example: "e.g. I have fitted windows and doors that look sharp." },
+  { key: "metal-fabricator", label: "I am a Metal Fabricator", role: "artisan", trade: "other", example: "e.g. I have shaped metal into useful, beautiful things." },
+  { key: "landscaper", label: "I am a Landscaper", role: "artisan", trade: "other", example: "e.g. I have turned bare ground into beautiful green spaces." },
+  // Learners
+  { key: "student", label: "I am a Student", role: "professional_young", example: "e.g. I am learning my craft and hungry to grow." },
+  { key: "other", label: "I do something else (type it below)", role: "artisan", trade: "other", example: "Tell us something you have made or done that you are proud of." },
 ];
 
-/** "Partner with us" — organisations. */
-const PARTNER_CATEGORIES: Category[] = [
-  { label: "Financial Institution", role: "corporate", orgType: "Financial Institution" },
-  { label: "Corporate", role: "corporate", orgType: "Private Company" },
-  { label: "Government Entity", role: "corporate", orgType: "Government Institution" },
-  { label: "Association", role: "corporate", orgType: "Association" },
-  { label: "NGO", role: "corporate", orgType: "NGO" },
-  { label: "Private Entity", role: "corporate", orgType: "Private Company" },
-  { label: "Development Partner", role: "corporate", orgType: "Development Partner" },
-  { label: "Learning Institution", role: "corporate", orgType: "Learning Institution" },
-  { label: "Other (type it below)", role: "corporate", orgType: "Other" },
+const MAX_PROFESSIONS = 6;
+
+/** Highest tier wins the role: professional > artisan > student. */
+function deriveRole(keys: string[]): RoleValue {
+  const roles = keys
+    .map((k) => PROFESSIONS.find((p) => p.key === k)?.role)
+    .filter(Boolean) as RoleValue[];
+  if (roles.includes("professional_exp")) return "professional_exp";
+  if (roles.includes("artisan")) return "artisan";
+  return "professional_young";
+}
+
+const EDUCATION_OPTIONS = [
+  "Primary school",
+  "Secondary school",
+  "Certificate",
+  "Diploma",
+  "Bachelor's degree",
+  "Master's degree or higher",
 ];
+const EMPLOYMENT_OPTIONS = ["Employed", "Business owner / Entrepreneur", "Freelancer", "Student", "Other"];
+const YEARS_OPTIONS = ["Less than 1 year", "1–3 years", "3–5 years", "5–10 years", "More than 10 years"];
 
 function sanitizeRedirect(value: string | null): string {
   if (!value || !value.startsWith("/") || value.startsWith("//")) return "/dashboard";
@@ -112,8 +131,14 @@ function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [categoryLabel, setCategoryLabel] = useState("");
-  const [otherCategory, setOtherCategory] = useState("");
+  const [selected, setSelected] = useState<string[]>([]);
+  const [otherProfession, setOtherProfession] = useState("");
+  const [projects, setProjects] = useState("");
+  const [education, setEducation] = useState("");
+  const [employment, setEmployment] = useState("");
+  const [years, setYears] = useState("");
+  const [lookingFor, setLookingFor] = useState("");
+  const [partnerMessage, setPartnerMessage] = useState("");
   const [location, setLocation] = useState<LocationValue>(EMPTY_LOCATION);
   const [askForId, setAskForId] = useState(false);
   const [error, setError] = useState("");
@@ -127,19 +152,62 @@ function AuthPage() {
     }
   }, []);
 
-  const list = intent === "member" ? JOIN_CATEGORIES : PARTNER_CATEGORIES;
-  const chosen = list.find((c) => c.label === categoryLabel) ?? list[0];
-  const isOther = chosen.label.startsWith("Other");
+  const chosenProfessions = selected
+    .map((k) => PROFESSIONS.find((p) => p.key === k))
+    .filter(Boolean) as ProfessionOption[];
+  const primaryProfession = chosenProfessions[0];
+  const isOther = selected.includes("other");
+  const professionLabel = (p: ProfessionOption) =>
+    p.key === "other" && otherProfession.trim() ? otherProfession.trim() : p.label;
+  const toggleProfession = (key: string) => {
+    setSelected((prev) => {
+      if (prev.includes(key)) return prev.filter((k) => k !== key);
+      if (prev.length >= MAX_PROFESSIONS) return prev;
+      return [...prev, key];
+    });
+  };
+  const role: RoleValue =
+    intent === "partner" ? "corporate" : deriveRole(selected);
+  const artisanType =
+    intent === "member"
+      ? (chosenProfessions.find((p) => p.trade)?.trade ?? (selected.length ? "other" : undefined))
+      : undefined;
 
   const redirectTo = () =>
     sanitizeRedirect(new URLSearchParams(window.location.search).get("redirect"));
 
   const finishRegistrationSetup = async (name: string, id: string, phoneNumber: string, loc: LocationValue) => {
-    const label = isOther && otherCategory.trim() ? otherCategory.trim() : chosen.label;
+    if (intent === "partner") {
+      await submitRegistration({
+        data: {
+          role: "corporate",
+          data: {
+            fullName: name,
+            corporateName: name,
+            email: email.trim() || null,
+            phone: phoneNumber,
+            lookingFor: lookingFor.trim() ? [lookingFor.trim()] : [],
+            partnerMessage: partnerMessage.trim() || null,
+            occupation: "Partner",
+            category: "Partner",
+          },
+        },
+      });
+      await saveProfile({
+        data: { full_name: name, email: email.trim() || undefined, phone: phoneNumber },
+      });
+      return;
+    }
+    const label =
+      isOther && otherProfession.trim()
+        ? otherProfession.trim()
+        : primaryProfession
+          ? professionLabel(primaryProfession)
+          : "Member";
     await submitRegistration({
       data: {
-        role: chosen.role,
-        artisan_type: chosen.role === "artisan" ? (chosen.trade ?? "other") : undefined,
+        role,
+        artisan_type: artisanType,
         data: {
           fullName: name,
           nationalId: id,
@@ -147,9 +215,12 @@ function AuthPage() {
           email: email.trim() || null,
           category: label,
           occupation: label,
-          trade: chosen.role === "artisan" ? label : undefined,
-          corporateType: chosen.orgType,
-          corporateName: intent === "partner" ? name : undefined,
+          trade: role === "artisan" ? label : undefined,
+          professions: chosenProfessions.map((p) => professionLabel(p)),
+          projects: projects.trim() || null,
+          education: education || null,
+          employmentStatus: employment || null,
+          yearsField: years || null,
           country: loc.country,
           city: loc.city.trim(),
           area: loc.area.trim(),
@@ -195,7 +266,13 @@ function AuthPage() {
     if (!pwd || pwd.length < 6) {
       return setError("Please type your password (6 letters or numbers or more).");
     }
-    if (mode === "join") {
+    if (mode === "join" && intent === "member") {
+      if (selected.length === 0) {
+        return setError("Please pick what you do — tap at least one.");
+      }
+      if (isOther && !otherProfession.trim()) {
+        return setError("Please type the work you do.");
+      }
       if (id && id.replace(/[^a-zA-Z0-9]/g, "").length < 4) {
         return setError("That National Identification No looks too short. Leave it blank if unsure.");
       }
@@ -205,8 +282,16 @@ function AuthPage() {
       if (pwd !== confirmPassword) {
         return setError("The two passwords are not the same. Please type them again.");
       }
-      if (isOther && !otherCategory.trim()) {
-        return setError("Please type the work you do.");
+    }
+    if (mode === "join" && intent === "partner") {
+      if (!email.trim()) {
+        return setError("Please type your email so we can reach you.");
+      }
+      if (scorePassword(pwd).score < 2) {
+        return setError("Please pick a stronger password. Make it longer, or add a number.");
+      }
+      if (pwd !== confirmPassword) {
+        return setError("The two passwords are not the same. Please type them again.");
       }
     }
 
@@ -256,7 +341,10 @@ function AuthPage() {
             national_id: id || null,
             phone: phone.trim() || null,
             contact_email: email.trim() || null,
-            category: isOther && otherCategory.trim() ? otherCategory.trim() : chosen.label,
+            category: isOther && otherProfession.trim()
+              ? otherProfession.trim()
+              : (primaryProfession ? professionLabel(primaryProfession) : "Member"),
+            professions: chosenProfessions.map((p) => professionLabel(p)),
             country: location.country,
             city: location.city.trim(),
             area: location.area.trim(),
@@ -361,8 +449,8 @@ function AuthPage() {
           <p className="mt-2 text-baba-slate/70">
             {mode === "join"
               ? intent === "member"
-                ? "Are you studying or working? Sign up below and create your account."
-                : "Company, organisation or institution? Sign up below and create your account."
+                ? "Tell us what you do — we celebrate every skill, big and small."
+                : "Tell us who you are and what you want to do with us — we are all ears."
               : "Log in with your full name and your password."}
           </p>
         </div>
@@ -373,8 +461,8 @@ function AuthPage() {
               type="button"
               onClick={() => {
                 setIntent("member");
-                setCategoryLabel("");
-                setOtherCategory("");
+                setSelected([]);
+                setOtherProfession("");
               }}
               className={`flex w-full items-center gap-3 rounded-xl border-2 p-4 text-left transition-colors ${
                 intent === "member"
@@ -392,44 +480,141 @@ function AuthPage() {
         )}
 
         <form onSubmit={submit} className="mt-8 grid gap-4">
-          {mode === "join" && (
-            <label className="grid gap-1.5">
-              <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
-                {intent === "member" ? "What work do you do?" : "What kind of organisation?"}
-              </span>
-              <select
-                required
-                value={categoryLabel}
-                onChange={(e) => setCategoryLabel(e.target.value)}
-                className="rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
-              >
-                <option value="">
-                  {intent === "member"
-                    ? "Select - e.g. Architect"
-                    : "Select — e.g. Financial Institution"}
-                </option>
-                {list.map((c) => (
-                  <option key={c.label} value={c.label}>
-                    {c.label}
-                  </option>
-                ))}
-              </select>
+          {mode === "join" && intent === "member" && (
+            <>
+              <div className="grid gap-1.5">
+                <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
+                  What do you do?
+                </span>
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                  {PROFESSIONS.map((p) => (
+                    <button
+                      key={p.key}
+                      type="button"
+                      onClick={() => toggleProfession(p.key)}
+                      className={`rounded-xl border-2 px-3 py-2.5 text-left text-sm font-semibold transition-colors ${selected.includes(p.key)
+                        ? "border-baba-blue bg-baba-blue/5 text-baba-blue"
+                        : "border-baba-blue/15 text-baba-slate/70 hover:border-baba-blue/40"}`}
+                    >
+                      {p.label}
+                    </button>
+                  ))}
+                </div>
+                <span className="text-[0.7rem] text-baba-slate/50">
+                  Pick all that apply — up to {MAX_PROFESSIONS}. We count every single one of you.
+                </span>
+              </div>
               {isOther && (
                 <input
-                  value={otherCategory}
-                  onChange={(e) => setOtherCategory(e.target.value)}
-                  placeholder={
-                    intent === "member" ? "Type the work you do" : "Type your organisation type"
-                  }
+                  value={otherProfession}
+                  onChange={(e) => setOtherProfession(e.target.value)}
+                  placeholder="Type the work you do"
                   className="rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
                 />
               )}
-            </label>
+              <label className="grid gap-1.5">
+                <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
+                  What have you done?
+                </span>
+                <textarea
+                  rows={3}
+                  value={projects}
+                  onChange={(e) => setProjects(e.target.value)}
+                  placeholder={
+                    isOther && otherProfession.trim()
+                      ? "Tell us something you have made or done that you are proud of."
+                      : (primaryProfession?.example ?? "Tell us something you have made or done that you are proud of.")
+                  }
+                  className="w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
+                />
+                <span className="text-[0.7rem] text-baba-slate/50">
+                  Show off a little — this is your moment. Past work, a project, something you built.
+                </span>
+              </label>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <label className="grid gap-1.5">
+                  <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
+                    Level of education
+                  </span>
+                  <select
+                    value={education}
+                    onChange={(e) => setEducation(e.target.value)}
+                    className="rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
+                  >
+                    <option value="">Select…</option>
+                    {EDUCATION_OPTIONS.map((o) => (
+                      <option key={o} value={o}>{o}</option>
+                    ))}
+                  </select>
+                </label>
+                <label className="grid gap-1.5">
+                  <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
+                    How do you work?
+                  </span>
+                  <select
+                    value={employment}
+                    onChange={(e) => setEmployment(e.target.value)}
+                    className="rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
+                  >
+                    <option value="">Select…</option>
+                    {EMPLOYMENT_OPTIONS.map((o) => (
+                      <option key={o} value={o}>{o}</option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+              <label className="grid gap-1.5">
+                <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
+                  How long have you been doing this?
+                </span>
+                <select
+                  value={years}
+                  onChange={(e) => setYears(e.target.value)}
+                  className="rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
+                >
+                  <option value="">Select…</option>
+                  {YEARS_OPTIONS.map((o) => (
+                    <option key={o} value={o}>{o}</option>
+                  ))}
+                </select>
+              </label>
+            </>
+          )}
+
+          {mode === "join" && intent === "partner" && (
+            <>
+              <label className="grid gap-1.5">
+                <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
+                  What are you looking for?
+                </span>
+                <input
+                  value={lookingFor}
+                  onChange={(e) => setLookingFor(e.target.value)}
+                  placeholder="e.g. funding, partnership, training, equipment, mentorship"
+                  className="rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
+                />
+              </label>
+              <label className="grid gap-1.5">
+                <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
+                  Tell us everything
+                </span>
+                <textarea
+                  rows={10}
+                  value={partnerMessage}
+                  onChange={(e) => setPartnerMessage(e.target.value)}
+                  placeholder="Your vision, your plan, what you want to do with us — write as much as you like. We will read every word."
+                  className="w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
+                />
+                <span className="text-[0.7rem] text-baba-slate/50">
+                  Not compulsory — but the more you tell us, the better we can serve you.
+                </span>
+              </label>
+            </>
           )}
 
           <label className="grid gap-1.5">
             <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
-              {mode === "join" && intent === "partner" ? "Organisation Name" : "Full Name"}
+              {mode === "join" && intent === "partner" ? "Your Name / Organisation Name" : "Full Name"}
             </span>
             <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
               <User className="h-4 w-4 text-baba-slate/40" />
@@ -440,7 +625,7 @@ function AuthPage() {
                 className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
                 placeholder={
                   mode === "join" && intent === "partner"
-                    ? "e.g. Financial organization"
+                    ? "Your name or organisation name"
                     : "e.g. Jane Wanjiru"
                 }
               />
@@ -472,12 +657,10 @@ function AuthPage() {
             </label>
           )}
 
-          {(mode === "join" || askForId) && (
+          {((mode === "join" && intent === "member") || (mode === "signin" && askForId)) && (
             <label className="grid gap-1.5">
               <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
-                {mode === "join" && intent === "partner"
-                  ? "ORGANIZATION REGISTRATION NO\u00a0"
-                  : "National Identification No "}
+                National Identification No{" "}
                 <span className="font-normal normal-case text-baba-slate/50">
                   {mode === "signin" ? "(only to tell you apart)" : "(optional)"}
                 </span>
@@ -547,24 +730,17 @@ function AuthPage() {
                 )}
               </label>
 
-              <div className="grid gap-1.5">
-                <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-baba-slate/70">
-                  <MapPin className="h-3.5 w-3.5" /> Where are you?
-                </span>
-                <LocationPicker value={location} onChange={setLocation} />
-                <span className="text-[0.7rem] text-baba-slate/50">
-                  Pick your country and town, then type your area (e.g. Westlands, South B).
-                </span>
-              </div>
-
-
               <label className="grid gap-1.5">
                 <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
-                  Email <span className="font-normal normal-case text-baba-slate/50">(optional)</span>
+                  Email{" "}
+                  <span className="font-normal normal-case text-baba-slate/50">
+                    {intent === "partner" ? "(required)" : "(optional)"}
+                  </span>
                 </span>
                 <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
                   <Mail className="h-4 w-4 text-baba-slate/40" />
                   <input
+                    required={intent === "partner"}
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -573,10 +749,24 @@ function AuthPage() {
                   />
                 </div>
                 <span className="text-[0.7rem] text-baba-slate/50">
-                  Add an email if you want a welcome message and help if you forget your password.
+                  {intent === "partner"
+                    ? "We use this to reach you — that is all."
+                    : "Add an email if you want a welcome message and help if you forget your password."}
                 </span>
               </label>
             </>
+          )}
+
+          {mode === "join" && intent === "member" && (
+            <div className="grid gap-1.5">
+              <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-baba-slate/70">
+                <MapPin className="h-3.5 w-3.5" /> Where are you?
+              </span>
+              <LocationPicker value={location} onChange={setLocation} />
+              <span className="text-[0.7rem] text-baba-slate/50">
+                Pick your country and town, then type your area (e.g. Westlands, South B).
+              </span>
+            </div>
           )}
 
           {error && <p className="text-sm font-medium text-destructive">{error}</p>}

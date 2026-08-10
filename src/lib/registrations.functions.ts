@@ -17,6 +17,9 @@ const registrationInput = z.object({
   role: z.enum(ROLE_VALUES),
   artisan_type: z.string().optional(),
   data: z.record(z.string(), z.any()),
+  professions: z.array(z.string()).optional(),
+  projects: z.string().max(8000).optional(),
+  partnerMessage: z.string().max(30000).optional(),
 });
 
 export interface RegistrationRow {
@@ -49,6 +52,9 @@ export interface RegistrationRow {
   business_license: string | null;
   industries: string[];
   looking_for: string[];
+  professions: string[];
+  projects: string | null;
+  partner_message: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -134,6 +140,9 @@ export const createRegistration = createServerFn({ method: "POST" })
       business_license: str(form.businessLicense),
       industries: arr(form.industries),
       looking_for: arr(form.lookingFor),
+      professions: Array.isArray(form.professions) ? form.professions.filter((x): x is string => typeof x === "string") : [],
+      projects: str(form.projects),
+      partner_message: str(form.partnerMessage),
     };
 
     // A retried signup (e.g. after a first attempt that created the login but
