@@ -6,6 +6,7 @@ import { PageShell } from "@/components/PageShell";
 import { supabase } from "@/integrations/supabase/client";
 import { createRegistration, updateMyProfile, type RoleValue } from "@/lib/registrations.functions";
 import { lookupLoginEmail } from "@/lib/login-lookup.functions";
+import { confirmSignup } from "@/lib/signup.functions";
 import { LocationPicker, EMPTY_LOCATION, type LocationValue } from "@/components/LocationPicker";
 import { PasswordStrength, scorePassword } from "@/components/PasswordStrength";
 
@@ -101,6 +102,7 @@ function AuthPage() {
   const submitRegistration = useServerFn(createRegistration);
   const saveProfile = useServerFn(updateMyProfile);
   const findLogin = useServerFn(lookupLoginEmail);
+  const confirmSignupFn = useServerFn(confirmSignup);
 
   const [mode, setMode] = useState<"join" | "signin">("join");
   const [intent, setIntent] = useState<"member" | "partner">("member");
@@ -264,7 +266,17 @@ function AuthPage() {
 
       if (signUpErr) {
         if (/already registered|already exists|user already/i.test(signUpErr.message)) {
-          const existing = await signInWith(authEmail, pwd);
+          let existing = await signInWith(authEmail, pwd);
+          if (existing.error && authEmail.endsWith("@baba.local")) {
+            // Stale unconfirmed account from an earlier attempt — confirm it
+            // server-side, then sign in.
+            try {
+              const confirm = await confirmSignupFn({ data: { email: authEmail } });
+              if (confirm.ok) existing = await signInWith(authEmail, pwd);
+            } catch {
+              // Fall through to the friendly error below.
+            }
+          }
           if (existing.error) {
             throw new Error(
               "You already have an account. Tap “Log in” and use your full name and password.",
@@ -286,10 +298,39 @@ function AuthPage() {
       }
 
       if (!signUpData.session) {
-        const { error: signInAfterJoinErr } = await signInWith(authEmail, pwd);
-        if (signInAfterJoinErr) {
-          throw new Error("Your account was made, but we could not log you in. Please tap Log in.");
+        // Email confirmation is enabled for this project. Synthetic @baba.local
+        // addresses have no inbox, so confirm those server-side and log in right
+        // away. Real emails must confirm via the link we just sent, but their
+        // member record is saved below either way — never a ghost account.
+        let signedIn = false;
+        if (authEmail.endsWith("@baba.local") && signUpData.user) {
+          try {
+            const confirm = await confirmSignupFn({
+              data: { userId: signUpData.user.id, email: authEmail },
+            });
+            if (confirm.ok) {
+              const res = await signInWith(authEmail, pwd);
+              signedIn = !res.error;
+            }
+          } catch {
+            // Ignore — the member record is still saved below.
+          }
         }
+        try {
+          await finishRegistrationSetup(name, id, phone, location);
+        } catch {
+          // The account exists; details can be finished on the profile page.
+        }
+        if (!signedIn) {
+          setNotice(
+            authEmail.endsWith("@baba.local")
+              ? "Your account was created. Please tap Log in and try again in a moment."
+              : "Your account was created — check your email for the confirmation link, then log in.",
+          );
+          setLoading(false);
+          return;
+        }
+        // Signed in — fall through to navigate.
       }
 
       try {
