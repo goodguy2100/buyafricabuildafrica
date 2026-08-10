@@ -2,12 +2,12 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 /**
- * Members log in with their full name + password (National ID is no longer a
- * login credential). Accounts are created with a synthetic internal login
- * address, so we map a name to that address here.
+ * Members log in with their full name (or National ID number) + password.
+ * A member's login address is their real email when they provided one,
+ * otherwise a synthetic internal "@baba.local" address. We map a name or
+ * ID number to that address here.
  *
- * Only ever returns internal "@baba.local" addresses — never a member's real
- * email — and asks for the National ID when a name is shared by several people.
+ * Asks for the National ID when a name is shared by several people.
  */
 export const lookupLoginEmail = createServerFn({ method: "POST" })
   .inputValidator((input) =>
@@ -33,19 +33,41 @@ export const lookupLoginEmail = createServerFn({ method: "POST" })
       .limit(25);
 
     const matches = (profs ?? []).filter(
-      (p) => typeof p.email === "string" && (p.email as string).endsWith("@baba.local"),
+      (p) => typeof p.email === "string" && p.email.trim().length > 0,
     );
 
-    if (matches.length === 0) return { email: null, needsId: false };
+    if (matches.length === 0) {
+      // No name matched — maybe the person typed their National ID instead
+      // (login works with the ID number too). Resolve ID → registration → profile.
+      const digits = name.replace(/[^0-9]/g, "");
+      if (digits.length >= 4) {
+        const { data: idRegs } = await supabaseAdmin
+          .from("registrations")
+          .select("user_id, national_id")
+          .ilike("national_id", `${digits}%`)
+          .limit(10);
+        const hit = (idRegs ?? []).find(
+          (r) => (r.national_id ?? "").replace(/[^0-9]/g, "") === digits,
+        );
+        if (hit) {
+          const { data: prof } = await supabaseAdmin
+            .from("profiles")
+            .select("email")
+            .eq("id", hit.user_id)
+            .maybeSingle();
+          if (prof?.email && typeof prof.email === "string" && prof.email.trim()) {
+            return { email: prof.email as string, needsId: false };
+          }
+        }
+      }
+      return { email: null, needsId: false };
+    }
     if (matches.length === 1) return { email: matches[0].email as string, needsId: false };
 
     const id = (data.nationalId ?? "").replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
     if (!id) return { email: null, needsId: true };
 
     // Disambiguate people who share a name using their National ID.
-    const direct = matches.find((p) => p.email === `id${id}@baba.local`);
-    if (direct) return { email: direct.email as string, needsId: false };
-
     const { data: regs } = await supabaseAdmin
       .from("registrations")
       .select("user_id, national_id")
@@ -58,4 +80,41 @@ export const lookupLoginEmail = createServerFn({ method: "POST" })
     );
     const email = hit ? (matches.find((p) => p.id === hit.user_id)?.email as string) : null;
     return { email: email ?? null, needsId: !email };
+  });
+
+/**
+ * Resolve a member's real email from their National ID. Used by the
+ * "No email — help me" flow so a help request carries a mailable address
+ * instead of a synthetic "@baba.local" one.
+ */
+export const lookupContactEmail = createServerFn({ method: "POST" })
+  .inputValidator((input) =>
+    z
+      .object({ nationalId: z.string().min(1).max(60), fullName: z.string().max(200).optional() })
+      .parse(input),
+  )
+  .handler(async ({ data }): Promise<{ email: string | null }> => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const id = data.nationalId.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+    if (!id) return { email: null };
+
+    // National IDs are stored as plain digits; match the cleaned form server-side.
+    let query = supabaseAdmin
+      .from("registrations")
+      .select("full_name, email, national_id")
+      .ilike("national_id", `%${id}%`)
+      .limit(10);
+    const { data: regs } = await query;
+    const hits = (regs ?? []).filter(
+      (r) => (r.national_id ?? "").replace(/[^a-zA-Z0-9]/g, "").toLowerCase() === id,
+    );
+    if (hits.length === 0) return { email: null };
+
+    // Prefer the exact name match, else the first hit with a real email.
+    const name = (data.fullName ?? "").trim().toLowerCase();
+    const byName = hits.find(
+      (r) => (r.full_name ?? "").trim().toLowerCase() === name,
+    );
+    const pick = byName ?? hits.find((r) => (r.email ?? "").trim().length > 0);
+    return { email: (pick?.email ?? null) as string | null };
   });

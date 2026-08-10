@@ -87,11 +87,12 @@ function idToEmail(id: string): string {
 }
 
 
-/** Members can join without an ID number, so build a login address from the name. */
+/** Members can join without an ID number, so build a login address from the name.
+ *  Deterministic (no random suffix) so a retried signup lands on the same
+ *  account instead of spawning duplicates. */
 function nameToEmail(name: string): string {
   const slug = name.trim().toLowerCase().replace(/[^a-z0-9]+/g, "").slice(0, 24) || "member";
-  const suffix = Math.random().toString(36).slice(2, 8);
-  return `${slug}${suffix}@baba.local`;
+  return `${slug}@baba.local`;
 }
 
 
@@ -131,46 +132,40 @@ function AuthPage() {
   const redirectTo = () =>
     sanitizeRedirect(new URLSearchParams(window.location.search).get("redirect"));
 
-  const pause = (ms: number) => new Promise<void>((resolve) => window.setTimeout(resolve, ms));
-
   const finishRegistrationSetup = async (name: string, id: string, phoneNumber: string, loc: LocationValue) => {
     const label = isOther && otherCategory.trim() ? otherCategory.trim() : chosen.label;
-    try {
-      await submitRegistration({
+    await submitRegistration({
+      data: {
+        role: chosen.role,
+        artisan_type: chosen.role === "artisan" ? (chosen.trade ?? "other") : undefined,
         data: {
-          role: chosen.role,
-          artisan_type: chosen.role === "artisan" ? (chosen.trade ?? "other") : undefined,
-          data: {
-            fullName: name,
-            nationalId: id,
-            phone: phoneNumber,
-            email: email.trim() || null,
-            category: label,
-            occupation: label,
-            trade: chosen.role === "artisan" ? label : undefined,
-            corporateType: chosen.orgType,
-            corporateName: intent === "partner" ? name : undefined,
-            country: loc.country,
-            city: loc.city.trim(),
-            area: loc.area.trim(),
-            location: [loc.area, loc.city, loc.country].filter(Boolean).join(", "),
-          },
-        },
-      });
-      await saveProfile({
-        data: {
-          full_name: name,
-          email: email.trim() || undefined,
+          fullName: name,
+          nationalId: id,
           phone: phoneNumber,
-          country: loc.country || undefined,
-          city: loc.city.trim() || undefined,
-          area: loc.area.trim() || undefined,
-          location: [loc.area, loc.city, loc.country].filter(Boolean).join(", ") || undefined,
+          email: email.trim() || null,
+          category: label,
+          occupation: label,
+          trade: chosen.role === "artisan" ? label : undefined,
+          corporateType: chosen.orgType,
+          corporateName: intent === "partner" ? name : undefined,
+          country: loc.country,
+          city: loc.city.trim(),
+          area: loc.area.trim(),
+          location: [loc.area, loc.city, loc.country].filter(Boolean).join(", "),
         },
-      });
-    } catch {
-      // Non-fatal
-    }
+      },
+    });
+    await saveProfile({
+      data: {
+        full_name: name,
+        email: email.trim() || undefined,
+        phone: phoneNumber,
+        country: loc.country || undefined,
+        city: loc.city.trim() || undefined,
+        area: loc.area.trim() || undefined,
+        location: [loc.area, loc.city, loc.country].filter(Boolean).join(", ") || undefined,
+      },
+    });
   };
 
   useEffect(() => {
@@ -241,11 +236,16 @@ function AuthPage() {
         return;
       }
 
-      const syntheticEmail = id ? idToEmail(id) : nameToEmail(name);
-
+      // Prefer the member's real email when provided (so password resets land
+      // in a real inbox); fall back to a synthetic internal address otherwise.
+      const authEmail = email.trim()
+        ? email.trim().toLowerCase()
+        : id
+          ? idToEmail(id)
+          : nameToEmail(name);
 
       const { data: signUpData, error: signUpErr } = await supabase.auth.signUp({
-        email: syntheticEmail,
+        email: authEmail,
         password: pwd,
         options: {
           emailRedirectTo: window.location.origin,
@@ -264,11 +264,19 @@ function AuthPage() {
 
       if (signUpErr) {
         if (/already registered|already exists|user already/i.test(signUpErr.message)) {
-          const existing = await signInWith(syntheticEmail, pwd);
+          const existing = await signInWith(authEmail, pwd);
           if (existing.error) {
             throw new Error(
               "You already have an account. Tap “Log in” and use your full name and password.",
             );
+          }
+          // Heal ghost accounts: an earlier attempt may have created the login
+          // but not the member record. Re-running setup is safe — it updates
+          // the existing registration instead of duplicating it.
+          try {
+            await finishRegistrationSetup(name, id, phone, location);
+          } catch {
+            // The login works regardless; details can be finished in the profile page.
           }
           setNotice("You are already a member — we have logged you in. Welcome back!");
           await navigate({ to: destination, replace: true });
@@ -278,14 +286,18 @@ function AuthPage() {
       }
 
       if (!signUpData.session) {
-        const { error: signInAfterJoinErr } = await signInWith(syntheticEmail, pwd);
+        const { error: signInAfterJoinErr } = await signInWith(authEmail, pwd);
         if (signInAfterJoinErr) {
           throw new Error("Your account was made, but we could not log you in. Please tap Log in.");
         }
       }
 
-      const setup = finishRegistrationSetup(name, id, phone, location);
-      await Promise.race([setup, pause(2500)]);
+      try {
+        await finishRegistrationSetup(name, id, phone, location);
+      } catch {
+        // The account exists; if saving details failed the member can finish
+        // them on their profile page.
+      }
       await navigate({ to: destination, replace: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
@@ -394,7 +406,7 @@ function AuthPage() {
             </div>
             {mode === "signin" && (
               <span className="text-[0.7rem] text-baba-slate/50">
-                Type your name the same way you wrote it when you joined.
+                Type your full name (or your ID number) the same way you wrote it when you joined.
               </span>
             )}
           </label>

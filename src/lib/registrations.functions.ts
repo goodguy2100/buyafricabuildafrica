@@ -100,45 +100,59 @@ export const createRegistration = createServerFn({ method: "POST" })
     const artisanType =
       data.role === "artisan" ? normalizeTrade(data.artisan_type) : null;
 
-    const { data: row, error } = await supabase
+    const payload = {
+      user_id: userId,
+      role: data.role,
+      user_role: data.role,
+      artisan_type: artisanType,
+      professional_experience:
+        data.role === "professional_young"
+          ? "young"
+          : data.role === "professional_exp"
+            ? "experienced"
+            : null,
+      data: data.data as Json,
+      full_name: str(form.fullName) ?? str(form.contactPerson),
+      email: str(form.email) ?? str(form.contactEmail),
+      phone: str(form.phone) ?? str(form.contactPhone),
+      national_id: str(form.nationalId),
+      location: str(form.location),
+      country: str(form.country),
+      city: str(form.city),
+      area: str(form.area),
+      occupation: str(form.occupation),
+      trade: str(form.trade),
+      years_experience:
+        str(form.yearsField) ?? str(form.yearsTrade) ?? str(form.yearsInOperation),
+      employment_status: str(form.employmentStatus),
+      education_level: str(form.education),
+      institution_name: str(form.institutionName),
+      field_of_study: str(form.fieldOfStudy),
+      corporate_name: str(form.corporateName),
+      corporate_type: str(form.corporateType),
+      staff_size: str(form.staffSize),
+      business_license: str(form.businessLicense),
+      industries: arr(form.industries),
+      looking_for: arr(form.lookingFor),
+    };
+
+    // A retried signup (e.g. after a first attempt that created the login but
+    // failed to save the member record) must update the existing registration
+    // instead of creating a duplicate ghost row.
+    const { data: existing } = await supabase
       .from("registrations")
-      .insert({
-        user_id: userId,
-        role: data.role,
-        user_role: data.role,
-        artisan_type: artisanType,
-        professional_experience:
-          data.role === "professional_young"
-            ? "young"
-            : data.role === "professional_exp"
-              ? "experienced"
-              : null,
-        data: data.data as Json,
-        full_name: str(form.fullName) ?? str(form.contactPerson),
-        email: str(form.email) ?? str(form.contactEmail),
-        phone: str(form.phone) ?? str(form.contactPhone),
-        national_id: str(form.nationalId),
-        location: str(form.location),
-        country: str(form.country),
-        city: str(form.city),
-        area: str(form.area),
-        occupation: str(form.occupation),
-        trade: str(form.trade),
-        years_experience:
-          str(form.yearsField) ?? str(form.yearsTrade) ?? str(form.yearsInOperation),
-        employment_status: str(form.employmentStatus),
-        education_level: str(form.education),
-        institution_name: str(form.institutionName),
-        field_of_study: str(form.fieldOfStudy),
-        corporate_name: str(form.corporateName),
-        corporate_type: str(form.corporateType),
-        staff_size: str(form.staffSize),
-        business_license: str(form.businessLicense),
-        industries: arr(form.industries),
-        looking_for: arr(form.lookingFor),
-      })
-      .select("*")
-      .single();
+      .select("id")
+      .eq("user_id", userId)
+      .maybeSingle();
+
+    const { data: row, error } = existing
+      ? await supabase
+          .from("registrations")
+          .update(payload)
+          .eq("user_id", userId)
+          .select("*")
+          .single()
+      : await supabase.from("registrations").insert(payload).select("*").single();
     if (error) throw new Error(error.message);
     return row as RegistrationRow;
   });

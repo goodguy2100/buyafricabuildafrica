@@ -1,8 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { Mail, Loader2, ArrowLeft, User, IdCard, Phone } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { supabase } from "@/integrations/supabase/client";
+import { lookupContactEmail } from "@/lib/login-lookup.functions";
 
 export const Route = createFileRoute("/forgot-password")({
   head: () => ({
@@ -144,6 +146,7 @@ function ManualHelp() {
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
+  const resolveEmail = useServerFn(lookupContactEmail);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -154,9 +157,20 @@ function ManualHelp() {
     setLoading(true);
     try {
       const clean = idNumber.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+      // Carry the member's real email when we can resolve it from their ID,
+      // so the support team can actually reply by email.
+      let realEmail: string | null = null;
+      try {
+        const found = await resolveEmail({
+          data: { nationalId: idNumber.trim(), fullName: name.trim() },
+        });
+        realEmail = found.email;
+      } catch {
+        // Non-fatal: fall back to the synthetic placeholder below.
+      }
       const { error: insErr } = await supabase.from("contact_messages").insert({
         name: name.trim(),
-        email: `id${clean}@baba.local`,
+        email: realEmail ?? `id${clean}@baba.local`,
         phone: phone.trim(),
         query_type: "password_reset",
         message: `Password help request. Full name: ${name.trim()}. National Identification No: ${idNumber.trim()}. Phone: ${phone.trim()}.`,
