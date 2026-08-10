@@ -339,8 +339,11 @@ export interface Opportunity {
   status: string;
   target_containers: string[];
   event_date: string | null;
+  event_end_date: string | null;
   location: string | null;
   deadline: string | null;
+  image_url: string | null;
+  icon: string | null;
   attachments: Json;
   completed: boolean;
   applicants_count: number;
@@ -367,8 +370,11 @@ const opportunityInput = z.object({
   status: z.enum(["open", "closed", "upcoming", "expired", "paused", "draft"]),
   target_containers: z.array(z.string()).default([]),
   event_date: z.string().optional().nullable(),
+  event_end_date: z.string().optional().nullable(),
   location: z.string().max(300).optional().nullable(),
   deadline: z.string().optional().nullable(),
+  image_url: z.string().max(2000).optional().nullable(),
+  icon: z.string().max(60).optional().nullable(),
 });
 
 export const createOpportunity = createServerFn({ method: "POST" })
@@ -385,8 +391,11 @@ export const createOpportunity = createServerFn({ method: "POST" })
         status: data.status,
         target_containers: data.target_containers,
         event_date: data.event_date || null,
+        event_end_date: data.event_end_date || null,
         location: data.location || null,
         deadline: data.deadline || null,
+        image_url: data.image_url || null,
+        icon: data.icon || null,
         created_by: userId,
       })
       .select("*")

@@ -84,6 +84,13 @@ export function Events() {
             {events.map((event) => (
               <div key={event.id} className="baba-card-hover group relative overflow-hidden rounded-2xl border border-baba-copper/20 bg-white">
                 <div className="relative h-44 overflow-hidden bg-gradient-to-br from-baba-blue via-baba-blue-dark to-baba-slate">
+                  {event.imageUrl && (
+                    <img
+                      src={event.imageUrl}
+                      alt={event.title}
+                      className="absolute inset-0 h-full w-full object-cover"
+                    />
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-t from-baba-slate/70 via-transparent to-transparent" />
                   <div className="absolute left-5 top-5 flex h-11 w-11 items-center justify-center rounded-xl bg-white/90 backdrop-blur-sm">
                     <event.icon className="h-5 w-5 text-baba-copper-dark" />

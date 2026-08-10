@@ -11,7 +11,6 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { listPublicEvents, type PublicEvent } from "@/lib/events.functions";
-import { defaultEvents } from "@/data/upcoming-events";
 
 export interface DisplayEvent {
   id: string;
@@ -22,7 +21,7 @@ export interface DisplayEvent {
   icon: LucideIcon;
   start: string; // YYYYMMDD or "" (undated)
   end: string; // YYYYMMDD or "" (undated)
-  source: "db" | "default";
+  imageUrl: string | null;
 }
 
 const ICON_BY_KEY: Record<string, LucideIcon> = {
@@ -53,9 +52,9 @@ function todayKey(): string {
 }
 
 /**
- * Live events for the public site: Supabase first (admin-managed), with the
- * hardcoded defaults as fallback/seed until events are added in the admin
- * panel. Past events are filtered out; the rest are sorted by start date.
+ * Live events for the public site — everything is admin-managed in Supabase
+ * (opportunities table, kind = 'event'). No hardcoded fallback content:
+ * admins create/edit events from Admin → Events.
  */
 export function useUpcomingEvents() {
   const fn = useServerFn(listPublicEvents);
@@ -71,29 +70,14 @@ export function useUpcomingEvents() {
     date: e.dateLabel,
     location: e.location || "Location to be announced",
     description: e.description || "",
-    icon: pickIcon(e.title),
+    icon: ICON_BY_KEY[e.icon ?? ""] ?? pickIcon(e.title),
     start: e.start,
     end: e.end,
-    source: "db" as const,
+    imageUrl: e.imageUrl,
   }));
 
-  const dbTitles = new Set(dbEvents.map((e) => e.title.trim().toLowerCase()));
-  const defaultItems: DisplayEvent[] = defaultEvents
-    .filter((e) => !dbTitles.has(e.title.trim().toLowerCase()))
-    .map((e) => ({
-      id: e.id,
-      title: e.title,
-      date: e.dateLabel,
-      location: e.location,
-      description: e.description,
-      icon: ICON_BY_KEY[e.iconKey] ?? Calendar,
-      start: e.start,
-      end: e.end,
-      source: "default" as const,
-    }));
-
   const today = todayKey();
-  const events = [...dbEvents, ...defaultItems]
+  const events = dbEvents
     .filter((e) => !e.start || e.start >= today)
     .sort((a, b) => (a.start || "99999999").localeCompare(b.start || "99999999"));
 

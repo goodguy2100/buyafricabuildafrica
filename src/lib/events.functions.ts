@@ -10,6 +10,8 @@ export interface PublicEvent {
   description: string;
   start: string; // YYYYMMDD ("" when undated)
   end: string; // YYYYMMDD ("" when undated)
+  imageUrl: string | null;
+  icon: string | null;
 }
 
 function publicClient() {
@@ -54,33 +56,35 @@ function toPublicEvent(row: {
   title: string;
   description: string | null;
   event_date: string | null;
+  event_end_date: string | null;
   location: string | null;
+  image_url: string | null;
+  icon: string | null;
 }): PublicEvent {
-  if (!row.event_date) {
-    return {
-      id: row.id,
-      title: row.title,
-      dateLabel: "Date to be announced",
-      location: row.location ?? "Location to be announced",
-      description: row.description ?? "",
-      start: "",
-      end: "",
-    };
-  }
-  const d = new Date(row.event_date);
-  const time = fmtTime.format(d);
-  const dateLabel =
-    time === "00:00" ? fmtDate.format(d) : `${fmtDate.format(d)} · ${time.trim()}`;
-  const ymd = fmtYmd.format(d).replaceAll("-", "");
-  return {
+  const base = {
     id: row.id,
     title: row.title,
-    dateLabel,
     location: row.location ?? "Location to be announced",
     description: row.description ?? "",
-    start: ymd,
-    end: ymd,
+    imageUrl: row.image_url ?? null,
+    icon: row.icon ?? null,
   };
+  if (!row.event_date) {
+    return { ...base, dateLabel: "Date to be announced", start: "", end: "" };
+  }
+  const start = new Date(row.event_date);
+  const end = row.event_end_date ? new Date(row.event_end_date) : start;
+  const startYmd = fmtYmd.format(start).replaceAll("-", "");
+  const endYmd = fmtYmd.format(end).replaceAll("-", "");
+  let dateLabel: string;
+  if (endYmd !== startYmd) {
+    dateLabel = `${fmtDate.format(start)} – ${fmtDate.format(end)}`;
+  } else {
+    const time = fmtTime.format(start);
+    dateLabel =
+      time === "00:00" ? fmtDate.format(start) : `${fmtDate.format(start)} · ${time.trim()}`;
+  }
+  return { ...base, dateLabel, start: startYmd, end: endYmd };
 }
 
 /**
@@ -94,7 +98,7 @@ export const listPublicEvents = createServerFn({ method: "GET" })
     const supabase = publicClient();
     const { data, error } = await supabase
       .from("opportunities")
-      .select("id,title,description,event_date,location")
+      .select("id,title,description,event_date,event_end_date,location,image_url,icon")
       .eq("kind", "event")
       .in("status", ["open", "upcoming"])
       .order("event_date", { ascending: true, nullsFirst: true });

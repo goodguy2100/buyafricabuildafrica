@@ -116,6 +116,13 @@ export function OpportunitiesSection() {
             const past = o.event_date && new Date(o.event_date) < new Date();
             return (
               <div key={o.id} className="rounded-2xl border border-baba-blue/10 bg-card p-5">
+                {o.image_url && (
+                  <img
+                    src={o.image_url}
+                    alt={o.title}
+                    className="mb-4 h-36 w-full rounded-xl object-cover"
+                  />
+                )}
                 <div className="flex items-start justify-between gap-2">
                   <h3 className="font-display text-lg font-bold text-baba-slate">{o.title}</h3>
                   <StatusBadge status={o.status} />
@@ -252,8 +259,11 @@ function OpportunityForm({
   const [status, setStatus] = useState<Opportunity["status"]>(initial?.status ?? "draft");
   const [containers, setContainers] = useState<string[]>(initial?.target_containers ?? []);
   const [eventDate, setEventDate] = useState(initial?.event_date?.slice(0, 16) ?? "");
+  const [eventEndDate, setEventEndDate] = useState(initial?.event_end_date?.slice(0, 16) ?? "");
   const [location, setLocation] = useState(initial?.location ?? "");
   const [deadline, setDeadline] = useState(initial?.deadline?.slice(0, 10) ?? "");
+  const [imageUrl, setImageUrl] = useState(initial?.image_url ?? "");
+  const [icon, setIcon] = useState(initial?.icon ?? "");
 
   const mutation = useMutation({
     mutationFn: (publish: boolean) => {
@@ -264,8 +274,11 @@ function OpportunityForm({
         status: publish ? (status === "draft" ? "open" : status) : "draft",
         target_containers: containers,
         event_date: eventDate || null,
+        event_end_date: eventEndDate || null,
         location: location || null,
         deadline: deadline || null,
+        image_url: imageUrl || null,
+        icon: icon || null,
       } as const;
       return initial
         ? updateFn({ data: { id: initial.id, ...payload } })
@@ -311,9 +324,39 @@ function OpportunityForm({
           {kind === "event" && (
             <Input label="Event date/time" type="datetime-local" value={eventDate} onChange={setEventDate} />
           )}
+          {kind === "event" && (
+            <Input
+              label="End date/time (multi-day events)"
+              type="datetime-local"
+              value={eventEndDate}
+              onChange={setEventEndDate}
+            />
+          )}
+          {kind === "event" && (
+            <Select
+              label="Icon"
+              value={icon}
+              onChange={setIcon}
+              options={[
+                { value: "", label: "Auto (from title)" },
+                { value: "sparkles", label: "Sparkles" },
+                { value: "landmark", label: "Landmark" },
+                { value: "rocket", label: "Rocket" },
+                { value: "award", label: "Award" },
+                { value: "hammer", label: "Hammer" },
+                { value: "globe", label: "Globe" },
+                { value: "calendar", label: "Calendar" },
+              ]}
+            />
+          )}
           {(kind === "event" || kind === "job") && (
             <Input label="Location" value={location} onChange={setLocation} />
           )}
+          <Input
+            label="Image URL (optional — picture shown on the event card)"
+            value={imageUrl}
+            onChange={setImageUrl}
+          />
           <Input label="Application deadline" type="date" value={deadline} onChange={setDeadline} />
 
           <div>

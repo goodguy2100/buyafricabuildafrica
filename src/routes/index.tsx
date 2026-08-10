@@ -575,9 +575,17 @@ function Home() {
         <div data-stack className="mt-10 grid gap-6 sm:grid-cols-3">
           {events.map((event) => (
             <div key={event.id} className="rounded-2xl border border-baba-blue/10 bg-white p-6 baba-card-hover">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-baba-blue/10">
-                <event.icon className="h-6 w-6 text-baba-blue" />
-              </div>
+              {event.imageUrl ? (
+                <img
+                  src={event.imageUrl}
+                  alt={event.title}
+                  className="h-32 w-full rounded-xl object-cover"
+                />
+              ) : (
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-baba-blue/10">
+                  <event.icon className="h-6 w-6 text-baba-blue" />
+                </div>
+              )}
               <h3 className="mt-4 font-display text-lg font-bold text-baba-slate">{event.title}</h3>
               <p className="mt-1 text-sm font-semibold text-baba-copper-dark">{event.date}</p>
               <p className="mt-2 text-sm text-baba-slate/65">{event.description}</p>
