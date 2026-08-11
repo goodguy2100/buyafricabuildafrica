@@ -8,6 +8,7 @@ export interface MyNotification {
   body: string | null;
   link_url: string | null;
   banner_url: string | null;
+  is_important: boolean;
   is_popup: boolean;
   read_at: string | null;
   created_at: string;
@@ -19,12 +20,25 @@ export const listMyNotifications = createServerFn({ method: "GET" })
     const { supabase, userId } = context;
     const { data, error } = await supabase
       .from("user_notifications")
-      .select("id, title, body, link_url, banner_url, is_popup, read_at, created_at")
+      .select("id, title, body, link_url, banner_url, is_important, is_popup, read_at, created_at")
       .eq("user_id", userId)
       .order("created_at", { ascending: false })
       .limit(100);
     if (error) throw new Error(error.message);
     return (data ?? []) as MyNotification[];
+  });
+
+export const getUnreadNotificationCount = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }): Promise<number> => {
+    const { supabase, userId } = context;
+    const { count, error } = await supabase
+      .from("user_notifications")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", userId)
+      .is("read_at", null);
+    if (error) throw new Error(error.message);
+    return count ?? 0;
   });
 
 export const markNotificationsRead = createServerFn({ method: "POST" })

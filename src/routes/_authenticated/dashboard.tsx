@@ -23,6 +23,7 @@ import {
   Bell,
 } from "lucide-react";
 import { NotificationsTab } from "@/components/NotificationsTab";
+import { getUnreadNotificationCount } from "@/lib/notifications.functions";
 import { PageShell } from "@/components/PageShell";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -90,6 +91,14 @@ function DashboardPage() {
 
   const [tab, setTab] = useState<Tab>("profile");
   const [navOpen, setNavOpen] = useState(false);
+
+  const notifCountFn = useServerFn(getUnreadNotificationCount);
+  const unreadQuery = useQuery({
+    queryKey: ["unread-notifications"],
+    queryFn: () => notifCountFn(),
+    refetchInterval: 60_000,
+  });
+  const unread = unreadQuery.data ?? 0;
 
   const registrations = regsQuery.data ?? [];
   const role = (registrations[0]?.role ?? "individual") as RoleValue;
@@ -181,6 +190,22 @@ function DashboardPage() {
                   <Lock className="h-4 w-4" /> Verify — {formatKsh(fee)}
                 </span>
               )}
+              <button
+                onClick={() => {
+                  setTab("notifications");
+                  setNavOpen(false);
+                }}
+                className="relative flex items-center gap-1.5 rounded-full border-2 border-baba-blue/15 px-3.5 py-1.5 text-sm font-semibold text-baba-slate/70 transition-colors hover:border-baba-blue/40"
+                aria-label="Notifications"
+              >
+                <Bell className="h-4 w-4" />
+                Notifications
+                {unread > 0 && (
+                  <span className="absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-600 px-1 text-[11px] font-bold text-white">
+                    {unread > 9 ? "9+" : unread}
+                  </span>
+                )}
+              </button>
             </div>
 
             {tab === "profile" && (

@@ -463,6 +463,7 @@ export interface NotificationRow {
   sent_count: number;
   status: string;
   is_popup: boolean;
+  is_important: boolean;
   banner_url: string | null;
   link_url: string | null;
   active: boolean;
@@ -492,6 +493,7 @@ export const messageMembers = createServerFn({ method: "POST" })
         title: z.string().min(1).max(300),
         body: z.string().max(8000).optional(),
         message_type: z.enum(["text", "popup", "email", "all"]).default("text"),
+        is_important: z.boolean().optional().default(false),
       })
       .parse(input),
   )
@@ -523,6 +525,7 @@ export const messageMembers = createServerFn({ method: "POST" })
         sent_count: recipients.length,
         status: "delivered",
         is_popup: isPopup,
+        is_important: data.is_important ?? false,
       })
       .select("*")
       .single();
@@ -536,6 +539,7 @@ export const messageMembers = createServerFn({ method: "POST" })
       title: data.title,
       body: data.body ?? null,
       isPopup,
+      isImportant: data.is_important ?? false,
       sendEmail: data.message_type === "email" || data.message_type === "all",
       authHeader: request?.headers.get("authorization") ?? null,
       origin: new URL(request!.url).origin,
@@ -555,6 +559,7 @@ export const sendNotification = createServerFn({ method: "POST" })
         recipient_type: z.enum(["container", "all", "applicants"]),
         recipient_container: z.string().optional().nullable(),
         message_type: z.enum(["text", "popup", "email", "all"]),
+        is_important: z.boolean().optional().default(false),
         scheduled_for: z.string().optional().nullable(),
       })
       .parse(input),
@@ -608,6 +613,7 @@ export const sendNotification = createServerFn({ method: "POST" })
         sent_count: recipients.length,
         status: scheduled ? "scheduled" : "delivered",
         is_popup: isPopup,
+        is_important: data.is_important ?? false,
       })
       .select("*")
       .single();
@@ -622,6 +628,7 @@ export const sendNotification = createServerFn({ method: "POST" })
         title: data.title,
         body: data.body ?? null,
         isPopup,
+        isImportant: data.is_important ?? false,
         sendEmail: data.message_type === "email" || data.message_type === "all",
         authHeader: request?.headers.get("authorization") ?? null,
         origin: new URL(request!.url).origin,

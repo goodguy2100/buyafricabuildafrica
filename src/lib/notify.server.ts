@@ -30,6 +30,7 @@ export interface DeliverArgs {
   linkUrl?: string | null;
   bannerUrl?: string | null;
   isPopup: boolean;
+  isImportant?: boolean;
   sendEmail: boolean;
   /** Caller's bearer header, forwarded to the email route. */
   authHeader: string | null;
@@ -52,6 +53,7 @@ export async function deliverNotification(args: DeliverArgs): Promise<DeliverRes
     linkUrl,
     bannerUrl,
     isPopup,
+    isImportant,
     sendEmail,
     authHeader,
     origin,
@@ -70,6 +72,7 @@ export async function deliverNotification(args: DeliverArgs): Promise<DeliverRes
     link_url: linkUrl ?? null,
     banner_url: bannerUrl ?? null,
     is_popup: isPopup,
+    is_important: isImportant ?? false,
   }));
 
   // Insert in chunks so a large audience does not blow the request size.

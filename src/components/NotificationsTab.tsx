@@ -1,6 +1,6 @@
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Bell, Check, Loader2 } from "lucide-react";
+import { AlertTriangle, Bell, Check, Loader2 } from "lucide-react";
 import {
   listMyNotifications,
   markNotificationsRead,
@@ -63,13 +63,20 @@ export function NotificationsTab() {
           {items.map((n) => (
             <li
               key={n.id}
-              className={`rounded-2xl border bg-card p-4 ${
-                n.read_at ? "border-baba-blue/10" : "border-baba-blue/40 bg-baba-blue/5"
+              className={`rounded-2xl border p-4 ${
+                n.is_important
+                  ? "border-red-300 bg-red-50"
+                  : n.read_at
+                    ? "border-baba-blue/10 bg-card"
+                    : "border-baba-blue/40 bg-baba-blue/5"
               }`}
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <p className="font-display font-bold text-baba-slate">{n.title}</p>
+                  <p className={`font-display font-bold ${n.is_important ? "text-red-700" : "text-baba-slate"}`}>
+                    {n.is_important && <AlertTriangle className="mr-1 inline h-4 w-4 text-red-600" />}
+                    {n.title}
+                  </p>
                   {n.body && (
                     <p className="mt-1 whitespace-pre-wrap text-sm text-baba-slate/70">{n.body}</p>
                   )}

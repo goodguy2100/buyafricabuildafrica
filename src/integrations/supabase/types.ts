@@ -279,6 +279,7 @@ export type Database = {
           created_at: string
           created_by: string | null
           id: string
+          is_important: boolean
           is_popup: boolean
           link_url: string | null
           message_type: string
@@ -299,6 +300,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           id?: string
+          is_important?: boolean
           is_popup?: boolean
           link_url?: string | null
           message_type?: string
@@ -319,6 +321,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           id?: string
+          is_important?: boolean
           is_popup?: boolean
           link_url?: string | null
           message_type?: string
@@ -707,6 +710,7 @@ export type Database = {
           body: string | null
           created_at: string
           id: string
+          is_important: boolean
           is_popup: boolean
           link_url: string | null
           notification_id: string | null
@@ -719,6 +723,7 @@ export type Database = {
           body?: string | null
           created_at?: string
           id?: string
+          is_important?: boolean
           is_popup?: boolean
           link_url?: string | null
           notification_id?: string | null
@@ -731,6 +736,7 @@ export type Database = {
           body?: string | null
           created_at?: string
           id?: string
+          is_important?: boolean
           is_popup?: boolean
           link_url?: string | null
           notification_id?: string | null

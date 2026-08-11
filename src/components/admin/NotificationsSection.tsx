@@ -56,6 +56,7 @@ function SendTab() {
   const [recipientType, setRecipientType] = useState<"all" | "container" | "applicants">("all");
   const [container, setContainer] = useState("");
   const [messageType, setMessageType] = useState<"text" | "popup" | "email" | "all">("text");
+  const [isImportant, setIsImportant] = useState(false);
   const [scheduleFor, setScheduleFor] = useState("");
   const [preview, setPreview] = useState(false);
 
@@ -68,6 +69,7 @@ function SendTab() {
           recipient_type: recipientType,
           recipient_container: recipientType === "container" ? container : null,
           message_type: messageType,
+          is_important: isImportant,
           scheduled_for: scheduleFor || null,
         },
       }),
@@ -149,6 +151,17 @@ function SendTab() {
             className="w-full rounded-lg border border-baba-blue/15 bg-card px-3 py-2 text-sm"
           />
         </Field>
+        <label className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50/60 px-3 py-2.5">
+          <input
+            type="checkbox"
+            checked={isImportant}
+            onChange={(e) => setIsImportant(e.target.checked)}
+            className="h-4 w-4 accent-red-600"
+          />
+          <span className="text-sm font-semibold text-red-700">
+            Mark as important — shows red in members' notifications
+          </span>
+        </label>
         <div className="flex gap-2 pt-2">
           <button
             onClick={() => setPreview((p) => !p)}

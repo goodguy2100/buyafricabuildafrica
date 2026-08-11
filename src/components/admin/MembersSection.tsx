@@ -81,6 +81,12 @@ export function MembersSection() {
 
   const members = membersQuery.data ?? [];
 
+  /** Never show internal login aliases as contact emails — dash instead. */
+  const displayEmail = (email: string | null | undefined) => {
+    const e = (email ?? "").trim();
+    return e && !e.toLowerCase().endsWith("@baba.local") ? e : "-";
+  };
+
   const toggle = (id: string) =>
     setSelected((s) => {
       const n = new Set(s);
@@ -97,7 +103,7 @@ export function MembersSection() {
       `members-${container ?? "all"}.csv`,
       (selected.size ? members.filter((m) => selected.has(m.id)) : members).map((m) => ({
         Name: m.full_name ?? "",
-        Email: m.email ?? "",
+        Email: displayEmail(m.email),
         Phone: m.phone ?? "",
         Role: m.user_role ?? m.role,
         Container: m.container_type ? CONTAINER_LABELS[m.container_type] : "",
@@ -229,7 +235,7 @@ export function MembersSection() {
                     <td className="p-3 font-medium text-baba-slate">
                       {m.full_name ?? "—"}
                     </td>
-                    <td className="p-3 text-baba-slate/70">{m.email ?? "—"}</td>
+                    <td className="p-3 text-baba-slate/70">{displayEmail(m.email)}</td>
                     <td className="p-3 text-baba-slate/70">{m.phone ?? "—"}</td>
                     <td className="p-3 text-baba-slate/70">{m.user_role ?? m.role}</td>
                     <td className="p-3 text-baba-slate/70">
@@ -321,12 +327,18 @@ function MemberDetailDialog({
 
   const m: MemberRow | undefined = q.data?.member;
 
+  /** Never show internal login aliases as contact emails — dash instead. */
+  const displayEmail = (email: string | null | undefined) => {
+    const e = (email ?? "").trim();
+    return e && !e.toLowerCase().endsWith("@baba.local") ? e : "-";
+  };
+
   return (
     <Dialog open={!!id} onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>{m?.full_name ?? "Member profile"}</DialogTitle>
-          <DialogDescription>{m?.email ?? ""}</DialogDescription>
+          <DialogDescription>{displayEmail(m?.email)}</DialogDescription>
         </DialogHeader>
         {q.isLoading || !m ? (
           <LoadingBlock />
