@@ -410,7 +410,7 @@ export type Database = {
           created_at: string
           id: string
           note: string | null
-          opportunity_id: number
+          opportunity_id: number | null
           opportunity_kind: string
           opportunity_title: string
           status: string
@@ -427,7 +427,7 @@ export type Database = {
           created_at?: string
           id?: string
           note?: string | null
-          opportunity_id: number
+          opportunity_id?: number | null
           opportunity_kind: string
           opportunity_title: string
           status?: string

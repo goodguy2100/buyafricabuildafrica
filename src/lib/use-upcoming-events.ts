@@ -22,6 +22,7 @@ export interface DisplayEvent {
   start: string; // YYYYMMDD or "" (undated)
   end: string; // YYYYMMDD or "" (undated)
   imageUrl: string | null;
+  applicantsCount: number;
 }
 
 const ICON_BY_KEY: Record<string, LucideIcon> = {
@@ -74,6 +75,7 @@ export function useUpcomingEvents() {
     start: e.start,
     end: e.end,
     imageUrl: e.imageUrl,
+    applicantsCount: e.applicantsCount,
   }));
 
   const today = todayKey();

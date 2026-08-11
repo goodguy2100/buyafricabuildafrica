@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Loader2, Send, Eye } from "lucide-react";
+import { Loader2, Send, Eye, AlertTriangle } from "lucide-react";
 import {
   listNotifications,
   sendNotification,
@@ -185,8 +185,17 @@ function SendTab() {
           <p className="mb-3 text-xs font-bold uppercase tracking-wide text-baba-slate/50">
             Preview
           </p>
-          <div className="rounded-xl border border-baba-blue/15 bg-card p-4 shadow-sm">
-            <h4 className="font-display text-lg font-bold text-baba-slate">
+          <div
+            className={`rounded-xl border p-4 shadow-sm ${
+              isImportant ? "border-red-300 bg-red-50" : "border-baba-blue/15 bg-card"
+            }`}
+          >
+            <h4
+              className={`font-display text-lg font-bold ${
+                isImportant ? "text-red-700" : "text-baba-slate"
+              }`}
+            >
+              {isImportant && <AlertTriangle className="mr-1 inline h-4 w-4 text-red-600" />}
               {title || "Notification title"}
             </h4>
             <p className="mt-1 text-sm text-baba-slate/70">{body || "Message body…"}</p>
@@ -222,6 +231,7 @@ function HistoryTab() {
             <th className="p-3">Message</th>
             <th className="p-3">Sent</th>
             <th className="p-3">Status</th>
+            <th className="p-3">Flag</th>
           </tr>
         </thead>
         <tbody>
@@ -243,6 +253,15 @@ function HistoryTab() {
               <td className="p-3 text-baba-slate/70">{n.sent_count}</td>
               <td className="p-3">
                 <StatusBadge status={n.status} />
+              </td>
+              <td className="p-3">
+                {n.is_important ? (
+                  <span className="rounded-full bg-red-100 px-2 py-0.5 text-[0.65rem] font-bold uppercase tracking-wide text-red-700">
+                    Important
+                  </span>
+                ) : (
+                  <span className="text-baba-slate/30">—</span>
+                )}
               </td>
             </tr>
           ))}

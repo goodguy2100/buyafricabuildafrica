@@ -12,6 +12,7 @@ export interface PublicEvent {
   end: string; // YYYYMMDD ("" when undated)
   imageUrl: string | null;
   icon: string | null;
+  applicantsCount: number;
 }
 
 function publicClient() {
@@ -60,6 +61,7 @@ function toPublicEvent(row: {
   location: string | null;
   image_url: string | null;
   icon: string | null;
+  applicants_count: number | null;
 }): PublicEvent {
   const base = {
     id: row.id,
@@ -68,6 +70,7 @@ function toPublicEvent(row: {
     description: row.description ?? "",
     imageUrl: row.image_url ?? null,
     icon: row.icon ?? null,
+    applicantsCount: row.applicants_count ?? 0,
   };
   if (!row.event_date) {
     return { ...base, dateLabel: "Date to be announced", start: "", end: "" };
@@ -98,7 +101,7 @@ export const listPublicEvents = createServerFn({ method: "GET" })
     const supabase = publicClient();
     const { data, error } = await supabase
       .from("opportunities")
-      .select("id,title,description,event_date,event_end_date,location,image_url,icon")
+      .select("id,title,description,event_date,event_end_date,location,image_url,icon,applicants_count")
       .eq("kind", "event")
       .in("status", ["open", "upcoming"])
       .order("event_date", { ascending: true, nullsFirst: true });

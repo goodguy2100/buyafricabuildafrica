@@ -1,4 +1,4 @@
-import { createFileRoute, useRouter, Link } from "@tanstack/react-router";
+import { createFileRoute, useRouter, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRef, useState } from "react";
@@ -33,7 +33,7 @@ import {
   type ProfileRow,
   type RegistrationRow,
 } from "@/lib/registrations.functions";
-import { ROLE_FEES, ROLE_LABELS, formatKsh, isProfessional } from "@/lib/roles";
+import { ROLE_LABELS } from "@/lib/roles";
 import type { RoleValue } from "@/lib/registrations.functions";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
@@ -103,7 +103,6 @@ function DashboardPage() {
   const registrations = regsQuery.data ?? [];
   const role = (registrations[0]?.role ?? "individual") as RoleValue;
   const verified = registrations.some((r) => r.verified);
-  const fee = ROLE_FEES[role] ?? 100;
 
   const signOut = async () => {
     await queryClient.cancelQueries();
@@ -186,9 +185,12 @@ function DashboardPage() {
                   <ShieldCheck className="h-4 w-4" /> Verified
                 </span>
               ) : (
-                <span className="flex items-center gap-1.5 rounded-full bg-amber-100 px-3.5 py-1.5 text-sm font-bold text-amber-700">
-                  <Lock className="h-4 w-4" /> Verify — {formatKsh(fee)}
-                </span>
+                <button
+                  onClick={() => router.navigate({ to: "/pillars" })}
+                  className="flex items-center gap-1.5 rounded-full bg-amber-100 px-3.5 py-1.5 text-sm font-bold text-amber-700 transition-colors hover:bg-amber-200"
+                >
+                  <Lock className="h-4 w-4" /> Not verified — Verify
+                </button>
               )}
               <button
                 onClick={() => {
@@ -209,20 +211,13 @@ function DashboardPage() {
             </div>
 
             {tab === "profile" && (
-              <ProfileTab
-                profile={profile}
-                role={role}
-                registeredNationalId={registrations[0]?.national_id ?? null}
-                registeredPhone={registrations[0]?.phone ?? null}
-                registeredEmail={registrations[0]?.email ?? null}
-              />
+              <ProfileTab profile={profile} role={role} reg={registrations[0] ?? null} />
             )}
             {tab === "notifications" && <NotificationsTab />}
 
             {tab === "opportunities" && (
               <OpportunitiesTab
                 verified={verified}
-                fee={fee}
                 role={role}
                 artisanType={registrations[0]?.artisan_type ?? null}
                 profile={profile}
@@ -242,161 +237,82 @@ function DashboardPage() {
 function ProfileTab({
   profile,
   role,
-  registeredNationalId,
-  registeredPhone,
-  registeredEmail,
+  reg,
 }: {
   profile: ProfileRow | null;
   role: RoleValue;
-  registeredNationalId?: string | null;
-  registeredPhone?: string | null;
-  registeredEmail?: string | null;
+  reg: RegistrationRow | null;
 }) {
   const saveFn = useServerFn(updateMyProfile);
   const queryClient = useQueryClient();
-  const fileRef = useRef<HTMLInputElement>(null);
-  const pro = isProfessional(role);
 
-  const extra = (profile?.extra ?? {}) as Record<string, unknown>;
-  const [fullName, setFullName] = useState(profile?.full_name ?? "");
-  const [phone, setPhone] = useState(profile?.phone ?? registeredPhone ?? "");
-  const [nationalId, setNationalId] = useState(
-    registeredNationalId ?? (extra.national_id as string) ?? "",
-  );
-  const [email, setEmail] = useState(realEmail(profile?.email) || realEmail(registeredEmail));
-  const [location, setLocation] = useState(profile?.location ?? "");
-  const [bio, setBio] = useState(profile?.bio ?? "");
-  const [skills, setSkills] = useState((extra.skills as string) ?? "");
-  const [industries, setIndustries] = useState((extra.industries as string) ?? "");
-  const [certifications, setCertifications] = useState((extra.certifications as string) ?? "");
-  const [cvName, setCvName] = useState(profile?.cv_url ?? "");
+  const [email, setEmail] = useState(realEmail(profile?.email) || realEmail(reg?.email));
+  const [phone, setPhone] = useState(profile?.phone ?? reg?.phone ?? "");
+  const [location, setLocation] = useState(profile?.location ?? reg?.location ?? "");
 
-  const idLabel = role === "corporate" ? "Registration / ID No" : "National Identification No";
-
-  // A profile only counts as complete once we have the ID number and phone number.
-  const missing = [
-    !nationalId.trim() ? idLabel : null,
-    !phone.trim() ? "phone number" : null,
-  ].filter(Boolean) as string[];
+  const idLabel = role === "corporate" ? "Registration / ID No" : "National ID";
+  const missing = [!phone.trim() ? "phone number" : null].filter(Boolean) as string[];
 
   const mutation = useMutation({
-    mutationFn: () =>
-      saveFn({
-        data: {
-          full_name: fullName,
-          email,
-          phone,
-          location,
-          bio,
-          cv_url: cvName,
-          national_id: nationalId,
-          extra: { ...extra, skills, industries, certifications, national_id: nationalId },
-        },
-      }),
+    mutationFn: () => saveFn({ data: { email, phone, location } }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["my-profile"] });
       queryClient.invalidateQueries({ queryKey: ["my-registrations"] });
     },
   });
 
+  const humanize = (v: string | null | undefined) =>
+    v ? v.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) : null;
 
-
-  const onPickCv = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) setCvName(file.name);
-  };
+  const summary: { label: string; value: string }[] = [
+    { label: "Username", value: profile?.username ?? reg?.username ?? "—" },
+    { label: "Full name", value: reg?.full_name ?? profile?.full_name ?? "—" },
+    { label: idLabel, value: reg?.national_id ?? "—" },
+    { label: "Role", value: ROLE_LABELS[role] ?? role },
+  ];
+  if (reg?.artisan_type) summary.push({ label: "Trade", value: humanize(reg.artisan_type) ?? reg.artisan_type });
+  if (reg?.education_level) summary.push({ label: "Education", value: reg.education_level });
+  if (reg?.employment_status) summary.push({ label: "Employment", value: reg.employment_status });
+  if (reg?.years_experience) summary.push({ label: "Years experience", value: reg.years_experience });
 
   return (
     <div className="rounded-2xl border border-baba-blue/10 bg-card p-6">
       <h2 className="font-display text-lg font-bold text-baba-slate">My Profile</h2>
       <p className="mt-1 text-sm text-baba-slate/60">
-        Keep your details current. Read-only details come from your registration.
+        Your sign-up details are shown below. Only phone, location and email can be changed.
       </p>
 
       {missing.length > 0 ? (
         <p className="mt-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-          <strong>Your profile is not complete yet.</strong> Please add your {missing.join(" and ")}{" "}
-          below. To be verified you need your {idLabel}, your phone number and
-          your membership fee paid.
+          <strong>Your profile is not complete yet.</strong> Please add your {missing.join(" and ")} below.
         </p>
       ) : (
         <p className="mt-4 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
-          <strong>Your profile is complete.</strong> Once your membership fee is paid you are
-          verified.
+          <strong>Your profile is complete.</strong> You'll be verified by the BABA team.
         </p>
       )}
 
-      <div className="mt-5 grid gap-4 sm:grid-cols-2">
+      <div className="mt-5 rounded-xl border border-baba-blue/10 bg-secondary/40 p-4">
+        <p className="mb-3 text-xs font-bold uppercase tracking-wide text-baba-slate/50">
+          Your sign-up summary
+        </p>
+        <div className="grid gap-x-6 gap-y-3 sm:grid-cols-2">
+          {summary.map((row) => (
+            <ReadOnly key={row.label} label={row.label} value={row.value} />
+          ))}
+        </div>
+      </div>
+
+      <p className="mt-5 text-xs font-bold uppercase tracking-wide text-baba-slate/50">
+        You can change
+      </p>
+      <div className="mt-2 grid gap-4 sm:grid-cols-2">
         <Editable label="Email (optional)" value={email} onChange={setEmail} />
-        <Editable label="Full Name" value={fullName} onChange={setFullName} />
-        <Editable
-          label={`${idLabel} (required)`}
-          value={nationalId}
-          onChange={setNationalId}
-        />
-        <Editable label="Phone (required)" value={phone} onChange={setPhone} />
+        <Editable label="Phone" value={phone} onChange={setPhone} />
         <Editable label="Location" value={location} onChange={setLocation} />
       </div>
 
-
-      <div className="mt-4 grid gap-4">
-        <EditableArea label={pro ? "Professional Summary" : "Bio / About"} value={bio} onChange={setBio} />
-        <Editable label="Skills / Interests" value={skills} onChange={setSkills} />
-        <Editable label="Industries" value={industries} onChange={setIndustries} />
-        {(pro || role === "artisan") && (
-          <Editable label="Certifications / Training" value={certifications} onChange={setCertifications} />
-        )}
-      </div>
-
-      {pro && (
-        <div className="mt-5 rounded-xl border border-dashed border-baba-blue/25 p-5">
-          <h3 className="text-sm font-bold text-baba-slate">Curriculum Vitae (CV)</h3>
-          {cvName ? (
-            <div className="mt-3 flex flex-wrap items-center gap-3">
-              <span className="flex items-center gap-2 rounded-lg bg-baba-blue/5 px-3 py-2 text-sm text-baba-slate">
-                <FileText className="h-4 w-4 text-baba-blue" /> {cvName}
-              </span>
-              <button
-                type="button"
-                className="flex items-center gap-1.5 rounded-lg border-2 border-baba-blue/20 px-3 py-2 text-sm font-semibold text-baba-blue opacity-60"
-                title="File storage coming soon"
-              >
-                <Download className="h-4 w-4" /> Download
-              </button>
-              <button
-                type="button"
-                onClick={() => fileRef.current?.click()}
-                className="flex items-center gap-1.5 rounded-lg border-2 border-baba-blue/20 px-3 py-2 text-sm font-semibold text-baba-blue"
-              >
-                <FileUp className="h-4 w-4" /> Replace
-              </button>
-            </div>
-          ) : (
-            <button
-              type="button"
-              onClick={() => fileRef.current?.click()}
-              className="mt-3 flex w-full flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-baba-blue/25 py-8 text-sm text-baba-slate/60 transition-colors hover:border-baba-blue"
-            >
-              <FileUp className="h-6 w-6 text-baba-blue" />
-              Click to upload your CV (.pdf, .docx)
-            </button>
-          )}
-          <input
-            ref={fileRef}
-            type="file"
-            accept=".pdf,.doc,.docx"
-            className="hidden"
-            onChange={onPickCv}
-          />
-          <p className="mt-2 text-xs text-baba-slate/50">
-            File storage isn't live yet — we save the file name for now.
-          </p>
-        </div>
-      )}
-
       <IdDocumentUpload profile={profile} />
-
-
 
       <div className="mt-6 flex items-center gap-3">
         <button
@@ -589,27 +505,20 @@ function scoreOpp(o: Opp, role: RoleValue, userTokens: string[]): number {
 
 function OpportunitiesTab({
   verified,
-  fee,
   role,
   artisanType,
   profile,
 }: {
   verified: boolean;
-  fee: number;
   role: RoleValue;
   artisanType: string | null;
   profile: ProfileRow | null;
 }) {
+  const navigate = useNavigate();
   const [filter, setFilter] = useState<"foryou" | "all" | OppKind>("foryou");
-  const [gate, setGate] = useState<OppKind | null>(null);
 
   const extra = (profile?.extra ?? {}) as Record<string, unknown>;
-  const userTokens = tokenize(
-    role,
-    artisanType,
-    extra.skills as string,
-    extra.industries as string,
-  );
+  const userTokens = tokenize(role, artisanType, extra.skills as string, extra.industries as string);
 
   const scored = OPPORTUNITIES.map((o) => ({ o, score: scoreOpp(o, role, userTokens) }));
 
@@ -635,7 +544,7 @@ function OpportunitiesTab({
     <div className="rounded-2xl border border-baba-blue/10 bg-card p-6">
       <h2 className="font-display text-lg font-bold text-baba-slate">Opportunities</h2>
       <p className="mt-1 text-sm text-baba-slate/60">
-        Matched to your role{artisanType ? `, ${artisanType}` : ""}, skills and industries.
+        Matched to your role{artisanType ? `, ${artisanType}` : ""}.
       </p>
       <div className="mt-4 flex flex-wrap gap-2">
         {FILTERS.map((f) => (
@@ -656,7 +565,7 @@ function OpportunitiesTab({
       {items.length === 0 ? (
         <div className="mt-5 rounded-xl border border-dashed border-baba-blue/20 p-10 text-center text-sm text-baba-slate/60">
           {filter === "foryou"
-            ? "No matches yet — add your skills and industries in My Profile to get personalized opportunities."
+            ? "No matches for your role yet. Check back soon."
             : "Nothing here right now. Check back soon."}
         </div>
       ) : (
@@ -664,6 +573,13 @@ function OpportunitiesTab({
           {items.map((o, i) => {
             const Icon = OPP_ICON[o.kind];
             const matched = (scoreMap.get(o) ?? 0) > 0;
+            const isEvent = o.kind === "event";
+            // Verified members sign up for real (on the events page); everyone
+            // else sees the sign-up button and is sent to the pillars to verify.
+            const ctaAction = isEvent
+              ? () => navigate({ to: verified ? "/events" : "/pillars" })
+              : () => navigate({ to: "/pillars" });
+            const ctaDisabled = verified && !isEvent;
             return (
               <div key={i} className="flex flex-wrap items-start justify-between gap-4 rounded-xl border border-baba-blue/10 p-4">
                 <div className="flex gap-3">
@@ -684,62 +600,21 @@ function OpportunitiesTab({
                   </div>
                 </div>
                 <button
-                  onClick={() => (verified ? undefined : setGate(o.kind))}
-                  disabled={verified}
+                  onClick={ctaAction}
+                  disabled={ctaDisabled}
                   className={`shrink-0 rounded-lg px-4 py-2 text-sm font-semibold ${
-                    verified
+                    ctaDisabled
                       ? "cursor-not-allowed bg-baba-slate/15 text-baba-slate/50"
                       : "baba-cta text-white"
                   }`}
-                  title={verified ? "Coming soon" : "Verify to continue"}
                 >
-                  {OPP_CTA[o.kind]}
+                  {ctaDisabled ? "Coming soon" : "Sign up"}
                 </button>
               </div>
             );
           })}
         </div>
       )}
-
-      {gate && (
-        <GateModal kind={gate} fee={fee} onClose={() => setGate(null)} />
-      )}
-    </div>
-  );
-}
-
-function GateModal({ kind, fee, onClose }: { kind: OppKind; fee: number; onClose: () => void }) {
-  const verb = kind === "event" ? "register" : kind === "job" ? "apply" : "enroll";
-  return (
-    <div
-      className="fixed inset-0 z-[60] flex items-center justify-center bg-baba-slate/50 p-4 backdrop-blur-sm"
-      role="dialog"
-      aria-modal="true"
-      onClick={onClose}
-    >
-      <div className="w-full max-w-md rounded-2xl border border-baba-blue/10 bg-card p-6 shadow-xl" onClick={(e) => e.stopPropagation()}>
-        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-baba-blue/10">
-          <ShieldCheck className="h-6 w-6 text-baba-blue" />
-        </div>
-        <h2 className="mt-4 font-display text-xl font-extrabold text-baba-blue">
-          Verify your account to {verb}
-        </h2>
-        <p className="mt-2 text-sm text-baba-slate/70">
-          A one-time {formatKsh(fee)} fee verifies your account across the BABA network.
-        </p>
-        <button
-          disabled
-          className="mt-6 flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-lg bg-baba-slate/20 py-3 text-sm font-bold text-baba-slate/60"
-        >
-          <Lock className="h-4 w-4" /> Payment Integration Coming Soon
-        </button>
-        <p className="mt-3 text-center text-xs text-baba-slate/50">
-          You'll complete payment once our payment system is live.
-        </p>
-        <button onClick={onClose} className="mt-3 w-full text-center text-sm font-semibold text-baba-slate/60 hover:text-baba-blue">
-          Close
-        </button>
-      </div>
     </div>
   );
 }
@@ -803,15 +678,6 @@ function SettingsTab({ profile }: { profile: ProfileRow | null }) {
 
   const saveFn = useServerFn(updateMyProfile);
   const queryClient = useQueryClient();
-  const extra = (profile?.extra ?? {}) as Record<string, unknown>;
-  const [skills, setSkills] = useState((extra.skills as string) ?? "");
-  const [industries, setIndustries] = useState((extra.industries as string) ?? "");
-
-  const prefsMutation = useMutation({
-    mutationFn: () =>
-      saveFn({ data: { extra: { ...extra, skills, industries } } }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["my-profile"] }),
-  });
 
 
   const changePassword = async () => {
@@ -837,34 +703,6 @@ function SettingsTab({ profile }: { profile: ProfileRow | null }) {
 
   return (
     <div className="grid gap-6">
-      <div className="rounded-2xl border border-baba-blue/10 bg-card p-6">
-        <h2 className="font-display text-lg font-bold text-baba-slate">Opportunity Preferences</h2>
-        <p className="mt-1 text-sm text-baba-slate/60">
-          Edit your skills and industries to instantly re-rank your “For You” opportunities.
-        </p>
-        <div className="mt-4 grid gap-4">
-          <Editable label="Skills / Interests" value={skills} onChange={setSkills} />
-          <Editable label="Industries" value={industries} onChange={setIndustries} />
-        </div>
-        <div className="mt-4 flex items-center gap-3">
-          <button
-            onClick={() => prefsMutation.mutate()}
-            disabled={prefsMutation.isPending}
-            className="flex items-center gap-2 rounded-lg baba-cta px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
-          >
-            {prefsMutation.isPending && <Loader2 className="h-4 w-4 animate-spin" />} Save Preferences
-          </button>
-          {prefsMutation.isSuccess && !prefsMutation.isPending && (
-            <span className="flex items-center gap-1 text-sm font-semibold text-green-600">
-              <Check className="h-4 w-4" /> Saved — rankings updated
-            </span>
-          )}
-          {prefsMutation.isError && (
-            <span className="text-sm font-semibold text-destructive">Could not save.</span>
-          )}
-        </div>
-      </div>
-
       <div className="rounded-2xl border border-baba-blue/10 bg-card p-6">
         <h2 className="font-display text-lg font-bold text-baba-slate">Change Password</h2>
         <div className="mt-4 flex flex-wrap items-end gap-3">
@@ -909,13 +747,6 @@ function SettingsTab({ profile }: { profile: ProfileRow | null }) {
           </button>
         </div>
         {emailMsg && <p className="mt-2 text-sm font-medium text-baba-slate/70">{emailMsg}</p>}
-      </div>
-
-      <div className="rounded-2xl border border-baba-blue/10 bg-card p-6">
-        <h2 className="font-display text-lg font-bold text-baba-slate">Notification Preferences</h2>
-        <p className="mt-2 text-sm text-baba-slate/60">
-          Notification settings will appear here once the notification engine is live.
-        </p>
       </div>
 
       <div className="rounded-2xl border border-destructive/30 bg-card p-6">

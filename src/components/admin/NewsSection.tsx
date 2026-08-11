@@ -346,8 +346,6 @@ export function NewsSection() {
               <div className="flex shrink-0 items-center gap-1">
                 <a
                   href={`/news/${a.slug}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
                   title="Open on site"
                   className="rounded-md p-2 text-baba-slate/60 hover:bg-baba-blue/5 hover:text-baba-blue"
                 >

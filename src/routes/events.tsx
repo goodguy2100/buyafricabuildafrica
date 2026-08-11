@@ -1,7 +1,13 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { Calendar, Globe, ArrowRight, MapPin, Clock } from "lucide-react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { Calendar, Globe, ArrowRight, MapPin, Clock, Check, Loader2 } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
 import { PageShell } from "@/components/PageShell";
 import { useUpcomingEvents } from "@/lib/use-upcoming-events";
+import { useVerificationGate } from "@/components/VerificationGate";
+import { signUpForEvent, listMyEventSignups } from "@/lib/events-apply.functions";
+import { getMyRegistrations } from "@/lib/registrations.functions";
+import { supabase } from "@/integrations/supabase/client";
 
 
 export const Route = createFileRoute("/events")({
@@ -47,6 +53,51 @@ const annualEvents = [
 
 export function Events() {
   const { events } = useUpcomingEvents();
+  const navigate = useNavigate();
+  const signupFn = useServerFn(signUpForEvent);
+  const mySignupsFn = useServerFn(listMyEventSignups);
+  const regsFn = useServerFn(getMyRegistrations);
+  const { requireVerification, GateModal } = useVerificationGate();
+  const [signedUp, setSignedUp] = useState<Set<string>>(new Set());
+  const [busy, setBusy] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
+
+  // Preload the member's existing sign-ups when they are signed in.
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      if (!data.session) return;
+      mySignupsFn()
+        .then((titles) => setSignedUp(new Set(titles)))
+        .catch(() => {});
+    });
+  }, [mySignupsFn]);
+
+  const handleSignup = async (event: { id: string; title: string }) => {
+    setNotice(null);
+    const { data } = await supabase.auth.getSession();
+    if (!data.session) {
+      requireVerification("apply");
+      return;
+    }
+    try {
+      // Verified members sign up for real; unverified members are sent to
+      // the pillars (that's the verification path) instead of paying.
+      const regs = await regsFn();
+      if (!regs.some((r) => r.verified)) {
+        navigate({ to: "/pillars" });
+        return;
+      }
+      setBusy(event.id);
+      const res = await signupFn({ data: { opportunityId: event.id, title: event.title } });
+      setSignedUp((s) => new Set(s).add(event.title));
+      setNotice(res.already ? "You're already signed up for this event." : `You're signed up for ${event.title} — see you there! 🎉`);
+      setBusy(null);
+    } catch (e) {
+      setBusy(null);
+      setNotice(e instanceof Error ? e.message : "Could not sign up. Please try again.");
+    }
+  };
+
   return (
     <PageShell>
       <section className="relative overflow-hidden bg-gradient-to-br from-baba-blue via-baba-blue-dark to-baba-slate py-24">
@@ -105,10 +156,37 @@ export function Events() {
                     <span className="inline-flex items-center gap-1.5 text-xs text-baba-slate/70"><MapPin className="h-3.5 w-3.5 text-baba-copper" /> {event.location}</span>
                   </div>
                   <p className="mt-4 text-sm leading-relaxed text-baba-slate/80">{event.description}</p>
+                  <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+                    {event.applicantsCount > 0 && (
+                      <span className="text-xs font-semibold text-baba-slate/50">
+                        {event.applicantsCount} person{event.applicantsCount === 1 ? "" : "s"} signed up
+                      </span>
+                    )}
+                    {signedUp.has(event.title) ? (
+                      <span className="inline-flex items-center gap-1.5 rounded-lg bg-green-100 px-4 py-2 text-sm font-bold text-green-700">
+                        <Check className="h-4 w-4" /> You're signed up
+                      </span>
+                    ) : (
+                      <button
+                        onClick={() => handleSignup(event)}
+                        disabled={busy === event.id}
+                        className="inline-flex items-center gap-1.5 rounded-lg baba-cta px-5 py-2.5 text-sm font-semibold text-white transition-transform hover:scale-[1.02] disabled:opacity-60"
+                      >
+                        {busy === event.id && <Loader2 className="h-4 w-4 animate-spin" />}
+                        Sign up for this event
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
           </div>
+          {notice && (
+            <p className="mx-auto mt-6 max-w-xl rounded-xl border border-baba-blue/15 bg-white px-4 py-3 text-center text-sm font-semibold text-baba-slate">
+              {notice}
+            </p>
+          )}
+          {GateModal}
         </div>
       </section>
 

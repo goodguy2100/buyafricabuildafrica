@@ -17,6 +17,47 @@ function timeAgo(iso: string) {
   return new Date(iso).toLocaleDateString();
 }
 
+function NotificationCard({
+  n,
+  onMark,
+}: {
+  n: MyNotification;
+  onMark: (id: string) => void;
+}) {
+  return (
+    <li
+      className={`rounded-2xl border p-4 ${
+        n.is_important
+          ? "border-red-300 bg-red-50"
+          : n.read_at
+            ? "border-baba-blue/10 bg-card"
+            : "border-baba-blue/40 bg-baba-blue/5"
+      }`}
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className={`font-display font-bold ${n.is_important ? "text-red-700" : "text-baba-slate"}`}>
+            {n.is_important && <AlertTriangle className="mr-1 inline h-4 w-4 text-red-600" />}
+            {n.title}
+          </p>
+          {n.body && (
+            <p className="mt-1 whitespace-pre-wrap text-sm text-baba-slate/70">{n.body}</p>
+          )}
+          <p className="mt-2 text-xs text-baba-slate/45">{timeAgo(n.created_at)}</p>
+        </div>
+        {!n.read_at && (
+          <button
+            onClick={() => onMark(n.id)}
+            className="shrink-0 text-xs font-semibold text-baba-blue"
+          >
+            Mark read
+          </button>
+        )}
+      </div>
+    </li>
+  );
+}
+
 export function NotificationsTab() {
   const queryClient = useQueryClient();
   const listFn = useServerFn(listMyNotifications);
@@ -29,6 +70,8 @@ export function NotificationsTab() {
   });
 
   const items: MyNotification[] = q.data ?? [];
+  const important = items.filter((n) => n.is_important);
+  const other = items.filter((n) => !n.is_important);
   const unread = items.filter((n) => !n.read_at);
 
   if (q.isLoading) {
@@ -59,41 +102,32 @@ export function NotificationsTab() {
           <p className="mt-2 text-sm text-baba-slate/60">No messages yet.</p>
         </div>
       ) : (
-        <ul className="grid gap-3">
-          {items.map((n) => (
-            <li
-              key={n.id}
-              className={`rounded-2xl border p-4 ${
-                n.is_important
-                  ? "border-red-300 bg-red-50"
-                  : n.read_at
-                    ? "border-baba-blue/10 bg-card"
-                    : "border-baba-blue/40 bg-baba-blue/5"
-              }`}
-            >
-              <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <p className={`font-display font-bold ${n.is_important ? "text-red-700" : "text-baba-slate"}`}>
-                    {n.is_important && <AlertTriangle className="mr-1 inline h-4 w-4 text-red-600" />}
-                    {n.title}
-                  </p>
-                  {n.body && (
-                    <p className="mt-1 whitespace-pre-wrap text-sm text-baba-slate/70">{n.body}</p>
-                  )}
-                  <p className="mt-2 text-xs text-baba-slate/45">{timeAgo(n.created_at)}</p>
-                </div>
-                {!n.read_at && (
-                  <button
-                    onClick={() => mark.mutate([n.id])}
-                    className="shrink-0 text-xs font-semibold text-baba-blue"
-                  >
-                    Mark read
-                  </button>
-                )}
-              </div>
-            </li>
-          ))}
-        </ul>
+        <div className="grid gap-6">
+          {important.length > 0 && (
+            <div>
+              <p className="mb-2 text-xs font-bold uppercase tracking-wide text-red-600">
+                Important
+              </p>
+              <ul className="grid gap-3">
+                {important.map((n) => (
+                  <NotificationCard key={n.id} n={n} onMark={(id) => mark.mutate([id])} />
+                ))}
+              </ul>
+            </div>
+          )}
+          {other.length > 0 && (
+            <div>
+              <p className="mb-2 text-xs font-bold uppercase tracking-wide text-baba-slate/50">
+                All messages
+              </p>
+              <ul className="grid gap-3">
+                {other.map((n) => (
+                  <NotificationCard key={n.id} n={n} onMark={(id) => mark.mutate([id])} />
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
       )}
     </div>
   );
