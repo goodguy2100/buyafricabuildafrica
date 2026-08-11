@@ -19,12 +19,12 @@ export const Route = createFileRoute("/auth")({
       {
         name: "description",
         content:
-          "Join Buy Africa Build Africa (BABA). Pick your work, add your name and a password. Log in with your full name and password.",
+          "Join Buy Africa Build Africa (BABA). Pick your work, add your name, ID and phone, then choose your username and password.",
       },
       { property: "og:title", content: "Join Us or Log In | Buy Africa Build Africa" },
       {
         property: "og:description",
-        content: "Pick your work, add your name and a password.",
+        content: "Pick your work, add your name, ID and phone, then choose your username and password.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -73,8 +73,6 @@ const PROFESSIONS: ProfessionOption[] = [
   { key: "other", label: "I do something else (type it below)", role: "artisan", trade: "other", example: "Tell us something you have made or done that you are proud of." },
 ];
 
-const MAX_PROFESSIONS = 6;
-
 /** Highest tier wins the role: professional > artisan > student. */
 function deriveRole(keys: string[]): RoleValue {
   const roles = keys
@@ -91,7 +89,8 @@ const EDUCATION_OPTIONS = [
   "Certificate",
   "Diploma",
   "Bachelor's degree",
-  "Master's degree or higher",
+  "Master's degree",
+  "PhD / Doctorate",
 ];
 const EMPLOYMENT_OPTIONS = ["Employed", "Business owner / Entrepreneur", "Freelancer", "Student", "Other"];
 const YEARS_OPTIONS = ["Less than 1 year", "1–3 years", "3–5 years", "5–10 years", "More than 10 years"];
@@ -126,6 +125,7 @@ function AuthPage() {
   const [mode, setMode] = useState<"join" | "signin">("join");
   const [intent, setIntent] = useState<"member" | "partner">("member");
   const [fullName, setFullName] = useState("");
+  const [username, setUsername] = useState("");
   const [idNumber, setIdNumber] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
@@ -133,7 +133,6 @@ function AuthPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [selected, setSelected] = useState<string[]>([]);
   const [otherProfession, setOtherProfession] = useState("");
-  const [projects, setProjects] = useState("");
   const [education, setEducation] = useState("");
   const [employment, setEmployment] = useState("");
   const [years, setYears] = useState("");
@@ -144,7 +143,7 @@ function AuthPage() {
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [loading, setLoading] = useState(false);
-  const [step, setStep] = useState(1); // member join wizard: 1 do, 2 work, 3 about, 4 password
+  const [step, setStep] = useState(1); // member join wizard: 1 do, 2 about, 3 work, 4 password, 5 review
 
   // Arriving from "Become a Partner" opens the organisation form straight away.
   useEffect(() => {
@@ -160,12 +159,8 @@ function AuthPage() {
   const isOther = selected.includes("other");
   const professionLabel = (p: ProfessionOption) =>
     p.key === "other" && otherProfession.trim() ? otherProfession.trim() : p.label;
-  const toggleProfession = (key: string) => {
-    setSelected((prev) => {
-      if (prev.includes(key)) return prev.filter((k) => k !== key);
-      if (prev.length >= MAX_PROFESSIONS) return prev;
-      return [...prev, key];
-    });
+  const chooseProfession = (key: string) => {
+    setSelected(key ? [key] : []);
   };
   const role: RoleValue =
     intent === "partner" ? "corporate" : deriveRole(selected);
@@ -211,6 +206,7 @@ function AuthPage() {
         artisan_type: artisanType,
         data: {
           fullName: name,
+          username: username.trim().toLowerCase() || undefined,
           nationalId: id,
           phone: phoneNumber,
           email: email.trim() || null,
@@ -218,7 +214,6 @@ function AuthPage() {
           occupation: label,
           trade: role === "artisan" ? label : undefined,
           professions: chosenProfessions.map((p) => professionLabel(p)),
-          projects: projects.trim() || null,
           education: education || null,
           employmentStatus: employment || null,
           yearsField: years || null,
@@ -232,6 +227,7 @@ function AuthPage() {
     await saveProfile({
       data: {
         full_name: name,
+        username: username.trim().toLowerCase() || undefined,
         email: email.trim() || undefined,
         phone: phoneNumber,
         country: loc.country || undefined,
@@ -252,20 +248,25 @@ function AuthPage() {
   /** Validate the current wizard slide. Returns an error message or null. */
   const validateStep = (s: number): string | null => {
     if (s === 1) {
-      if (selected.length === 0) return "Please pick what you do — tap at least one.";
+      if (selected.length === 0) return "Please pick what you do.";
       if (isOther && !otherProfession.trim()) return "Please type the work you do.";
     }
-    if (s === 3) {
+    if (s === 2) {
       if (!fullName.trim()) return "Please type your full name.";
+      if (!idNumber.trim()) return "Please type your National Identification No.";
+      if (idNumber.replace(/[^a-zA-Z0-9]/g, "").length < 4) {
+        return "That National Identification No looks too short. Please type the full number.";
+      }
       if (!phone.trim()) return "Please type your phone number.";
       if (phone.replace(/[^0-9]/g, "").length < 9) {
         return "That phone number looks too short - please type it fully, e.g. 0712 345 678.";
       }
-      if (idNumber.trim() && idNumber.replace(/[^a-zA-Z0-9]/g, "").length < 4) {
-        return "That National Identification No looks too short. Leave it blank if unsure.";
-      }
     }
     if (s === 4) {
+      if (!username.trim()) return "Please choose a username.";
+      if (username.trim().length < 3) return "Your username needs at least 3 letters.";
+      if (!/^[a-zA-Z0-9_.]+$/.test(username.trim()))
+        return "Usernames can only use letters, numbers, dots and underscores.";
       if (!password || password.length < 6) {
         return "Please type your password (6 letters or numbers or more).";
       }
@@ -284,8 +285,8 @@ function AuthPage() {
     setError("");
     setNotice("");
 
-    // Member wizard: advance one slide per submit until the final step.
-    if (mode === "join" && intent === "member" && step < 4) {
+    // Member wizard: advance one slide per submit until the review step.
+    if (mode === "join" && intent === "member" && step < 5) {
       const stepErr = validateStep(step);
       if (stepErr) return setError(stepErr);
       setStep(step + 1);
@@ -295,7 +296,11 @@ function AuthPage() {
     const name = fullName.trim();
     const id = idNumber.trim();
     const pwd = password;
-    if (!name) return setError("Please type your full name.");
+    if (mode === "signin") {
+      if (!username.trim() && !name) return setError("Please type your username.");
+    } else if (!name) {
+      return setError("Please type your full name.");
+    }
     if (mode === "join") {
       if (!phone.trim()) return setError("Please type your phone number.");
       if (phone.replace(/[^0-9]/g, "").length < 9) {
@@ -306,14 +311,19 @@ function AuthPage() {
       return setError("Please type your password (6 letters or numbers or more).");
     }
     if (mode === "join" && intent === "member") {
+      if (!username.trim()) return setError("Please choose a username.");
+      if (username.trim().length < 3) return setError("Your username needs at least 3 letters.");
+      if (!/^[a-zA-Z0-9_.]+$/.test(username.trim()))
+        return setError("Usernames can only use letters, numbers, dots and underscores.");
       if (selected.length === 0) {
         return setError("Please pick what you do — tap at least one.");
       }
       if (isOther && !otherProfession.trim()) {
         return setError("Please type the work you do.");
       }
-      if (id && id.replace(/[^a-zA-Z0-9]/g, "").length < 4) {
-        return setError("That National Identification No looks too short. Leave it blank if unsure.");
+      if (!id) return setError("Please type your National Identification No.");
+      if (id.replace(/[^a-zA-Z0-9]/g, "").length < 4) {
+        return setError("That National Identification No looks too short. Please type the full number.");
       }
       if (scorePassword(pwd).score < 2) {
         return setError("Please pick a stronger password. Make it longer, or add a number.");
@@ -342,7 +352,12 @@ function AuthPage() {
         supabase.auth.signInWithPassword({ email: loginEmail, password: p });
 
       if (mode === "signin") {
-        const found = await findLogin({ data: { fullName: name, nationalId: id || undefined } });
+        if (!username.trim() && !name) {
+          throw new Error("Please type your username.");
+        }
+        const found = await findLogin({
+          data: { fullName: username.trim() || name, nationalId: id || undefined },
+        });
         if (found.needsId) {
           setAskForId(true);
           throw new Error(
@@ -363,12 +378,13 @@ function AuthPage() {
       }
 
       // Prefer the member's real email when provided (so password resets land
-      // in a real inbox); fall back to a synthetic internal address otherwise.
+      // in a real inbox); fall back to a synthetic internal address from the
+      // username (deterministic — a retried signup lands on the same account).
       const authEmail = email.trim()
         ? email.trim().toLowerCase()
         : id
           ? idToEmail(id)
-          : nameToEmail(name);
+          : nameToEmail(username.trim() || name);
 
       const { data: signUpData, error: signUpErr } = await supabase.auth.signUp({
         email: authEmail,
@@ -377,6 +393,7 @@ function AuthPage() {
           emailRedirectTo: window.location.origin,
           data: {
             full_name: name,
+            username: username.trim().toLowerCase() || null,
             national_id: id || null,
             phone: phone.trim() || null,
             contact_email: email.trim() || null,
@@ -490,7 +507,7 @@ function AuthPage() {
               ? intent === "member"
                 ? "Tell us what you do — we celebrate every skill, big and small."
                 : "Tell us who you are and what you want to do with us — we are all ears."
-              : "Log in with your full name and your password."}
+              : "Log in with your username and your password."}
           </p>
         </div>
 
@@ -523,7 +540,7 @@ function AuthPage() {
             <>
               {/* wizard progress */}
               <div className="flex items-center justify-center gap-2">
-                {[1, 2, 3, 4].map((s) => (
+                {[1, 2, 3, 4, 5].map((s) => (
                   <span
                     key={s}
                     className={`h-2 rounded-full transition-all ${step === s ? "w-8 bg-baba-blue" : step > s ? "w-2 bg-baba-copper" : "w-2 bg-baba-blue/20"}`}
@@ -536,24 +553,23 @@ function AuthPage() {
                   <div className="mb-4 text-center">
                     <h2 className="font-display text-xl font-bold text-baba-slate">What do you do?</h2>
                     <p className="mt-1 text-sm text-baba-slate/60">
-                      Pick all that apply — up to {MAX_PROFESSIONS}. We count every single one of you.
+                      Pick the one that fits you best — we count every single one of you.
                     </p>
                   </div>
-                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-                    {PROFESSIONS.map((p) => (
-                      <button
-                        key={p.key}
-                        type="button"
-                        onClick={() => toggleProfession(p.key)}
-                        className={`flex items-center gap-1.5 rounded-xl border-2 px-3 py-2.5 text-left text-sm font-semibold transition-colors ${selected.includes(p.key)
-                          ? "border-baba-blue bg-baba-blue/5 text-baba-blue"
-                          : "border-baba-blue/15 text-baba-slate/70 hover:border-baba-blue/40"}`}
-                      >
-                        {selected.includes(p.key) && <Check className="h-3.5 w-3.5 shrink-0" />}
-                        {p.label}
-                      </button>
-                    ))}
-                  </div>
+                  <label className="grid gap-1.5">
+                    <select
+                      value={selected[0] ?? ""}
+                      onChange={(e) => chooseProfession(e.target.value)}
+                      className="w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
+                    >
+                      <option value="">Select — what do you do?</option>
+                      {PROFESSIONS.map((p) => (
+                        <option key={p.key} value={p.key}>
+                          {p.label}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
                   {isOther && (
                     <input
                       value={otherProfession}
@@ -565,32 +581,13 @@ function AuthPage() {
                 </div>
               )}
 
-              {step === 2 && (
+              {step === 3 && (
                 <div className="rounded-2xl border border-baba-blue/10 bg-card p-6">
                   <div className="mb-4 text-center">
-                    <h2 className="font-display text-xl font-bold text-baba-slate">Show us your work</h2>
-                    <p className="mt-1 text-sm text-baba-slate/60">This is your moment — show off a little.</p>
+                    <h2 className="font-display text-xl font-bold text-baba-slate">A little about your work</h2>
+                    <p className="mt-1 text-sm text-baba-slate/60">Just a few quick choices — that is all.</p>
                   </div>
                   <div className="grid gap-4">
-                    <label className="grid gap-1.5">
-                      <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
-                        What have you done?
-                      </span>
-                      <textarea
-                        rows={3}
-                        value={projects}
-                        onChange={(e) => setProjects(e.target.value)}
-                        placeholder={
-                          isOther && otherProfession.trim()
-                            ? "Tell us something you have made or done that you are proud of."
-                            : (primaryProfession?.example ?? "Tell us something you have made or done that you are proud of.")
-                        }
-                        className="w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
-                      />
-                      <span className="text-[0.7rem] text-baba-slate/50">
-                        Past work, a project, something you built.
-                      </span>
-                    </label>
                     <div className="grid gap-4 sm:grid-cols-2">
                       <label className="grid gap-1.5">
                         <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
@@ -644,6 +641,44 @@ function AuthPage() {
             </>
           )}
 
+          {mode === "join" && intent === "member" && step === 5 && (
+            <div className="rounded-2xl border border-baba-blue/10 bg-card p-6">
+              <div className="mb-4 text-center">
+                <h2 className="font-display text-xl font-bold text-baba-slate">Is everything right?</h2>
+                <p className="mt-1 text-sm text-baba-slate/60">Have a quick look — you can go Back to change anything.</p>
+              </div>
+              <div className="grid gap-3 text-sm">
+                <ReviewRow label="Username" value={username.trim()} />
+                <ReviewRow label="Full name" value={fullName.trim()} />
+                <ReviewRow label="Phone" value={phone.trim()} />
+                {idNumber.trim() && <ReviewRow label="ID number" value={idNumber.trim()} />}
+                <ReviewRow
+                  label="What you do"
+                  value={
+                    isOther && otherProfession.trim()
+                      ? otherProfession.trim()
+                      : primaryProfession
+                        ? professionLabel(primaryProfession)
+                        : "—"
+                  }
+                />
+                {education && <ReviewRow label="Education" value={education} />}
+                {employment && <ReviewRow label="How you work" value={employment} />}
+                {years && <ReviewRow label="Years doing this" value={years} />}
+                {email.trim() && <ReviewRow label="Email" value={email.trim()} />}
+                {[location.area, location.city, location.country].some(Boolean) && (
+                  <ReviewRow
+                    label="Location"
+                    value={[location.area, location.city, location.country].filter(Boolean).join(", ")}
+                  />
+                )}
+              </div>
+              <div className="mt-4 flex items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800">
+                <Check className="h-4 w-4" /> All good — tap Join us below!
+              </div>
+            </div>
+          )}
+
           {mode === "join" && intent === "partner" && (
             <>
               <label className="grid gap-1.5">
@@ -675,37 +710,68 @@ function AuthPage() {
             </>
           )}
 
-          {mode === "join" && intent === "member" && step === 3 && (
+          {mode === "join" && intent === "member" && step === 2 && (
             <h2 className="text-center font-display text-xl font-bold text-baba-slate">About you</h2>
           )}
-          {!(mode === "join" && intent === "member" && step < 3) && (
-          <label className="grid gap-1.5">
-            <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
-              {mode === "join" && intent === "partner" ? "Your Name / Organisation Name" : "Full Name"}
-            </span>
-            <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
-              <User className="h-4 w-4 text-baba-slate/40" />
-              <input
-                required
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
-                placeholder={
-                  mode === "join" && intent === "partner"
-                    ? "Your name or organisation name"
-                    : "e.g. Jane Wanjiru"
-                }
-              />
-            </div>
-            {mode === "signin" && (
-              <span className="text-[0.7rem] text-baba-slate/50">
-                Type your full name (or your ID number) the same way you wrote it when you joined.
+          {((mode === "join" && intent === "member" && step === 4) || mode === "signin") && (
+            <label className="grid gap-1.5">
+              <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
+                {mode === "signin" ? "Username" : "Username"}{" "}
+                {mode === "join" && (
+                  <span className="font-normal normal-case text-baba-slate/50">(this is how you log in)</span>
+                )}
               </span>
-            )}
-          </label>
+              <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
+                <User className="h-4 w-4 text-baba-slate/40" />
+                <input
+                  required
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  autoComplete="username"
+                  className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
+                  placeholder="e.g. janewanjiru"
+                />
+              </div>
+              {mode === "join" && (
+                <span className="text-[0.7rem] text-baba-slate/50">
+                  Letters, numbers, dots and underscores. This is the name you will log in with.
+                </span>
+              )}
+              {mode === "signin" && (
+                <span className="text-[0.7rem] text-baba-slate/50">
+                  Type your username or your National ID number.
+                </span>
+              )}
+            </label>
+          )}
+          {((mode === "join" && intent === "member" && step === 2) || (mode === "join" && intent === "partner")) && (
+            <label className="grid gap-1.5">
+              <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
+                {mode === "join" && intent === "partner" ? "Your Name / Organisation Name" : "Full name"}
+              </span>
+              <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
+                <User className="h-4 w-4 text-baba-slate/40" />
+                <input
+                  required
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
+                  placeholder={
+                    mode === "join" && intent === "partner"
+                      ? "Your name or organisation name"
+                      : "e.g. Jane Wanjiru"
+                  }
+                />
+              </div>
+              {mode === "join" && intent === "member" && (
+                <span className="text-[0.7rem] text-baba-slate/50">
+                  Your name as friends and colleagues know you — this is just for your profile.
+                </span>
+              )}
+            </label>
           )}
 
-          {mode === "join" && (intent === "partner" || (intent === "member" && step === 3)) && (
+          {mode === "join" && (intent === "partner" || (intent === "member" && step === 2)) && (
             <label className="grid gap-1.5">
               <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
                 Phone Number <span className="font-normal normal-case text-baba-slate/50">(required)</span>
@@ -725,17 +791,18 @@ function AuthPage() {
             </label>
           )}
 
-          {((mode === "join" && intent === "member" && step === 3) || (mode === "signin" && askForId)) && (
+          {((mode === "join" && intent === "member" && step === 2) || (mode === "signin" && askForId)) && (
             <label className="grid gap-1.5">
               <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
                 National Identification No{" "}
                 <span className="font-normal normal-case text-baba-slate/50">
-                  {mode === "signin" ? "(only to tell you apart)" : "(optional)"}
+                  {mode === "signin" ? "(only to tell you apart)" : "(required)"}
                 </span>
               </span>
               <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
                 <IdCard className="h-4 w-4 text-baba-slate/40" />
                 <input
+                  required
                   inputMode="numeric"
                   value={idNumber}
                   onChange={(e) => setIdNumber(e.target.value)}
@@ -745,8 +812,7 @@ function AuthPage() {
               </div>
               {mode === "join" && (
                 <span className="text-[0.7rem] text-baba-slate/50">
-                  You can skip this now — but your profile is only complete once you add your ID
-                  number and phone number in your profile.
+                  Compulsory — we use it to help you, and you can also log in with it.
                 </span>
               )}
             </label>
@@ -754,7 +820,7 @@ function AuthPage() {
 
 
           {mode === "join" && intent === "member" && step === 4 && (
-            <h2 className="text-center font-display text-xl font-bold text-baba-slate">Make your password</h2>
+            <h2 className="text-center font-display text-xl font-bold text-baba-slate">Your username & password</h2>
           )}
           {!(mode === "join" && intent === "member" && step < 4) && (
           <label className="grid gap-1.5">
@@ -780,18 +846,6 @@ function AuthPage() {
 
           {mode === "join" && (intent === "partner" || (intent === "member" && step === 4)) && (
             <>
-              {mode === "join" && intent === "member" && chosenProfessions.length > 0 && (
-                <div className="rounded-2xl border border-baba-copper/20 bg-baba-copper/5 p-4">
-                  <p className="mb-2 text-xs font-bold uppercase tracking-wide text-baba-copper-dark">You picked</p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {chosenProfessions.map((p) => (
-                      <span key={p.key} className="rounded-full bg-white px-2.5 py-0.5 text-xs font-semibold text-baba-copper-dark">
-                        {professionLabel(p)}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
               <label className="grid gap-1.5">
                 <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
                   Type Password Again
@@ -814,7 +868,11 @@ function AuthPage() {
                   </span>
                 )}
               </label>
+            </>
+          )}
 
+          {mode === "join" && (intent === "partner" || (intent === "member" && step === 4)) && (
+            <>
               <label className="grid gap-1.5">
                 <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
                   Email{" "}
@@ -842,7 +900,7 @@ function AuthPage() {
             </>
           )}
 
-          {mode === "join" && intent === "member" && step === 3 && (
+          {mode === "join" && intent === "member" && step === 2 && (
             <div className="grid gap-1.5">
               <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-baba-slate/70">
                 <MapPin className="h-3.5 w-3.5" /> Where are you?
@@ -880,8 +938,8 @@ function AuthPage() {
                 className="inline-flex items-center gap-1.5 rounded-lg baba-cta px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-baba-blue-dark disabled:opacity-60"
               >
                 {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-                {step === 4 ? "Join us" : "Next"}
-                {step < 4 && <ArrowRight className="h-4 w-4" />}
+                {step === 5 ? "Join us" : "Next"}
+                {step < 5 && <ArrowRight className="h-4 w-4" />}
               </button>
             </div>
           ) : (
@@ -925,5 +983,14 @@ function AuthPage() {
         </p>
       </section>
     </PageShell>
+  );
+}
+
+function ReviewRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-start justify-between gap-4 border-b border-baba-blue/10 pb-2">
+      <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/60">{label}</span>
+      <span className="text-right font-semibold text-baba-slate">{value}</span>
+    </div>
   );
 }

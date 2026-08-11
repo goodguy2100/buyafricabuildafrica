@@ -1,4 +1,4 @@
--- Roles enum + user_roles table (roles must live in a separate table)
+﻿-- Roles enum + user_roles table (roles must live in a separate table)
 CREATE TYPE public.app_role AS ENUM ('admin', 'user');
 
 CREATE TABLE public.user_roles (
@@ -84,8 +84,8 @@ SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
-  INSERT INTO public.profiles (id, email, full_name)
-  VALUES (NEW.id, NEW.email, NEW.raw_user_meta_data ->> 'full_name');
+  INSERT INTO public.profiles (id, email, full_name, username)
+  VALUES (NEW.id, NEW.email, NEW.raw_user_meta_data ->> 'full_name', NEW.raw_user_meta_data ->> 'username');
   RETURN NEW;
 END;
 $$;

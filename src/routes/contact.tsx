@@ -95,19 +95,10 @@ function Contact() {
 
               <div className="mt-6 grid gap-5 sm:grid-cols-2">
                 <Field label="Organisation Name" placeholder="Company, organisation or institution" required />
-                <Field
-                  label="Organisation Registration No"
-                  placeholder="e.g. PVT-XYZ123456"
-                  required
-                />
                 <Field label="Contact Person" placeholder="Jane Wanjiru" />
                 <Field label="Email (optional)" placeholder="info@example.com" type="email" />
                 <Field label="Phone" placeholder="+254 746216258" />
               </div>
-              <p className="mt-2 text-xs text-baba-slate/50">
-                A registration number is required so we can verify your organisation. Organisations
-                are identified by registration number, not a national ID.
-              </p>
 
               <div className="mt-5">
                 <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">

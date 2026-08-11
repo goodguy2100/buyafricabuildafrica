@@ -2,10 +2,11 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 /**
- * Members log in with their full name (or National ID number) + password.
+ * Members log in with their username (or full name / National ID for
+ * members who joined before usernames existed) + password.
  * A member's login address is their real email when they provided one,
- * otherwise a synthetic internal "@baba.local" address. We map a name or
- * ID number to that address here.
+ * otherwise a synthetic internal "@baba.local" address. We map the
+ * username / name / ID number to that address here.
  *
  * Asks for the National ID when a name is shared by several people.
  */
@@ -21,6 +22,21 @@ export const lookupLoginEmail = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<{ email: string | null; needsId: boolean }> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const name = data.fullName.trim();
+
+    // Username first: exact (case-insensitive) match on the username column.
+    // "@baba.local" members can also type their username; real-email members
+    // get their login address looked up from it too.
+    if (name.length >= 2) {
+      const { data: byUser } = await supabaseAdmin
+        .from("profiles")
+        .select("email")
+        .ilike("username", name)
+        .limit(5);
+      const userHit = (byUser ?? []).find(
+        (p) => typeof p.email === "string" && p.email.trim().length > 0,
+      );
+      if (userHit?.email) return { email: userHit.email as string, needsId: false };
+    }
 
     // Escape LIKE metacharacters so the caller cannot submit a wildcard pattern
     // and enumerate members — this must stay an exact (case-insensitive) match.

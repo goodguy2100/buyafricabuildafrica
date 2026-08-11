@@ -35,6 +35,7 @@ export interface RegistrationRow {
   status: string;
   data: Json;
   full_name: string | null;
+  username: string | null;
   email: string | null;
   phone: string | null;
   national_id: string | null;
@@ -68,6 +69,7 @@ export interface ProfileRow {
   id: string;
   email: string | null;
   full_name: string | null;
+  username: string | null;
   phone: string | null;
   location: string | null;
   bio: string | null;
@@ -119,6 +121,7 @@ export const createRegistration = createServerFn({ method: "POST" })
             : null,
       data: data.data as Json,
       full_name: str(form.fullName) ?? str(form.contactPerson),
+      username: str(form.username),
       email: str(form.email) ?? str(form.contactEmail),
       phone: str(form.phone) ?? str(form.contactPhone),
       national_id: str(form.nationalId),
@@ -196,6 +199,7 @@ export const getMyProfile = createServerFn({ method: "GET" })
 
 const profileUpdateInput = z.object({
   full_name: z.string().max(200).optional(),
+  username: z.string().max(60).optional(),
   email: z.string().max(320).optional(),
   phone: z.string().max(60).optional(),
   national_id: z.string().max(60).optional(),
@@ -216,6 +220,7 @@ export const updateMyProfile = createServerFn({ method: "POST" })
     const { supabase, userId } = context;
     const patch: {
       full_name?: string;
+      username?: string;
       phone?: string;
       location?: string;
       country?: string;
@@ -226,6 +231,7 @@ export const updateMyProfile = createServerFn({ method: "POST" })
       extra?: Json;
     } = {};
     if (data.full_name !== undefined) patch.full_name = data.full_name;
+    if (data.username !== undefined) patch.username = data.username.trim().toLowerCase();
     if (data.phone !== undefined) patch.phone = data.phone;
     if (data.location !== undefined) patch.location = data.location;
     if (data.country !== undefined) patch.country = data.country;
@@ -245,7 +251,7 @@ export const updateMyProfile = createServerFn({ method: "POST" })
 
     // Keep the canonical registration record in sync — admin lists, exports and
     // the name-collision login lookup all read these columns, not profiles.extra.
-    const regPatch: { national_id?: string; phone?: string; full_name?: string; email?: string } =
+    const regPatch: { national_id?: string; phone?: string; full_name?: string; email?: string; username?: string } =
       {};
     if (data.national_id !== undefined && data.national_id.trim())
       regPatch.national_id = data.national_id.trim();
@@ -259,6 +265,8 @@ export const updateMyProfile = createServerFn({ method: "POST" })
     if (data.phone !== undefined && data.phone.trim()) regPatch.phone = data.phone.trim();
     if (data.full_name !== undefined && data.full_name.trim())
       regPatch.full_name = data.full_name.trim();
+    if (data.username !== undefined && data.username.trim())
+      regPatch.username = data.username.trim().toLowerCase();
     if (Object.keys(regPatch).length) {
       await supabase.from("registrations").update(regPatch).eq("user_id", userId);
     }

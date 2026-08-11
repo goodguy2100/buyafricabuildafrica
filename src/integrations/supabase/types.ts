@@ -465,6 +465,7 @@ export type Database = {
           location: string | null
           phone: string | null
           updated_at: string
+          username: string | null
         }
         Insert: {
           area?: string | null
@@ -480,6 +481,7 @@ export type Database = {
           location?: string | null
           phone?: string | null
           updated_at?: string
+          username?: string | null
         }
         Update: {
           area?: string | null
@@ -495,6 +497,7 @@ export type Database = {
           location?: string | null
           phone?: string | null
           updated_at?: string
+          username?: string | null
         }
         Relationships: []
       }
@@ -534,6 +537,7 @@ export type Database = {
           updated_at: string
           user_id: string
           user_role: string | null
+          username: string | null
           verification_fee_paid: boolean
           verified: boolean
           years_experience: string | null
@@ -573,6 +577,7 @@ export type Database = {
           updated_at?: string
           user_id: string
           user_role?: string | null
+          username?: string | null
           verification_fee_paid?: boolean
           verified?: boolean
           years_experience?: string | null
@@ -612,6 +617,7 @@ export type Database = {
           updated_at?: string
           user_id?: string
           user_role?: string | null
+          username?: string | null
           verification_fee_paid?: boolean
           verified?: boolean
           years_experience?: string | null
