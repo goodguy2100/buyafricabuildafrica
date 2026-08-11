@@ -355,9 +355,14 @@ export type Database = {
           deadline: string | null
           description: string | null
           event_date: string | null
+          event_end_date: string | null
+          icon: string | null
           id: string
+          image_url: string | null
+          is_online: boolean
           kind: string
           location: string | null
+          online_url: string | null
           status: string
           target_containers: string[]
           title: string
@@ -372,9 +377,14 @@ export type Database = {
           deadline?: string | null
           description?: string | null
           event_date?: string | null
+          event_end_date?: string | null
+          icon?: string | null
           id?: string
+          image_url?: string | null
+          is_online?: boolean
           kind?: string
           location?: string | null
+          online_url?: string | null
           status?: string
           target_containers?: string[]
           title: string
@@ -389,9 +399,14 @@ export type Database = {
           deadline?: string | null
           description?: string | null
           event_date?: string | null
+          event_end_date?: string | null
+          icon?: string | null
           id?: string
+          image_url?: string | null
+          is_online?: boolean
           kind?: string
           location?: string | null
+          online_url?: string | null
           status?: string
           target_containers?: string[]
           title?: string

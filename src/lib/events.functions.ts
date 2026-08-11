@@ -13,6 +13,8 @@ export interface PublicEvent {
   imageUrl: string | null;
   icon: string | null;
   applicantsCount: number;
+  isOnline: boolean;
+  onlineUrl: string | null;
 }
 
 function publicClient() {
@@ -62,15 +64,19 @@ function toPublicEvent(row: {
   image_url: string | null;
   icon: string | null;
   applicants_count: number | null;
+  is_online: boolean | null;
+  online_url: string | null;
 }): PublicEvent {
   const base = {
     id: row.id,
     title: row.title,
-    location: row.location ?? "Location to be announced",
+    location: row.is_online ? "Online" : (row.location ?? "Location to be announced"),
     description: row.description ?? "",
     imageUrl: row.image_url ?? null,
     icon: row.icon ?? null,
     applicantsCount: row.applicants_count ?? 0,
+    isOnline: !!row.is_online,
+    onlineUrl: row.online_url ?? null,
   };
   if (!row.event_date) {
     return { ...base, dateLabel: "Date to be announced", start: "", end: "" };
@@ -101,7 +107,7 @@ export const listPublicEvents = createServerFn({ method: "GET" })
     const supabase = publicClient();
     const { data, error } = await supabase
       .from("opportunities")
-      .select("id,title,description,event_date,event_end_date,location,image_url,icon,applicants_count")
+      .select("id,title,description,event_date,event_end_date,location,image_url,icon,applicants_count,is_online,online_url")
       .eq("kind", "event")
       .in("status", ["open", "upcoming"])
       .order("event_date", { ascending: true, nullsFirst: true });

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Loader2, Plus, Users, Trash2, Pencil, CheckCircle2 } from "lucide-react";
+import { Loader2, Plus, Users, Trash2, Pencil, CheckCircle2, Globe } from "lucide-react";
 import {
   listOpportunities,
   createOpportunity,
@@ -129,6 +129,11 @@ export function OpportunitiesSection() {
                 </div>
                 <p className="mt-1 text-xs text-baba-slate/50">
                   {o.kind} · posted {new Date(o.created_at).toLocaleDateString()}
+                  {o.is_online && (
+                    <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-sky-100 px-2 py-0.5 font-bold text-sky-700">
+                      <Globe className="h-3 w-3" /> Online
+                    </span>
+                  )}
                 </p>
                 {o.description && (
                   <p className="mt-2 line-clamp-2 text-sm text-baba-slate/70">{o.description}</p>
@@ -261,6 +266,8 @@ function OpportunityForm({
   const [eventDate, setEventDate] = useState(initial?.event_date?.slice(0, 16) ?? "");
   const [eventEndDate, setEventEndDate] = useState(initial?.event_end_date?.slice(0, 16) ?? "");
   const [location, setLocation] = useState(initial?.location ?? "");
+  const [isOnline, setIsOnline] = useState(initial?.is_online ?? false);
+  const [onlineUrl, setOnlineUrl] = useState(initial?.online_url ?? "");
   const [deadline, setDeadline] = useState(initial?.deadline?.slice(0, 10) ?? "");
   const [imageUrl, setImageUrl] = useState(initial?.image_url ?? "");
   const [icon, setIcon] = useState(initial?.icon ?? "");
@@ -276,6 +283,8 @@ function OpportunityForm({
         event_date: eventDate || null,
         event_end_date: eventEndDate || null,
         location: location || null,
+        is_online: kind === "event" && isOnline,
+        online_url: kind === "event" && isOnline ? onlineUrl || null : null,
         deadline: deadline || null,
         image_url: imageUrl || null,
         icon: icon || null,
@@ -351,6 +360,26 @@ function OpportunityForm({
           )}
           {(kind === "event" || kind === "job") && (
             <Input label="Location" value={location} onChange={setLocation} />
+          )}
+          {kind === "event" && (
+            <label className="flex items-center gap-2 rounded-lg border border-baba-blue/15 bg-card px-3 py-2.5 text-sm">
+              <input
+                type="checkbox"
+                checked={isOnline}
+                onChange={(e) => setIsOnline(e.target.checked)}
+                className="h-4 w-4 accent-baba-blue"
+              />
+              <span className="font-semibold text-baba-slate/80">Online event</span>
+              <span className="text-xs text-baba-slate/50">(no physical venue)</span>
+            </label>
+          )}
+          {kind === "event" && isOnline && (
+            <Input
+              label="Join link (optional — shared after sign-up)"
+              value={onlineUrl}
+              onChange={setOnlineUrl}
+              placeholder="https://meet.google.com/..."
+            />
           )}
           <Input
             label="Image URL (optional — picture shown on the event card)"
@@ -459,11 +488,13 @@ function Input({
   value,
   onChange,
   type = "text",
+  placeholder,
 }: {
   label: string;
   value: string;
   onChange: (v: string) => void;
   type?: string;
+  placeholder?: string;
 }) {
   return (
     <label className="block text-sm">
@@ -472,6 +503,7 @@ function Input({
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
         className="w-full rounded-lg border border-baba-blue/15 bg-card px-3 py-2 text-sm"
       />
     </label>

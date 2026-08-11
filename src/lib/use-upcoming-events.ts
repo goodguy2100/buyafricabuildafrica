@@ -23,6 +23,8 @@ export interface DisplayEvent {
   end: string; // YYYYMMDD or "" (undated)
   imageUrl: string | null;
   applicantsCount: number;
+  isOnline: boolean;
+  onlineUrl: string | null;
 }
 
 const ICON_BY_KEY: Record<string, LucideIcon> = {
@@ -76,6 +78,8 @@ export function useUpcomingEvents() {
     end: e.end,
     imageUrl: e.imageUrl,
     applicantsCount: e.applicantsCount,
+    isOnline: e.isOnline,
+    onlineUrl: e.onlineUrl,
   }));
 
   const today = todayKey();

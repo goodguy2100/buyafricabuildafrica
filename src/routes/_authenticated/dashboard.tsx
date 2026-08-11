@@ -23,6 +23,7 @@ import {
   Bell,
 } from "lucide-react";
 import { NotificationsTab } from "@/components/NotificationsTab";
+import { MyEventsTab } from "@/components/MyEventsTab";
 import { getUnreadNotificationCount } from "@/lib/notifications.functions";
 import { PageShell } from "@/components/PageShell";
 import { supabase } from "@/integrations/supabase/client";
@@ -69,10 +70,11 @@ function realEmail(value?: string | null): string {
   return v && !v.toLowerCase().endsWith("@baba.local") ? v : "";
 }
 
-type Tab = "profile" | "notifications" | "opportunities" | "registrations" | "settings";
+type Tab = "profile" | "notifications" | "opportunities" | "registrations" | "myevents" | "settings";
 
 const TABS: { id: Tab; label: string; icon: typeof UserCircle }[] = [
   { id: "profile", label: "My Profile", icon: UserCircle },
+  { id: "myevents", label: "My Events", icon: Calendar },
   { id: "notifications", label: "Notifications", icon: Bell },
   { id: "opportunities", label: "Opportunities", icon: Compass },
   { id: "registrations", label: "My Registrations", icon: ClipboardList },
@@ -214,6 +216,7 @@ function DashboardPage() {
               <ProfileTab profile={profile} role={role} reg={registrations[0] ?? null} />
             )}
             {tab === "notifications" && <NotificationsTab />}
+            {tab === "myevents" && <MyEventsTab />}
 
             {tab === "opportunities" && (
               <OpportunitiesTab

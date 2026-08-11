@@ -1,7 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Calendar, Globe, ArrowRight, MapPin, Clock, Check, Loader2 } from "lucide-react";
-import { useServerFn } from "@tanstack/react-start";
+import { Calendar, Globe, ArrowRight, MapPin, Clock, Check, Loader2 } from "lucide-react";import { useServerFn } from "@tanstack/react-start";
 import { PageShell } from "@/components/PageShell";
 import { useUpcomingEvents } from "@/lib/use-upcoming-events";
 import { useVerificationGate } from "@/components/VerificationGate";
@@ -153,7 +152,13 @@ export function Events() {
                     <span className="inline-flex items-center gap-1.5 rounded-full bg-baba-blue/10 px-3 py-1 text-xs font-semibold text-baba-blue">
                       <Calendar className="h-3.5 w-3.5" /> {event.date}
                     </span>
-                    <span className="inline-flex items-center gap-1.5 text-xs text-baba-slate/70"><MapPin className="h-3.5 w-3.5 text-baba-copper" /> {event.location}</span>
+                    {event.isOnline ? (
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-sky-100 px-3 py-1 text-xs font-semibold text-sky-700">
+                        <Globe className="h-3.5 w-3.5" /> Online event
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1.5 text-xs text-baba-slate/70"><MapPin className="h-3.5 w-3.5 text-baba-copper" /> {event.location}</span>
+                    )}
                   </div>
                   <p className="mt-4 text-sm leading-relaxed text-baba-slate/80">{event.description}</p>
                   <div className="mt-4 flex flex-wrap items-center justify-between gap-3">

@@ -341,6 +341,8 @@ export interface Opportunity {
   event_date: string | null;
   event_end_date: string | null;
   location: string | null;
+  is_online: boolean;
+  online_url: string | null;
   deadline: string | null;
   image_url: string | null;
   icon: string | null;
@@ -372,6 +374,8 @@ const opportunityInput = z.object({
   event_date: z.string().optional().nullable(),
   event_end_date: z.string().optional().nullable(),
   location: z.string().max(300).optional().nullable(),
+  is_online: z.boolean().optional(),
+  online_url: z.string().max(2000).optional().nullable(),
   deadline: z.string().optional().nullable(),
   image_url: z.string().max(2000).optional().nullable(),
   icon: z.string().max(60).optional().nullable(),
@@ -393,6 +397,8 @@ export const createOpportunity = createServerFn({ method: "POST" })
         event_date: data.event_date || null,
         event_end_date: data.event_end_date || null,
         location: data.location || null,
+        is_online: data.is_online ?? false,
+        online_url: data.online_url || null,
         deadline: data.deadline || null,
         image_url: data.image_url || null,
         icon: data.icon || null,

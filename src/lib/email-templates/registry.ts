@@ -1,5 +1,6 @@
 import type { ComponentType } from 'react'
 import { template as memberMessageTemplate } from './member-message'
+import { template as eventSignupTemplate } from './event-signup'
 
 export interface TemplateEntry {
   component: ComponentType<any>
@@ -16,4 +17,5 @@ export interface TemplateEntry {
  */
 export const TEMPLATES: Record<string, TemplateEntry> = {
   'member-message': memberMessageTemplate,
+  'event-signup': eventSignupTemplate,
 }
