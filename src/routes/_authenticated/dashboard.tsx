@@ -268,7 +268,6 @@ function ProfileTab({
     v ? v.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) : null;
 
   const summary: { label: string; value: string }[] = [
-    { label: "Username", value: profile?.username ?? reg?.username ?? "—" },
     { label: "Full name", value: reg?.full_name ?? profile?.full_name ?? "—" },
     { label: idLabel, value: reg?.national_id ?? "—" },
     { label: "Role", value: ROLE_LABELS[role] ?? role },

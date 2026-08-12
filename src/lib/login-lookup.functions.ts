@@ -23,9 +23,22 @@ export const lookupLoginEmail = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const name = data.fullName.trim();
 
-    // Username first: exact (case-insensitive) match on the username column.
-    // "@baba.local" members can also type their username; real-email members
-    // get their login address looked up from it too.
+    // If the member typed an email address, match the login email directly.
+    if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(name)) {
+      const { data: byEmail } = await supabaseAdmin
+        .from("profiles")
+        .select("email")
+        .ilike("email", name)
+        .limit(5);
+      const emailHit = (byEmail ?? []).find(
+        (p) => typeof p.email === "string" && p.email.trim().length > 0,
+      );
+      if (emailHit?.email) return { email: emailHit.email as string, needsId: false };
+      return { email: null, needsId: false };
+    }
+
+    // Exact (case-insensitive) match on the username column first, for members
+    // who still type an old username (kept for backwards compatibility).
     if (name.length >= 2) {
       const { data: byUser } = await supabaseAdmin
         .from("profiles")

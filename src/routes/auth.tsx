@@ -8,7 +8,7 @@ import { createRegistration, updateMyProfile, type RoleValue } from "@/lib/regis
 import { lookupLoginEmail } from "@/lib/login-lookup.functions";
 import { confirmSignup } from "@/lib/signup.functions";
 import { LocationPicker, EMPTY_LOCATION, type LocationValue } from "@/components/LocationPicker";
-import { PasswordStrength, scorePassword } from "@/components/PasswordStrength";
+import { PasswordStrength } from "@/components/PasswordStrength";
 
 export const Route = createFileRoute("/auth")({
   validateSearch: (search: Record<string, unknown>): { redirect?: string } =>
@@ -19,12 +19,12 @@ export const Route = createFileRoute("/auth")({
       {
         name: "description",
         content:
-          "Join Buy Africa Build Africa (BABA). Pick your work, add your name, ID and phone, then choose your username and password.",
+          "Join Buy Africa Build Africa (BABA). Pick your work, add your name and phone, then choose your password.",
       },
       { property: "og:title", content: "Join Us or Log In | Buy Africa Build Africa" },
       {
         property: "og:description",
-        content: "Pick your work, add your name, ID and phone, then choose your username and password.",
+        content: "Pick your work, add your name and phone, then choose your password.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -207,7 +207,6 @@ function AuthPage() {
         artisan_type: artisanType,
         data: {
           fullName: name,
-          username: username.trim().toLowerCase() || undefined,
           nationalId: id,
           phone: phoneNumber,
           email: email.trim() || null,
@@ -228,7 +227,6 @@ function AuthPage() {
     await saveProfile({
       data: {
         full_name: name,
-        username: username.trim().toLowerCase() || undefined,
         email: email.trim() || undefined,
         phone: phoneNumber,
         country: loc.country || undefined,
@@ -254,8 +252,7 @@ function AuthPage() {
     }
     if (s === 2) {
       if (!fullName.trim()) return "Please type your full name.";
-      if (!idNumber.trim()) return "Please type your National Identification No.";
-      if (idNumber.replace(/[^a-zA-Z0-9]/g, "").length < 4) {
+      if (idNumber.trim() && idNumber.replace(/[^a-zA-Z0-9]/g, "").length < 4) {
         return "That National Identification No looks too short. Please type the full number.";
       }
       if (!phone.trim()) return "Please type your phone number.";
@@ -264,15 +261,8 @@ function AuthPage() {
       }
     }
     if (s === 4) {
-      if (!username.trim()) return "Please choose a username.";
-      if (username.trim().length < 3) return "Your username needs at least 3 letters.";
-      if (!/^[a-zA-Z0-9_.]+$/.test(username.trim()))
-        return "Usernames can only use letters, numbers, dots and underscores.";
       if (!password || password.length < 6) {
         return "Please type your password (6 letters or numbers or more).";
-      }
-      if (scorePassword(password).score < 2) {
-        return "Please pick a stronger password. Make it longer, or add a number.";
       }
       if (password !== confirmPassword) {
         return "The two passwords are not the same. Please type them again.";
@@ -298,7 +288,7 @@ function AuthPage() {
     const id = idNumber.trim();
     const pwd = password;
     if (mode === "signin") {
-      if (!username.trim() && !name) return setError("Please type your username.");
+      if (!username.trim() && !name) return setError("Please type your email, name or ID number.");
     } else if (!name) {
       return setError("Please type your full name.");
     }
@@ -312,22 +302,14 @@ function AuthPage() {
       return setError("Please type your password (6 letters or numbers or more).");
     }
     if (mode === "join" && intent === "member") {
-      if (!username.trim()) return setError("Please choose a username.");
-      if (username.trim().length < 3) return setError("Your username needs at least 3 letters.");
-      if (!/^[a-zA-Z0-9_.]+$/.test(username.trim()))
-        return setError("Usernames can only use letters, numbers, dots and underscores.");
       if (selected.length === 0) {
         return setError("Please pick what you do — tap at least one.");
       }
       if (isOther && !otherProfession.trim()) {
         return setError("Please type the work you do.");
       }
-      if (!id) return setError("Please type your National Identification No.");
-      if (id.replace(/[^a-zA-Z0-9]/g, "").length < 4) {
+      if (id && id.replace(/[^a-zA-Z0-9]/g, "").length < 4) {
         return setError("That National Identification No looks too short. Please type the full number.");
-      }
-      if (scorePassword(pwd).score < 2) {
-        return setError("Please pick a stronger password. Make it longer, or add a number.");
       }
       if (pwd !== confirmPassword) {
         return setError("The two passwords are not the same. Please type them again.");
@@ -336,9 +318,6 @@ function AuthPage() {
     if (mode === "join" && intent === "partner") {
       if (!email.trim()) {
         return setError("Please type your email so we can reach you.");
-      }
-      if (scorePassword(pwd).score < 2) {
-        return setError("Please pick a stronger password. Make it longer, or add a number.");
       }
       if (pwd !== confirmPassword) {
         return setError("The two passwords are not the same. Please type them again.");
@@ -354,7 +333,7 @@ function AuthPage() {
 
       if (mode === "signin") {
         if (!username.trim() && !name) {
-          throw new Error("Please type your username.");
+          throw new Error("Please type your email, name or ID number.");
         }
         const found = await findLogin({
           data: { fullName: username.trim() || name, nationalId: id || undefined },
@@ -380,12 +359,12 @@ function AuthPage() {
 
       // Prefer the member's real email when provided (so password resets land
       // in a real inbox); fall back to a synthetic internal address from the
-      // username (deterministic — a retried signup lands on the same account).
+      // name (deterministic — a retried signup lands on the same account).
       const authEmail = email.trim()
         ? email.trim().toLowerCase()
         : id
           ? idToEmail(id)
-          : nameToEmail(username.trim() || name);
+          : nameToEmail(name);
 
       const { data: signUpData, error: signUpErr } = await supabase.auth.signUp({
         email: authEmail,
@@ -394,7 +373,6 @@ function AuthPage() {
           emailRedirectTo: window.location.origin,
           data: {
             full_name: name,
-            username: username.trim().toLowerCase() || null,
             national_id: id || null,
             phone: phone.trim() || null,
             contact_email: email.trim() || null,
@@ -508,7 +486,7 @@ function AuthPage() {
               ? intent === "member"
                 ? "Tell us what you do — we celebrate every skill, big and small."
                 : "Tell us who you are and what you want to do with us — we are all ears."
-              : "Log in with your username and your password."}
+              : "Log in with your email, your name, or your ID number, and your password."}
           </p>
         </div>
 
@@ -649,7 +627,6 @@ function AuthPage() {
                 <p className="mt-1 text-sm text-baba-slate/60">Have a quick look — you can go Back to change anything.</p>
               </div>
               <div className="grid gap-3 text-sm">
-                <ReviewRow label="Username" value={username.trim()} />
                 <ReviewRow label="Full name" value={fullName.trim()} />
                 <ReviewRow label="Phone" value={phone.trim()} />
                 {idNumber.trim() && <ReviewRow label="ID number" value={idNumber.trim()} />}
@@ -714,13 +691,10 @@ function AuthPage() {
           {mode === "join" && intent === "member" && step === 2 && (
             <h2 className="text-center font-display text-xl font-bold text-baba-slate">About you</h2>
           )}
-          {((mode === "join" && intent === "member" && step === 4) || mode === "signin") && (
+          {mode === "signin" && (
             <label className="grid gap-1.5">
               <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
-                {mode === "signin" ? "Username" : "Username"}{" "}
-                {mode === "join" && (
-                  <span className="font-normal normal-case text-baba-slate/50">(this is how you log in)</span>
-                )}
+                Email, name or ID number
               </span>
               <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
                 <User className="h-4 w-4 text-baba-slate/40" />
@@ -730,19 +704,12 @@ function AuthPage() {
                   onChange={(e) => setUsername(e.target.value)}
                   autoComplete="username"
                   className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
-                  placeholder="e.g. janewanjiru"
+                  placeholder="e.g. janewanjiru@gmail.com"
                 />
               </div>
-              {mode === "join" && (
-                <span className="text-[0.7rem] text-baba-slate/50">
-                  Letters, numbers, dots and underscores. This is the name you will log in with.
-                </span>
-              )}
-              {mode === "signin" && (
-                <span className="text-[0.7rem] text-baba-slate/50">
-                  Type your username or your National ID number.
-                </span>
-              )}
+              <span className="text-[0.7rem] text-baba-slate/50">
+                Your email, your full name, or your National ID number — any one works.
+              </span>
             </label>
           )}
           {((mode === "join" && intent === "member" && step === 2) || (mode === "join" && intent === "partner")) && (
@@ -797,31 +764,30 @@ function AuthPage() {
               <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
                 National Identification No{" "}
                 <span className="font-normal normal-case text-baba-slate/50">
-                  {mode === "signin" ? "(only to tell you apart)" : "(required)"}
+                  {mode === "signin" ? "(only to tell you apart)" : "(optional)"}
                 </span>
               </span>
               <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
                 <IdCard className="h-4 w-4 text-baba-slate/40" />
                 <input
-                  required
                   inputMode="numeric"
                   value={idNumber}
                   onChange={(e) => setIdNumber(e.target.value)}
                   className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
-                  placeholder="Your National Identification No"
+                  placeholder="Your National Identification No (optional)"
                 />
               </div>
               {mode === "join" && (
                 <span className="text-[0.7rem] text-baba-slate/50">
-                  Compulsory — we use it to help you, and you can also log in with it.
+                  Optional — some countries prefer not to share it. You can add it later in your profile.
                 </span>
               )}
             </label>
           )}
 
 
-          {mode === "join" && intent === "member" && step === 4 && (
-            <h2 className="text-center font-display text-xl font-bold text-baba-slate">Your username & password</h2>
+              {mode === "join" && intent === "member" && step === 4 && (
+            <h2 className="text-center font-display text-xl font-bold text-baba-slate">Your password</h2>
           )}
           {!(mode === "join" && intent === "member" && step < 4) && (
           <label className="grid gap-1.5">
