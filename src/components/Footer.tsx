@@ -14,9 +14,9 @@ const columns = [
   },
   {
     title: "Get Involved",
-    to: "/register",
+    to: "/auth",
     links: [
-      { to: "/register", label: "Become a Member" },
+      { to: "/auth", label: "Become a Member" },
       { to: "/partners", label: "Become a Partner" },
       { to: "/contact", label: "Member Support" },
     ],

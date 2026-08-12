@@ -454,7 +454,7 @@ function PillarsPage() {
                   </p>
                 </div>
                 <Link
-                  to="/register"
+                  to="/auth"
                   className="baba-cta inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-bold"
                 >
                   Join &amp; Get Involved <ArrowRight className="h-4 w-4" />
@@ -482,7 +482,7 @@ function PillarsPage() {
             ))}
           </ul>
           <div className="mt-10 flex flex-wrap justify-center gap-4">
-            <Link to="/register" className="baba-cta inline-flex items-center gap-2 rounded-full px-10 py-4 font-bold">
+            <Link to="/auth" className="baba-cta inline-flex items-center gap-2 rounded-full px-10 py-4 font-bold">
               Become a Member <ArrowRight className="h-4 w-4" />
             </Link>
             <Link

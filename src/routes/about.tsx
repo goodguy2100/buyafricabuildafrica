@@ -292,7 +292,7 @@ export function About() {
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-4">
             <Link
-              to="/register"
+              to="/auth"
               className="rounded-full bg-white px-8 py-3.5 text-sm font-bold text-baba-blue shadow-lg transition-colors hover:bg-baba-cream"
             >
               Become a Member

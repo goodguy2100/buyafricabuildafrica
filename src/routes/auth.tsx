@@ -58,6 +58,7 @@ const PROFESSIONS: ProfessionOption[] = [
   { key: "welder", label: "I am a Welder", role: "artisan", trade: "welder", example: "e.g. I have welded gates and structures that are strong, clean and artistic." },
   { key: "plumber", label: "I am a Plumber", role: "artisan", trade: "plumber", example: "e.g. I have done neat, reliable plumbing that never leaks." },
   { key: "mason", label: "I am a Mason", role: "artisan", trade: "mason", example: "e.g. I have laid bricks and stone that stand tall for years." },
+  { key: "construction", label: "I am in Construction", role: "artisan", trade: "construction", example: "e.g. I have worked on building sites and helped put up homes, shops and offices." },
   { key: "electrician", label: "I am an Electrician", role: "artisan", trade: "electrician", example: "e.g. I have wired homes and shops safely and neatly." },
   { key: "painter", label: "I am a Painter", role: "artisan", trade: "painter", example: "e.g. I have given walls beautiful, smooth finishes." },
   { key: "tiler", label: "I am a Tiler", role: "artisan", trade: "tiler", example: "e.g. I have done beautiful bathroom and floor tiling." },

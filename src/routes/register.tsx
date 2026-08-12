@@ -50,7 +50,7 @@ const OCCUPATIONS = [
 ];
 
 const TRADES = [
-  "Plumber", "Mason", "Interior Designer", "Architect", "Engineer",
+  "Plumber", "Mason", "Construction", "Interior Designer", "Architect", "Engineer",
   "Quantity Surveyor", "Painter", "Other",
 ];
 
@@ -133,6 +133,14 @@ function GetStarted() {
           location: pick(p.location, last.location),
         };
         setPrefill(Object.fromEntries(Object.entries(next).filter(([, v]) => v)));
+        // Already registered through the Join Us wizard (role + details saved)?
+        // Then the role question was already answered at sign-up — skip straight
+        // to the welcome screen instead of asking the same thing again.
+        const existingRole = (last as Record<string, unknown>)?.role;
+        if (typeof existingRole === "string" && existingRole) {
+          setRole(existingRole as RoleValue);
+          setStep(2);
+        }
       } catch {
         // Prefill is a convenience — never block registration.
       }

@@ -194,13 +194,13 @@ function Home() {
               We believe Africa's greatest resource is not beneath its soil. It is its people.
             </p>
             <div className="mt-10 flex flex-wrap justify-center gap-3">
-              <Link to="/register" className="baba-cta rounded-full px-8 py-3.5 text-sm font-bold text-white shadow-lg shadow-baba-blue/25">
+              <Link to="/auth" className="baba-cta rounded-full px-8 py-3.5 text-sm font-bold text-white shadow-lg shadow-baba-blue/25">
                 Become a Member
               </Link>
               <Link to="/partners" className="rounded-full border-2 border-baba-blue px-8 py-3.5 text-sm font-bold text-baba-blue transition-colors hover:bg-baba-blue hover:text-white">
                 Partner With Us
               </Link>
-              <Link to="/register" className="rounded-full border-2 border-baba-copper px-8 py-3.5 text-sm font-bold text-baba-copper-dark transition-colors hover:bg-baba-copper hover:text-baba-slate">
+              <Link to="/auth" className="rounded-full border-2 border-baba-copper px-8 py-3.5 text-sm font-bold text-baba-copper-dark transition-colors hover:bg-baba-copper hover:text-baba-slate">
                 Join the BABA Capacity Building Programme
               </Link>
               <Link to="/events" className="baba-cta inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-sm font-bold">
@@ -487,7 +487,7 @@ function Home() {
             {ecosystemGroups.map((g) => (
               <Link
                 key={g.group}
-                to="/register"
+                to="/auth"
                 className="baba-pop-card flex items-center justify-between gap-3 rounded-2xl p-6"
               >
                 <h3 className="font-display text-lg font-extrabold text-baba-slate">{g.group}</h3>
@@ -612,7 +612,7 @@ function Home() {
           <h2 className="mt-10 font-display text-3xl font-extrabold sm:text-4xl">BUY AFRICA. BUILD AFRICA. EMPOWER AFRICA.</h2>
           <p className="mt-4 text-lg text-baba-copper">Connecting People. Building Industries. Transforming Africa.</p>
           <div className="mt-8 flex flex-wrap justify-center gap-4">
-            <Link to="/register" className="rounded-full bg-white px-8 py-3.5 text-sm font-bold text-baba-blue shadow-lg transition-colors hover:bg-baba-cream">
+            <Link to="/auth" className="rounded-full bg-white px-8 py-3.5 text-sm font-bold text-baba-blue shadow-lg transition-colors hover:bg-baba-cream">
               Become a Member
             </Link>
             <Link to="/partners" className="rounded-full border-2 border-white px-8 py-3.5 text-sm font-bold text-white transition-colors hover:bg-white hover:text-baba-blue">

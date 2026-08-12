@@ -120,7 +120,7 @@ export function Header() {
           <MotionToggle />
           {!signedIn && (
             <Link
-              to="/register"
+              to="/auth"
               className="rounded-full baba-cta px-4 py-2 text-sm font-semibold text-white"
             >
               Join Us
@@ -196,7 +196,7 @@ export function Header() {
           <div className="mt-3 flex flex-col gap-2">
             {!signedIn && (
               <Link
-                to="/register"
+                to="/auth"
                 onClick={() => setOpen(false)}
                 className="rounded-full baba-cta px-4 py-2.5 text-center text-sm font-semibold text-white"
               >
