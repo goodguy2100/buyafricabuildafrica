@@ -4,15 +4,16 @@ import { z } from "zod";
 /**
  * Confirm a just-created auth user server-side.
  *
- * Members who join without an email get a synthetic "@baba.local" login
- * address, which has no inbox — a confirmation email can never arrive, so
- * those accounts would stay locked when the project has "Confirm email" on.
+ * Confirmation emails are unreliable for some providers, so signup auto-
+ * confirms every account and logs the member straight in. The welcome email
+ * (if any) is informational — nobody is ever blocked waiting to click a link.
  *
  * Two modes:
  * - userId + email: called right after signUp with the fresh account.
  * - email only: called when a signup retry hits "already registered" and the
- *   existing account is an unconfirmed @baba.local one. Only synthetic
- *   internal addresses may be confirmed this way.
+ *   existing account is an unconfirmed one. Only synthetic internal addresses
+ *   may be confirmed this way (the caller cannot prove ownership of a real
+ *   external inbox in this mode).
  */
 export const confirmSignup = createServerFn({ method: "POST" })
   .inputValidator((input) =>

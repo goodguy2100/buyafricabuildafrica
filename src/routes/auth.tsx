@@ -421,12 +421,11 @@ function AuthPage() {
       }
 
       if (!signUpData.session) {
-        // Email confirmation is enabled for this project. Synthetic @baba.local
-        // addresses have no inbox, so confirm those server-side and log in right
-        // away. Real emails must confirm via the link we just sent, but their
-        // member record is saved below either way — never a ghost account.
+        // Confirmation emails are unreliable for some providers, so we confirm
+        // every fresh account server-side and log the member in right away.
+        // Nobody is ever blocked waiting for an email link.
         let signedIn = false;
-        if (authEmail.endsWith("@baba.local") && signUpData.user) {
+        if (signUpData.user) {
           try {
             const confirm = await confirmSignupFn({
               data: { userId: signUpData.user.id, email: authEmail },
@@ -446,9 +445,7 @@ function AuthPage() {
         }
         if (!signedIn) {
           setNotice(
-            authEmail.endsWith("@baba.local")
-              ? "Your account was created. Please tap Log in and try again in a moment."
-              : "Your account was created — check your email for the confirmation link, then log in.",
+            "Your account was created. Please tap Log in and try again in a moment.",
           );
           setLoading(false);
           return;
