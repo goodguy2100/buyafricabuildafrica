@@ -173,6 +173,38 @@ function AuthPage() {
   const redirectTo = () =>
     sanitizeRedirect(new URLSearchParams(window.location.search).get("redirect"));
 
+  // Common African dial codes → country name (matches AFRICA_COUNTRIES names).
+  const DIAL_TO_COUNTRY: Record<string, string> = {
+    "+254": "Kenya", "+255": "Tanzania", "+256": "Uganda", "+250": "Rwanda",
+    "+234": "Nigeria", "+233": "Ghana", "+27": "South Africa", "+251": "Ethiopia",
+    "+20": "Egypt", "+212": "Morocco", "+216": "Tunisia", "+213": "Algeria",
+    "+237": "Cameroon", "+242": "Congo (Republic)", "+243": "Congo (DRC)",
+    "+244": "Angola", "+260": "Zambia", "+263": "Zimbabwe", "+265": "Malawi",
+    "+266": "Lesotho", "+267": "Botswana", "+264": "Namibia", "+258": "Mozambique",
+    "+252": "Somalia", "+249": "Sudan", "+211": "South Sudan", "+257": "Burundi",
+    "+253": "Djibouti", "+220": "Gambia", "+224": "Guinea", "+225": "Côte d'Ivoire",
+    "+226": "Burkina Faso", "+228": "Togo", "+229": "Benin", "+230": "Mauritius",
+    "+231": "Liberia", "+232": "Sierra Leone", "+235": "Chad", "+236": "Central African Republic",
+    "+238": "Cabo Verde", "+239": "São Tomé and Príncipe", "+240": "Equatorial Guinea",
+    "+241": "Gabon", "+245": "Guinea-Bissau", "+248": "Seychelles", "+268": "Eswatini",
+    "+269": "Comoros", "+291": "Eritrea", "+222": "Mauritania",
+  };
+
+  /** Detect the country from a phone number's dial code (e.g. +254 → Kenya). */
+  const setCountryFromPhone = (phoneValue: string) => {
+    const digits = phoneValue.trim().replace(/[^+0-9]/g, "");
+    if (!digits.startsWith("+")) return;
+    // Try longest prefixes first (e.g. +254 before +25).
+    for (let len = 5; len >= 2; len--) {
+      const prefix = digits.slice(0, len);
+      const country = DIAL_TO_COUNTRY[prefix];
+      if (country) {
+        setLocation((prev) => ({ ...prev, country: prev.country || country }));
+        return;
+      }
+    }
+  };
+
   const signInWithGoogle = async () => {
     setError("");
     setLoading(true);
@@ -536,27 +568,6 @@ function AuthPage() {
           </div>
         )}
 
-        <button
-          type="button"
-          onClick={signInWithGoogle}
-          disabled={loading}
-          className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg border border-baba-blue/20 bg-card px-4 py-2.5 text-sm font-semibold text-baba-slate transition-colors hover:bg-baba-blue/5 disabled:opacity-60"
-        >
-          <svg className="h-4 w-4" viewBox="0 0 24 24" aria-hidden="true">
-            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1z"/>
-            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23z"/>
-            <path fill="#FBBC05" d="M5.84 14.1a6.6 6.6 0 0 1 0-4.2V7.06H2.18a11 11 0 0 0 0 9.88l3.66-2.84z"/>
-            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15A11 11 0 0 0 2.18 7.06l3.66 2.84C6.71 7.31 9.14 5.38 12 5.38z"/>
-          </svg>
-          {mode === "join" ? "Join with Google" : "Log in with Google"}
-        </button>
-
-        <div className="mt-4 flex items-center gap-3 text-xs text-baba-slate/50">
-          <span className="h-px flex-1 bg-baba-blue/10" />
-          {mode === "join" ? "or join with your details" : "or use your details"}
-          <span className="h-px flex-1 bg-baba-blue/10" />
-        </div>
-
         <form onSubmit={submit} className="mt-8 grid gap-4">
           {mode === "join" && intent === "member" && (
             <>
@@ -755,6 +766,17 @@ function AuthPage() {
               </span>
             </label>
           )}
+          {mode === "join" && intent === "member" && step === 2 && (
+            <div className="grid gap-1.5">
+              <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-baba-slate/70">
+                <MapPin className="h-3.5 w-3.5" /> Where are you?
+              </span>
+              <LocationPicker value={location} onChange={setLocation} />
+              <span className="text-[0.7rem] text-baba-slate/50">
+                Pick your country and town, then type your area (e.g. Westlands, South B).
+              </span>
+            </div>
+          )}
           {((mode === "join" && intent === "member" && step === 2) || (mode === "join" && intent === "partner")) && (
             <label className="grid gap-1.5">
               <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
@@ -794,9 +816,12 @@ function AuthPage() {
                   type="tel"
                   inputMode="tel"
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  onChange={(e) => {
+                    setPhone(e.target.value);
+                    setCountryFromPhone(e.target.value);
+                  }}
                   className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
-                  placeholder="e.g. 0712 345 678"
+                  placeholder="e.g. +254 712 345 678"
                 />
               </div>
             </label>
@@ -904,24 +929,10 @@ function AuthPage() {
           )}
 
           {mode === "join" && intent === "member" && step === 2 && (
-            <div className="grid gap-1.5">
-              <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-baba-slate/70">
-                <MapPin className="h-3.5 w-3.5" /> Where are you?
-              </span>
-              <LocationPicker value={location} onChange={setLocation} />
-              <span className="text-[0.7rem] text-baba-slate/50">
-                Pick your country and town, then type your area (e.g. Westlands, South B).
-              </span>
-            </div>
-          )}
-
-          {mode === "join" && intent === "member" && step === 2 && (
             <label className="grid gap-1.5">
               <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
                 National Identification No{" "}
-                <span className="font-normal normal-case text-baba-slate/50">
-                  {location.country === "Nigeria" ? "(not needed in Nigeria)" : "(optional)"}
-                </span>
+                <span className="font-normal normal-case text-baba-slate/50">(optional)</span>
               </span>
               <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
                 <IdCard className="h-4 w-4 text-baba-slate/40" />
@@ -934,9 +945,7 @@ function AuthPage() {
                 />
               </div>
               <span className="text-[0.7rem] text-baba-slate/50">
-                {location.country === "Nigeria"
-                  ? "In Nigeria the ID number is private — you do not need to share it. You can add it later if you want."
-                  : "Optional — some countries prefer not to share it. You can add it later in your profile."}
+                Optional — you can add it later in your profile.
               </span>
             </label>
           )}
@@ -1005,6 +1014,27 @@ function AuthPage() {
             {mode === "join" ? "Log in" : "Join us"}
           </button>
         </p>
+
+        <div className="mt-6 flex items-center gap-3 text-xs text-baba-slate/50">
+          <span className="h-px flex-1 bg-baba-blue/10" />
+          or
+          <span className="h-px flex-1 bg-baba-blue/10" />
+        </div>
+
+        <button
+          type="button"
+          onClick={signInWithGoogle}
+          disabled={loading}
+          className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg border border-baba-blue/20 bg-card px-4 py-2.5 text-sm font-semibold text-baba-slate transition-colors hover:bg-baba-blue/5 disabled:opacity-60"
+        >
+          <svg className="h-4 w-4" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.1a6.6 6.6 0 0 1 0-4.2V7.06H2.18a11 11 0 0 0 0 9.88l3.66-2.84z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15A11 11 0 0 0 2.18 7.06l3.66 2.84C6.71 7.31 9.14 5.38 12 5.38z"/>
+          </svg>
+          {mode === "join" ? "Join with Google" : "Log in with Google"}
+        </button>
         <p className="mt-4 text-center text-xs text-baba-slate/50">
           <Link to="/" className="hover:underline">
             Back to home
