@@ -1,10 +1,10 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { User, IdCard, Mail, Loader2, Lock, MapPin, Users, Phone, ArrowLeft, ArrowRight, Check } from "lucide-react";
+import { User, IdCard, Mail, Loader2, Lock, MapPin, Users, Phone, ArrowLeft, ArrowRight, Check, Eye, EyeOff } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { supabase } from "@/integrations/supabase/client";
-import { createRegistration, updateMyProfile, type RoleValue } from "@/lib/registrations.functions";
+import { createRegistration, updateMyProfile, getMyRegistrations, type RoleValue } from "@/lib/registrations.functions";
 import { lookupLoginEmail } from "@/lib/login-lookup.functions";
 import { confirmSignup } from "@/lib/signup.functions";
 import { LocationPicker, EMPTY_LOCATION, type LocationValue } from "@/components/LocationPicker";
@@ -122,6 +122,7 @@ function AuthPage() {
   const saveProfile = useServerFn(updateMyProfile);
   const findLogin = useServerFn(lookupLoginEmail);
   const confirmSignupFn = useServerFn(confirmSignup);
+  const getMyRegistrationsFn = useServerFn(getMyRegistrations);
 
   const [mode, setMode] = useState<"join" | "signin">("join");
   const [intent, setIntent] = useState<"member" | "partner">("member");
@@ -145,6 +146,11 @@ function AuthPage() {
   const [notice, setNotice] = useState("");
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1); // member join wizard: 1 do, 2 about, 3 work, 4 password, 5 review
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  // Fresh Google sign-in: the auth account exists but the member setup was
+  // never finished — walk the whole wizard with the Google name locked.
+  const [googleSetup, setGoogleSetup] = useState<{ email: string; lockedName: string } | null>(null);
 
   // Arriving from "Become a Partner" opens the organisation form straight away.
   useEffect(() => {
@@ -295,8 +301,32 @@ function AuthPage() {
   };
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: redirectTo() });
+    supabase.auth.getSession().then(async ({ data }) => {
+      const session = data.session;
+      if (!session) return;
+      const provider = session.user.app_metadata?.provider;
+      if (provider === "google") {
+        try {
+          const regs = await getMyRegistrationsFn();
+          if (regs.length > 0) {
+            navigate({ to: redirectTo() });
+            return;
+          }
+        } catch {
+          // If the check fails, walk them through setup instead of bouncing
+          // them somewhere they cannot use.
+        }
+        // Fresh Google sign-in — run the whole wizard, name locked from Google.
+        const gName = (session.user.user_metadata?.full_name as string) ?? "";
+        setGoogleSetup({ email: session.user.email ?? "", lockedName: gName });
+        setMode("join");
+        setIntent("member");
+        setFullName(gName);
+        setEmail(session.user.email ?? "");
+        setStep(1);
+        return;
+      }
+      navigate({ to: redirectTo() });
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -337,7 +367,34 @@ function AuthPage() {
     if (mode === "join" && intent === "member" && step < 5) {
       const stepErr = validateStep(step);
       if (stepErr) return setError(stepErr);
-      setStep(step + 1);
+      // Google members have no password — skip step 4.
+      setStep(googleSetup && step === 3 ? 5 : step + 1);
+      return;
+    }
+
+    // Google sign-in already created the auth account — just finish setup.
+    if (googleSetup) {
+      const gName = fullName.trim();
+      const gId = idNumber.trim();
+      if (!gName) return setError("Please type your full name.");
+      if (!phone.trim()) return setError("Please type your phone number.");
+      if (phone.replace(/[^0-9]/g, "").length < 9) {
+        return setError("That phone number looks too short - please type it fully, e.g. 0712 345 678.");
+      }
+      if (selected.length === 0) return setError("Please pick what you do — tap at least one.");
+      if (isOther && !otherProfession.trim()) return setError("Please type the work you do.");
+      if (gId && gId.replace(/[^a-zA-Z0-9]/g, "").length < 4) {
+        return setError("That National Identification No looks too short. Please type the full number.");
+      }
+      setLoading(true);
+      try {
+        await finishRegistrationSetup(gName, gId, phone, location);
+        await navigate({ to: redirectTo(), replace: true });
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
+      } finally {
+        setLoading(false);
+      }
       return;
     }
 
@@ -788,17 +845,21 @@ function AuthPage() {
                   required
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
+                  readOnly={!!googleSetup}
+                  className={`w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none ${googleSetup ? "cursor-not-allowed opacity-70" : ""}`}
                   placeholder={
                     mode === "join" && intent === "partner"
                       ? "Your name or organisation name"
                       : "e.g. Jane Wanjiru"
                   }
                 />
+                {googleSetup && <Lock className="h-4 w-4 shrink-0 text-baba-copper" />}
               </div>
               {mode === "join" && intent === "member" && (
                 <span className="text-[0.7rem] text-baba-slate/50">
-                  Your name as friends and colleagues know you — this is just for your profile.
+                  {googleSetup
+                    ? "This is the name from your Google account — it is also your username, and it stays as it is."
+                    : "Your name as friends and colleagues know you — it will also be your username when you log in."}
                 </span>
               )}
             </label>
@@ -859,7 +920,7 @@ function AuthPage() {
               <Lock className="h-4 w-4 text-baba-slate/40" />
               <input
                 required
-                type="password"
+                type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 autoComplete={mode === "join" ? "new-password" : "current-password"}
@@ -867,6 +928,15 @@ function AuthPage() {
                 className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
                 placeholder={mode === "join" ? "Make a password (6 or more)" : "Your password"}
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword((v) => !v)}
+                className="shrink-0 text-baba-slate/40 transition-colors hover:text-baba-slate/70"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+                tabIndex={-1}
+              >
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
             </div>
             {mode === "join" && <PasswordStrength password={password} />}
           </label>
@@ -882,13 +952,22 @@ function AuthPage() {
                   <Lock className="h-4 w-4 text-baba-slate/40" />
                   <input
                     required
-                    type="password"
+                    type={showConfirmPassword ? "text" : "password"}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     autoComplete="new-password"
                     className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
                     placeholder="Type the same password"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword((v) => !v)}
+                    className="shrink-0 text-baba-slate/40 transition-colors hover:text-baba-slate/70"
+                    aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                    tabIndex={-1}
+                  >
+                    {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
                 </div>
                 {confirmPassword && confirmPassword !== password && (
                   <span className="text-[0.7rem] text-red-500">
@@ -962,7 +1041,7 @@ function AuthPage() {
               {step > 1 ? (
                 <button
                   type="button"
-                  onClick={() => setStep(step - 1)}
+                  onClick={() => setStep(googleSetup && step === 5 ? 3 : step - 1)}
                   className="inline-flex items-center gap-1 rounded-lg border border-baba-blue/15 px-4 py-2.5 text-sm font-semibold text-baba-slate/70 transition-colors hover:border-baba-blue/40"
                 >
                   <ArrowLeft className="h-4 w-4" /> Back
@@ -1008,6 +1087,7 @@ function AuthPage() {
               setError("");
               setNotice("");
               setAskForId(false);
+              setGoogleSetup(null);
             }}
             className="font-bold text-baba-copper-dark hover:underline"
           >
