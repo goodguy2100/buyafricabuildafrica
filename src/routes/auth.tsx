@@ -129,7 +129,6 @@ function AuthPage() {
   const [intent, setIntent] = useState<"member" | "partner">("member");
   const [fullName, setFullName] = useState("");
   const [firstName, setFirstName] = useState("");
-  const [middleName, setMiddleName] = useState("");
   const [lastName, setLastName] = useState("");
   const [username, setUsername] = useState("");
   const [usernameState, setUsernameState] = useState<"idle" | "checking" | "available" | "taken">("idle");
@@ -184,9 +183,10 @@ function AuthPage() {
       ? (chosenProfessions.find((p) => p.trade)?.trade ?? (selected.length ? "other" : undefined))
       : undefined;
 
-  // First + last name are the two required names; middle name is optional.
-  // The combined full name is what the database stores — always "First [Middle] Last".
-  const memberFullName = [firstName.trim(), middleName.trim(), lastName.trim()].filter(Boolean).join(" ");
+  // First + last name — two names is all we need. Some people type two
+  // given names into the first field; that is fine, we just need to know
+  // two of their names. The combined full name is what the database stores.
+  const memberFullName = [firstName.trim(), lastName.trim()].filter(Boolean).join(" ");
 
   const redirectTo = () =>
     sanitizeRedirect(new URLSearchParams(window.location.search).get("redirect"));
@@ -303,7 +303,6 @@ function AuthPage() {
         data: {
           fullName: name,
           firstName: firstName.trim() || null,
-          middleName: middleName.trim() || null,
           lastName: lastName.trim() || null,
           username: username.trim() || null,
           nationalId: id,
@@ -724,21 +723,6 @@ function AuthPage() {
                   </div>
                 </label>
                 <label className="grid gap-1.5">
-                  <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
-                    Middle name <span className="font-normal normal-case text-baba-slate/50">(optional)</span>
-                  </span>
-                  <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
-                    <User className="h-4 w-4 text-baba-slate/40" />
-                    <input
-                      value={middleName}
-                      onChange={(e) => setMiddleName(e.target.value)}
-                      autoComplete="additional-name"
-                      className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
-                      placeholder="e.g. Akinyi (if you have one)"
-                    />
-                  </div>
-                </label>
-                <label className="grid gap-1.5">
                   <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">Last name</span>
                   <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
                     <User className="h-4 w-4 text-baba-slate/40" />
@@ -753,8 +737,8 @@ function AuthPage() {
                   </div>
                 </label>
                 <span className="text-[0.7rem] text-baba-slate/50">
-                  First and last name are enough. If you add a middle name, it is stored as part of your
-                  full name — nothing gets lost.
+                  First and last name are enough — two names is all we need. If you have more names,
+                  you can add them in your profile later.
                 </span>
                 <label className="grid gap-1.5">
                   <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">Username</span>

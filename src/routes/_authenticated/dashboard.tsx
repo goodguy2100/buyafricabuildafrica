@@ -750,20 +750,6 @@ function SettingsTab({ profile }: { profile: ProfileRow | null }) {
         </div>
         {emailMsg && <p className="mt-2 text-sm font-medium text-baba-slate/70">{emailMsg}</p>}
       </div>
-
-      <div className="rounded-2xl border border-destructive/30 bg-card p-6">
-        <h2 className="font-display text-lg font-bold text-destructive">Delete Account</h2>
-        <p className="mt-2 text-sm text-baba-slate/60">
-          Deleting your account is permanent and removes your registrations. Account deletion will be
-          enabled soon — contact us if you need to remove your account now.
-        </p>
-        <button
-          disabled
-          className="mt-4 cursor-not-allowed rounded-lg bg-destructive/20 px-5 py-2.5 text-sm font-bold text-destructive/70"
-        >
-          Delete Account
-        </button>
-      </div>
     </div>
   );
 }
