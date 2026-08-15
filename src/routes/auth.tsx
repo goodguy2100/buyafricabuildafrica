@@ -128,6 +128,9 @@ function AuthPage() {
   const [mode, setMode] = useState<"join" | "signin">("join");
   const [intent, setIntent] = useState<"member" | "partner">("member");
   const [fullName, setFullName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [middleName, setMiddleName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [username, setUsername] = useState("");
   const [usernameState, setUsernameState] = useState<"idle" | "checking" | "available" | "taken">("idle");
   const [idNumber, setIdNumber] = useState("");
@@ -180,6 +183,10 @@ function AuthPage() {
     intent === "member"
       ? (chosenProfessions.find((p) => p.trade)?.trade ?? (selected.length ? "other" : undefined))
       : undefined;
+
+  // First + last name are the two required names; middle name is optional.
+  // The combined full name is what the database stores — always "First [Middle] Last".
+  const memberFullName = [firstName.trim(), middleName.trim(), lastName.trim()].filter(Boolean).join(" ");
 
   const redirectTo = () =>
     sanitizeRedirect(new URLSearchParams(window.location.search).get("redirect"));
@@ -295,6 +302,9 @@ function AuthPage() {
         artisan_type: artisanType,
         data: {
           fullName: name,
+          firstName: firstName.trim() || null,
+          middleName: middleName.trim() || null,
+          lastName: lastName.trim() || null,
           username: username.trim() || null,
           nationalId: id,
           phone: phoneNumber,
@@ -361,7 +371,7 @@ function AuthPage() {
   /** Validate the current wizard slide. Returns an error message or null. */
   const validateStep = (s: number): string | null => {
     if (s === 1) {
-      if (!fullName.trim()) return "Please type your full name.";
+      if (!firstName.trim() || !lastName.trim()) return "Please type your first and last name.";
       const u = username.trim();
       if (u.length < 2) return "Please type a username — your name, or something unique to you.";
       if (usernameState === "taken") return "That username has been taken — try adding a middle name or a number.";
@@ -433,7 +443,7 @@ function AuthPage() {
       return;
     }
 
-    const name = fullName.trim();
+    const name = mode === "join" && intent === "member" && !googleSetup ? memberFullName : fullName.trim();
     const id = idNumber.trim();
     const pwd = password;
     if (mode === "signin") {
@@ -700,19 +710,52 @@ function AuthPage() {
               </div>
               <div className="grid gap-4">
                 <label className="grid gap-1.5">
-                  <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">Full name</span>
+                  <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">First name</span>
                   <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
                     <User className="h-4 w-4 text-baba-slate/40" />
                     <input
                       required
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                      autoComplete="name"
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
+                      autoComplete="given-name"
                       className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
-                      placeholder="e.g. Jane Wanjiru"
+                      placeholder="e.g. Jane"
                     />
                   </div>
                 </label>
+                <label className="grid gap-1.5">
+                  <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
+                    Middle name <span className="font-normal normal-case text-baba-slate/50">(optional)</span>
+                  </span>
+                  <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
+                    <User className="h-4 w-4 text-baba-slate/40" />
+                    <input
+                      value={middleName}
+                      onChange={(e) => setMiddleName(e.target.value)}
+                      autoComplete="additional-name"
+                      className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
+                      placeholder="e.g. Akinyi (if you have one)"
+                    />
+                  </div>
+                </label>
+                <label className="grid gap-1.5">
+                  <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">Last name</span>
+                  <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
+                    <User className="h-4 w-4 text-baba-slate/40" />
+                    <input
+                      required
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
+                      autoComplete="family-name"
+                      className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
+                      placeholder="e.g. Wanjiru"
+                    />
+                  </div>
+                </label>
+                <span className="text-[0.7rem] text-baba-slate/50">
+                  First and last name are enough. If you add a middle name, it is stored as part of your
+                  full name — nothing gets lost.
+                </span>
                 <label className="grid gap-1.5">
                   <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">Username</span>
                   <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
@@ -846,7 +889,7 @@ function AuthPage() {
                 <p className="mt-1 text-sm text-baba-slate/60">
                   {googleSetup
                     ? "Just a few details so we know who we are talking to."
-                    : `Continuing as ${fullName.trim() || "you"} — just a few details and we are done.`}
+                    : `Continuing as ${memberFullName || "you"} — just a few details and we are done.`}
                 </p>
               </div>
               {googleSetup && (
@@ -1004,7 +1047,7 @@ function AuthPage() {
                 <p className="mt-1 text-sm text-baba-slate/60">Have a quick look — you can go Back to change anything.</p>
               </div>
               <div className="grid gap-3 text-sm">
-                <ReviewRow label="Full name" value={fullName.trim()} />
+                <ReviewRow label="Full name" value={memberFullName || fullName.trim()} />
                 {username.trim() && <ReviewRow label="Username" value={username.trim()} />}
                 <ReviewRow label="Phone" value={phone.trim()} />
                 {idNumber.trim() && <ReviewRow label="ID number" value={idNumber.trim()} />}
@@ -1077,7 +1120,7 @@ function AuthPage() {
                 <PartyPopper className="h-8 w-8" />
               </span>
               <h1 className="mt-6 font-display text-3xl font-extrabold text-baba-blue">
-                Congratulations, {fullName.trim() || "welcome"}! 🎉
+                Congratulations, {memberFullName || fullName.trim() || "welcome"}! 🎉
               </h1>
               <p className="mt-3 text-baba-slate/70">
                 You are now part of Buy Africa Build Africa. Your registration is saved — head to your
