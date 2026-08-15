@@ -736,10 +736,6 @@ function AuthPage() {
                     />
                   </div>
                 </label>
-                <span className="text-[0.7rem] text-baba-slate/50">
-                  First and last name are enough — two names is all we need. If you have more names,
-                  you can add them in your profile later.
-                </span>
                 <label className="grid gap-1.5">
                   <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">Username</span>
                   <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
