@@ -1,11 +1,11 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { User, IdCard, Mail, Loader2, Lock, MapPin, Users, Phone, ArrowLeft, ArrowRight, Check, Eye, EyeOff } from "lucide-react";
+import { User, IdCard, Mail, Loader2, Lock, MapPin, Users, Phone, ArrowLeft, ArrowRight, Check, Eye, EyeOff, PartyPopper, AtSign } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { supabase } from "@/integrations/supabase/client";
 import { createRegistration, updateMyProfile, getMyRegistrations, type RoleValue } from "@/lib/registrations.functions";
-import { lookupLoginEmail } from "@/lib/login-lookup.functions";
+import { lookupLoginEmail, checkUsernameAvailable } from "@/lib/login-lookup.functions";
 import { confirmSignup } from "@/lib/signup.functions";
 import { LocationPicker, EMPTY_LOCATION, type LocationValue } from "@/components/LocationPicker";
 import { PasswordStrength } from "@/components/PasswordStrength";
@@ -121,6 +121,7 @@ function AuthPage() {
   const submitRegistration = useServerFn(createRegistration);
   const saveProfile = useServerFn(updateMyProfile);
   const findLogin = useServerFn(lookupLoginEmail);
+  const checkUsername = useServerFn(checkUsernameAvailable);
   const confirmSignupFn = useServerFn(confirmSignup);
   const getMyRegistrationsFn = useServerFn(getMyRegistrations);
 
@@ -128,11 +129,13 @@ function AuthPage() {
   const [intent, setIntent] = useState<"member" | "partner">("member");
   const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
+  const [usernameState, setUsernameState] = useState<"idle" | "checking" | "available" | "taken">("idle");
   const [idNumber, setIdNumber] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [reviewPassword, setReviewPassword] = useState("");
   const [selected, setSelected] = useState<string[]>([]);
   const [otherProfession, setOtherProfession] = useState("");
   const [education, setEducation] = useState("");
@@ -145,9 +148,11 @@ function AuthPage() {
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [loading, setLoading] = useState(false);
-  const [step, setStep] = useState(1); // member join wizard: 1 do, 2 about, 3 work, 4 password, 5 review
+  // member join wizard: 1 account, 2 what you do, 3 about you, 4 your work, 5 review, 6 welcome
+  const [step, setStep] = useState(1);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showReviewPassword, setShowReviewPassword] = useState(false);
   // Fresh Google sign-in: the auth account exists but the member setup was
   // never finished — walk the whole wizard with the Google name locked.
   const [googleSetup, setGoogleSetup] = useState<{ email: string; lockedName: string } | null>(null);
@@ -211,6 +216,26 @@ function AuthPage() {
     }
   };
 
+  /** Live username availability — debounced, never blocks typing. */
+  useEffect(() => {
+    const u = username.trim();
+    if (u.length < 2) {
+      setUsernameState("idle");
+      return;
+    }
+    setUsernameState("checking");
+    const t = setTimeout(async () => {
+      try {
+        const res = await checkUsername({ data: { username: u } });
+        setUsernameState(res.available ? "available" : "taken");
+      } catch {
+        setUsernameState("idle");
+      }
+    }, 450);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [username]);
+
   const signInWithGoogle = async () => {
     setError("");
     setLoading(true);
@@ -270,6 +295,7 @@ function AuthPage() {
         artisan_type: artisanType,
         data: {
           fullName: name,
+          username: username.trim() || null,
           nationalId: id,
           phone: phoneNumber,
           email: email.trim() || null,
@@ -290,6 +316,7 @@ function AuthPage() {
     await saveProfile({
       data: {
         full_name: name,
+        username: username.trim() || undefined,
         email: email.trim() || undefined,
         phone: phoneNumber,
         country: loc.country || undefined,
@@ -323,7 +350,7 @@ function AuthPage() {
         setIntent("member");
         setFullName(gName);
         setEmail(session.user.email ?? "");
-        setStep(1);
+        setStep(2); // Google members have no account step — start at "What do you do?"
         return;
       }
       navigate({ to: redirectTo() });
@@ -334,11 +361,23 @@ function AuthPage() {
   /** Validate the current wizard slide. Returns an error message or null. */
   const validateStep = (s: number): string | null => {
     if (s === 1) {
+      if (!fullName.trim()) return "Please type your full name.";
+      const u = username.trim();
+      if (u.length < 2) return "Please type a username — your name, or something unique to you.";
+      if (usernameState === "taken") return "That username has been taken — try adding a middle name or a number.";
+      if (!password || password.length < 6) {
+        return "Please type your password (6 letters or numbers or more).";
+      }
+      if (password !== confirmPassword) {
+        return "The two passwords are not the same. Please type them again.";
+      }
+    }
+    if (s === 2) {
       if (selected.length === 0) return "Please pick what you do.";
       if (isOther && !otherProfession.trim()) return "Please type the work you do.";
     }
-    if (s === 2) {
-      if (!fullName.trim()) return "Please type your full name.";
+    if (s === 3) {
+      if (googleSetup && !fullName.trim()) return "Please type your full name.";
       if (idNumber.trim() && idNumber.replace(/[^a-zA-Z0-9]/g, "").length < 4) {
         return "That National Identification No looks too short. Please type the full number.";
       }
@@ -347,12 +386,9 @@ function AuthPage() {
         return "That phone number looks too short - please type it fully, e.g. 0712 345 678.";
       }
     }
-    if (s === 4) {
-      if (!password || password.length < 6) {
-        return "Please type your password (6 letters or numbers or more).";
-      }
-      if (password !== confirmPassword) {
-        return "The two passwords are not the same. Please type them again.";
+    if (s === 5 && !googleSetup) {
+      if (reviewPassword !== password) {
+        return "Type your password again to confirm everything before it saves.";
       }
     }
     return null;
@@ -367,8 +403,7 @@ function AuthPage() {
     if (mode === "join" && intent === "member" && step < 5) {
       const stepErr = validateStep(step);
       if (stepErr) return setError(stepErr);
-      // Google members have no password — skip step 4.
-      setStep(googleSetup && step === 3 ? 5 : step + 1);
+      setStep(step + 1);
       return;
     }
 
@@ -389,7 +424,7 @@ function AuthPage() {
       setLoading(true);
       try {
         await finishRegistrationSetup(gName, gId, phone, location);
-        await navigate({ to: redirectTo(), replace: true });
+        setStep(6);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
       } finally {
@@ -402,7 +437,7 @@ function AuthPage() {
     const id = idNumber.trim();
     const pwd = password;
     if (mode === "signin") {
-      if (!username.trim() && !name) return setError("Please type your email, name or ID number.");
+      if (!username.trim() && !name) return setError("Please type your username, email, name or ID number.");
     } else if (!name) {
       return setError("Please type your full name.");
     }
@@ -416,6 +451,9 @@ function AuthPage() {
       return setError("Please type your password (6 letters or numbers or more).");
     }
     if (mode === "join" && intent === "member") {
+      const u = username.trim();
+      if (u.length < 2) return setError("Please type a username — your name, or something unique to you.");
+      if (usernameState === "taken") return setError("That username has been taken — try adding a middle name or a number.");
       if (selected.length === 0) {
         return setError("Please pick what you do — tap at least one.");
       }
@@ -427,6 +465,9 @@ function AuthPage() {
       }
       if (pwd !== confirmPassword) {
         return setError("The two passwords are not the same. Please type them again.");
+      }
+      if (reviewPassword !== pwd) {
+        return setError("Type your password again to confirm everything before it saves.");
       }
     }
     if (mode === "join" && intent === "partner") {
@@ -447,7 +488,7 @@ function AuthPage() {
 
       if (mode === "signin") {
         if (!username.trim() && !name) {
-          throw new Error("Please type your email, name or ID number.");
+          throw new Error("Please type your username, email, name or ID number.");
         }
         const found = await findLogin({
           data: { fullName: username.trim() || name, nationalId: id || undefined },
@@ -487,6 +528,7 @@ function AuthPage() {
           emailRedirectTo: window.location.origin,
           data: {
             full_name: name,
+            username: username.trim() || null,
             national_id: id || null,
             phone: phone.trim() || null,
             contact_email: email.trim() || null,
@@ -564,7 +606,7 @@ function AuthPage() {
           setLoading(false);
           return;
         }
-        // Signed in — fall through to navigate.
+        // Signed in — fall through to the welcome screen.
       }
 
       try {
@@ -573,13 +615,18 @@ function AuthPage() {
         // The account exists; if saving details failed the member can finish
         // them on their profile page.
       }
-      await navigate({ to: destination, replace: true });
+      setStep(6);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
   };
+
+  const wizardStepLabels = googleSetup
+    ? { 2: "What You Do", 3: "About You", 4: "Your Work", 5: "Check & Confirm", 6: "Welcome" }
+    : { 1: "Your Account", 2: "What You Do", 3: "About You", 4: "Your Work", 5: "Check & Confirm", 6: "Welcome" };
+  const wizardDots = googleSetup ? [2, 3, 4, 5, 6] : [1, 2, 3, 4, 5, 6];
 
   return (
     <PageShell>
@@ -595,9 +642,9 @@ function AuthPage() {
           <p className="mt-2 text-baba-slate/70">
             {mode === "join"
               ? intent === "member"
-                ? "Tell us what you do — we celebrate every skill, big and small."
+                ? "First your account — then a couple of quick questions about your work."
                 : "Tell us who you are and what you want to do with us — we are all ears."
-              : "Log in with your email, your name, or your ID number, and your password."}
+              : "Log in with your username, email, name, or ID number — and your password."}
           </p>
         </div>
 
@@ -626,109 +673,328 @@ function AuthPage() {
         )}
 
         <form onSubmit={submit} className="mt-8 grid gap-4">
-          {mode === "join" && intent === "member" && (
+          {mode === "join" && intent === "member" && step < 6 && (
             <>
               {/* wizard progress */}
               <div className="flex items-center justify-center gap-2">
-                {[1, 2, 3, 4, 5].map((s) => (
+                {wizardDots.map((s) => (
                   <span
                     key={s}
                     className={`h-2 rounded-full transition-all ${step === s ? "w-8 bg-baba-blue" : step > s ? "w-2 bg-baba-copper" : "w-2 bg-baba-blue/20"}`}
                   />
                 ))}
               </div>
+              <div className="text-center text-xs font-bold uppercase tracking-wide text-baba-slate/60">
+                Step {googleSetup ? step - 1 : step} of {googleSetup ? 5 : 6} — {wizardStepLabels[step as keyof typeof wizardStepLabels]}
+              </div>
+            </>
+          )}
 
-              {step === 1 && (
-                <div className="rounded-2xl border border-baba-blue/10 bg-card p-6">
-                  <div className="mb-4 text-center">
-                    <h2 className="font-display text-xl font-bold text-baba-slate">What do you do?</h2>
-                    <p className="mt-1 text-sm text-baba-slate/60">
-                      Pick the one that fits you best — we count every single one of you.
-                    </p>
+          {mode === "join" && intent === "member" && !googleSetup && step === 1 && (
+            <div className="rounded-2xl border border-baba-blue/10 bg-card p-6">
+              <div className="mb-4 text-center">
+                <h2 className="font-display text-xl font-bold text-baba-slate">Your account</h2>
+                <p className="mt-1 text-sm text-baba-slate/60">
+                  Your name, a username that is yours, and a password you can handle.
+                </p>
+              </div>
+              <div className="grid gap-4">
+                <label className="grid gap-1.5">
+                  <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">Full name</span>
+                  <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
+                    <User className="h-4 w-4 text-baba-slate/40" />
+                    <input
+                      required
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      autoComplete="name"
+                      className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
+                      placeholder="e.g. Jane Wanjiru"
+                    />
                   </div>
-                  <label className="grid gap-1.5">
-                    <select
-                      value={selected[0] ?? ""}
-                      onChange={(e) => chooseProfession(e.target.value)}
-                      className="w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
+                </label>
+                <label className="grid gap-1.5">
+                  <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">Username</span>
+                  <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
+                    <AtSign className="h-4 w-4 text-baba-slate/40" />
+                    <input
+                      required
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      autoComplete="username"
+                      className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
+                      placeholder="e.g. JaneWanjiru or jane.wanjiru"
+                    />
+                  </div>
+                  {usernameState === "checking" && (
+                    <span className="flex items-center gap-1 text-xs text-baba-slate/50">
+                      <Loader2 className="h-3 w-3 animate-spin" /> Checking…
+                    </span>
+                  )}
+                  {usernameState === "available" && (
+                    <span className="flex items-center gap-1 text-xs font-medium text-emerald-600">
+                      <Check className="h-3 w-3" /> {username.trim()} is yours — good choice.
+                    </span>
+                  )}
+                  {usernameState === "taken" && (
+                    <span className="text-xs font-medium text-destructive">
+                      Username has been taken — that name is already claimed by someone else.
+                      Try adding a middle name or a number.
+                    </span>
+                  )}
+                  <span className="text-[0.7rem] text-baba-slate/50">
+                    Your name works as a username too. If it clashes with someone else's, we will tell you
+                    here — just make it your own.
+                  </span>
+                </label>
+                <label className="grid gap-1.5">
+                  <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">Password</span>
+                  <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
+                    <Lock className="h-4 w-4 text-baba-slate/40" />
+                    <input
+                      required
+                      type={showPassword ? "text" : "password"}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      autoComplete="new-password"
+                      minLength={6}
+                      className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
+                      placeholder="Make a password (6 or more)"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((v) => !v)}
+                      className="shrink-0 text-baba-slate/40 transition-colors hover:text-baba-slate/70"
+                      aria-label={showPassword ? "Hide password" : "Show password"}
+                      tabIndex={-1}
                     >
-                      <option value="">Select — what do you do?</option>
-                      {PROFESSIONS.map((p) => (
-                        <option key={p.key} value={p.key}>
-                          {p.label}
-                        </option>
+                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
+                  <PasswordStrength password={password} />
+                </label>
+                <label className="grid gap-1.5">
+                  <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">Type Password Again</span>
+                  <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
+                    <Lock className="h-4 w-4 text-baba-slate/40" />
+                    <input
+                      required
+                      type={showConfirmPassword ? "text" : "password"}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      autoComplete="new-password"
+                      className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
+                      placeholder="Type the same password"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword((v) => !v)}
+                      className="shrink-0 text-baba-slate/40 transition-colors hover:text-baba-slate/70"
+                      aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                      tabIndex={-1}
+                    >
+                      {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
+                  {confirmPassword && confirmPassword !== password && (
+                    <span className="text-[0.7rem] text-red-500">
+                      The two passwords are not the same.
+                    </span>
+                  )}
+                </label>
+              </div>
+            </div>
+          )}
+
+          {mode === "join" && intent === "member" && step === 2 && (
+            <div className="rounded-2xl border border-baba-blue/10 bg-card p-6">
+              <div className="mb-4 text-center">
+                <h2 className="font-display text-xl font-bold text-baba-slate">What do you do?</h2>
+                <p className="mt-1 text-sm text-baba-slate/60">
+                  Pick the one that fits you best — we count every single one of you.
+                </p>
+              </div>
+              <label className="grid gap-1.5">
+                <select
+                  value={selected[0] ?? ""}
+                  onChange={(e) => chooseProfession(e.target.value)}
+                  className="w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
+                >
+                  <option value="">Select — what do you do?</option>
+                  {PROFESSIONS.map((p) => (
+                    <option key={p.key} value={p.key}>
+                      {p.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              {isOther && (
+                <input
+                  value={otherProfession}
+                  onChange={(e) => setOtherProfession(e.target.value)}
+                  placeholder="Type the work you do"
+                  className="mt-3 w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
+                />
+              )}
+            </div>
+          )}
+
+          {mode === "join" && intent === "member" && step === 3 && (
+            <div className="rounded-2xl border border-baba-blue/10 bg-card p-6">
+              <div className="mb-4 text-center">
+                <h2 className="font-display text-xl font-bold text-baba-slate">About you</h2>
+                <p className="mt-1 text-sm text-baba-slate/60">
+                  {googleSetup
+                    ? "Just a few details so we know who we are talking to."
+                    : `Continuing as ${fullName.trim() || "you"} — just a few details and we are done.`}
+                </p>
+              </div>
+              {googleSetup && (
+                <label className="mb-4 grid gap-1.5">
+                  <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">Full name</span>
+                  <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5">
+                    <User className="h-4 w-4 text-baba-slate/40" />
+                    <input
+                      required
+                      value={fullName}
+                      readOnly
+                      className="w-full cursor-not-allowed bg-transparent py-2.5 text-sm text-baba-slate opacity-70 focus:outline-none"
+                      placeholder="Your name"
+                    />
+                    <Lock className="h-4 w-4 shrink-0 text-baba-copper" />
+                  </div>
+                  <span className="text-[0.7rem] text-baba-slate/50">
+                    This is the name from your Google account — it stays as it is.
+                  </span>
+                </label>
+              )}
+              <div className="grid gap-4">
+                <label className="grid gap-1.5">
+                  <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
+                    Phone Number <span className="font-normal normal-case text-baba-slate/50">(required)</span>
+                  </span>
+                  <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
+                    <Phone className="h-4 w-4 text-baba-slate/40" />
+                    <input
+                      required
+                      type="tel"
+                      inputMode="tel"
+                      value={phone}
+                      onChange={(e) => {
+                        setPhone(e.target.value);
+                        setCountryFromPhone(e.target.value);
+                      }}
+                      className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
+                      placeholder="e.g. +254 712 345 678"
+                    />
+                  </div>
+                </label>
+                <label className="grid gap-1.5">
+                  <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-baba-slate/70">
+                    <MapPin className="h-3.5 w-3.5" /> Where are you?
+                  </span>
+                  <LocationPicker value={location} onChange={setLocation} />
+                  <span className="text-[0.7rem] text-baba-slate/50">
+                    Pick your country and town, then type your area (e.g. Westlands, South B).
+                  </span>
+                </label>
+                <label className="grid gap-1.5">
+                  <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
+                    National Identification No{" "}
+                    <span className="font-normal normal-case text-baba-slate/50">(optional)</span>
+                  </span>
+                  <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
+                    <IdCard className="h-4 w-4 text-baba-slate/40" />
+                    <input
+                      inputMode="numeric"
+                      value={idNumber}
+                      onChange={(e) => setIdNumber(e.target.value)}
+                      className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
+                      placeholder="Your National Identification No (optional)"
+                    />
+                  </div>
+                  <span className="text-[0.7rem] text-baba-slate/50">
+                    Optional — you can add it later in your profile.
+                  </span>
+                </label>
+                <label className="grid gap-1.5">
+                  <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
+                    Email <span className="font-normal normal-case text-baba-slate/50">(optional)</span>
+                  </span>
+                  <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
+                    <Mail className="h-4 w-4 text-baba-slate/40" />
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
+                      placeholder="you@example.com"
+                    />
+                  </div>
+                  <span className="text-[0.7rem] text-baba-slate/50">
+                    Add an email if you want a welcome message and help if you forget your password.
+                  </span>
+                </label>
+              </div>
+            </div>
+          )}
+
+          {mode === "join" && intent === "member" && step === 4 && (
+            <div className="rounded-2xl border border-baba-blue/10 bg-card p-6">
+              <div className="mb-4 text-center">
+                <h2 className="font-display text-xl font-bold text-baba-slate">A little about your work</h2>
+                <p className="mt-1 text-sm text-baba-slate/60">Just a few quick choices — that is all.</p>
+              </div>
+              <div className="grid gap-4">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <label className="grid gap-1.5">
+                    <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
+                      Level of education
+                    </span>
+                    <select
+                      value={education}
+                      onChange={(e) => setEducation(e.target.value)}
+                      className="rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
+                    >
+                      <option value="">Select…</option>
+                      {EDUCATION_OPTIONS.map((o) => (
+                        <option key={o} value={o}>{o}</option>
                       ))}
                     </select>
                   </label>
-                  {isOther && (
-                    <input
-                      value={otherProfession}
-                      onChange={(e) => setOtherProfession(e.target.value)}
-                      placeholder="Type the work you do"
-                      className="mt-3 w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
-                    />
-                  )}
+                  <label className="grid gap-1.5">
+                    <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
+                      How do you work?
+                    </span>
+                    <select
+                      value={employment}
+                      onChange={(e) => setEmployment(e.target.value)}
+                      className="rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
+                    >
+                      <option value="">Select…</option>
+                      {EMPLOYMENT_OPTIONS.map((o) => (
+                        <option key={o} value={o}>{o}</option>
+                      ))}
+                    </select>
+                  </label>
                 </div>
-              )}
-
-              {step === 3 && (
-                <div className="rounded-2xl border border-baba-blue/10 bg-card p-6">
-                  <div className="mb-4 text-center">
-                    <h2 className="font-display text-xl font-bold text-baba-slate">A little about your work</h2>
-                    <p className="mt-1 text-sm text-baba-slate/60">Just a few quick choices — that is all.</p>
-                  </div>
-                  <div className="grid gap-4">
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <label className="grid gap-1.5">
-                        <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
-                          Level of education
-                        </span>
-                        <select
-                          value={education}
-                          onChange={(e) => setEducation(e.target.value)}
-                          className="rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
-                        >
-                          <option value="">Select…</option>
-                          {EDUCATION_OPTIONS.map((o) => (
-                            <option key={o} value={o}>{o}</option>
-                          ))}
-                        </select>
-                      </label>
-                      <label className="grid gap-1.5">
-                        <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
-                          How do you work?
-                        </span>
-                        <select
-                          value={employment}
-                          onChange={(e) => setEmployment(e.target.value)}
-                          className="rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
-                        >
-                          <option value="">Select…</option>
-                          {EMPLOYMENT_OPTIONS.map((o) => (
-                            <option key={o} value={o}>{o}</option>
-                          ))}
-                        </select>
-                      </label>
-                    </div>
-                    <label className="grid gap-1.5">
-                      <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
-                        How long have you been doing this?
-                      </span>
-                      <select
-                        value={years}
-                        onChange={(e) => setYears(e.target.value)}
-                        className="rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
-                      >
-                        <option value="">Select…</option>
-                        {YEARS_OPTIONS.map((o) => (
-                          <option key={o} value={o}>{o}</option>
-                        ))}
-                      </select>
-                    </label>
-                  </div>
-                </div>
-              )}
-            </>
+                <label className="grid gap-1.5">
+                  <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
+                    How long have you been doing this?
+                  </span>
+                  <select
+                    value={years}
+                    onChange={(e) => setYears(e.target.value)}
+                    className="rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
+                  >
+                    <option value="">Select…</option>
+                    {YEARS_OPTIONS.map((o) => (
+                      <option key={o} value={o}>{o}</option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+            </div>
           )}
 
           {mode === "join" && intent === "member" && step === 5 && (
@@ -739,6 +1005,7 @@ function AuthPage() {
               </div>
               <div className="grid gap-3 text-sm">
                 <ReviewRow label="Full name" value={fullName.trim()} />
+                {username.trim() && <ReviewRow label="Username" value={username.trim()} />}
                 <ReviewRow label="Phone" value={phone.trim()} />
                 {idNumber.trim() && <ReviewRow label="ID number" value={idNumber.trim()} />}
                 <ReviewRow
@@ -762,8 +1029,73 @@ function AuthPage() {
                   />
                 )}
               </div>
+              {!googleSetup && (
+                <label className="mt-4 grid gap-1.5">
+                  <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
+                    Type your password again to confirm
+                  </span>
+                  <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
+                    <Lock className="h-4 w-4 text-baba-slate/40" />
+                    <input
+                      required
+                      type={showReviewPassword ? "text" : "password"}
+                      value={reviewPassword}
+                      onChange={(e) => setReviewPassword(e.target.value)}
+                      autoComplete="new-password"
+                      className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
+                      placeholder="Type your password again"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowReviewPassword((v) => !v)}
+                      className="shrink-0 text-baba-slate/40 transition-colors hover:text-baba-slate/70"
+                      aria-label={showReviewPassword ? "Hide password" : "Show password"}
+                      tabIndex={-1}
+                    >
+                      {showReviewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
+                  <span className="text-[0.7rem] text-baba-slate/50">
+                    We never show your password on this page — you type it again, so only you confirm it.
+                  </span>
+                  {reviewPassword && reviewPassword !== password && (
+                    <span className="text-[0.7rem] text-red-500">
+                      That is not the password you chose. Type it again.
+                    </span>
+                  )}
+                </label>
+              )}
               <div className="mt-4 flex items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800">
                 <Check className="h-4 w-4" /> All good — tap Join us below!
+              </div>
+            </div>
+          )}
+
+          {mode === "join" && intent === "member" && step === 6 && (
+            <div className="mx-auto max-w-xl text-center">
+              <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-baba-blue/10 text-baba-blue">
+                <PartyPopper className="h-8 w-8" />
+              </span>
+              <h1 className="mt-6 font-display text-3xl font-extrabold text-baba-blue">
+                Congratulations, {fullName.trim() || "welcome"}! 🎉
+              </h1>
+              <p className="mt-3 text-baba-slate/70">
+                You are now part of Buy Africa Build Africa. Your registration is saved — head to your
+                dashboard to manage your profile, explore opportunities and track your registrations.
+              </p>
+              <div className="mt-8 flex flex-wrap justify-center gap-3">
+                <Link
+                  to="/dashboard"
+                  className="rounded-full baba-cta px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-baba-blue/25"
+                >
+                  Go to Dashboard
+                </Link>
+                <Link
+                  to="/events"
+                  className="rounded-full border-2 border-baba-copper px-6 py-3 text-sm font-semibold text-baba-copper-dark transition-colors hover:bg-baba-copper hover:text-baba-slate"
+                >
+                  Explore Events
+                </Link>
               </div>
             </div>
           )}
@@ -796,154 +1128,73 @@ function AuthPage() {
                   Not compulsory — but the more you tell us, the better we can serve you.
                 </span>
               </label>
-            </>
-          )}
-
-          {mode === "join" && intent === "member" && step === 2 && (
-            <h2 className="text-center font-display text-xl font-bold text-baba-slate">About you</h2>
-          )}
-          {mode === "signin" && (
-            <label className="grid gap-1.5">
-              <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
-                Email, name or ID number
-              </span>
-              <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
-                <User className="h-4 w-4 text-baba-slate/40" />
-                <input
-                  required
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  autoComplete="username"
-                  className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
-                  placeholder="e.g. janewanjiru@gmail.com"
-                />
-              </div>
-              <span className="text-[0.7rem] text-baba-slate/50">
-                Your email, your full name, or your National ID number — any one works.
-              </span>
-            </label>
-          )}
-          {mode === "join" && intent === "member" && step === 2 && (
-            <div className="grid gap-1.5">
-              <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-baba-slate/70">
-                <MapPin className="h-3.5 w-3.5" /> Where are you?
-              </span>
-              <LocationPicker value={location} onChange={setLocation} />
-              <span className="text-[0.7rem] text-baba-slate/50">
-                Pick your country and town, then type your area (e.g. Westlands, South B).
-              </span>
-            </div>
-          )}
-          {((mode === "join" && intent === "member" && step === 2) || (mode === "join" && intent === "partner")) && (
-            <label className="grid gap-1.5">
-              <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
-                {mode === "join" && intent === "partner" ? "Your Name / Organisation Name" : "Full name"}
-              </span>
-              <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
-                <User className="h-4 w-4 text-baba-slate/40" />
-                <input
-                  required
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  readOnly={!!googleSetup}
-                  className={`w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none ${googleSetup ? "cursor-not-allowed opacity-70" : ""}`}
-                  placeholder={
-                    mode === "join" && intent === "partner"
-                      ? "Your name or organisation name"
-                      : "e.g. Jane Wanjiru"
-                  }
-                />
-                {googleSetup && <Lock className="h-4 w-4 shrink-0 text-baba-copper" />}
-              </div>
-              {mode === "join" && intent === "member" && (
-                <span className="text-[0.7rem] text-baba-slate/50">
-                  {googleSetup
-                    ? "This is the name from your Google account — it is also your username, and it stays as it is."
-                    : "Your name as friends and colleagues know you — it will also be your username when you log in."}
+              <label className="grid gap-1.5">
+                <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
+                  {mode === "join" && intent === "partner" ? "Your Name / Organisation Name" : "Full name"}
                 </span>
-              )}
-            </label>
-          )}
-
-          {mode === "join" && (intent === "partner" || (intent === "member" && step === 2)) && (
-            <label className="grid gap-1.5">
-              <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
-                Phone Number <span className="font-normal normal-case text-baba-slate/50">(required)</span>
-              </span>
-              <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
-                <Phone className="h-4 w-4 text-baba-slate/40" />
-                <input
-                  required
-                  type="tel"
-                  inputMode="tel"
-                  value={phone}
-                  onChange={(e) => {
-                    setPhone(e.target.value);
-                    setCountryFromPhone(e.target.value);
-                  }}
-                  className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
-                  placeholder="e.g. +254 712 345 678"
-                />
-              </div>
-            </label>
-          )}
-
-          {mode === "signin" && askForId && (
-            <label className="grid gap-1.5">
-              <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
-                National Identification No{" "}
-                <span className="font-normal normal-case text-baba-slate/50">(only to tell you apart)</span>
-              </span>
-              <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
-                <IdCard className="h-4 w-4 text-baba-slate/40" />
-                <input
-                  inputMode="numeric"
-                  value={idNumber}
-                  onChange={(e) => setIdNumber(e.target.value)}
-                  className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
-                  placeholder="Your National Identification No"
-                />
-              </div>
-            </label>
-          )}
-
-
-              {mode === "join" && intent === "member" && step === 4 && (
-            <h2 className="text-center font-display text-xl font-bold text-baba-slate">Your password</h2>
-          )}
-          {!(mode === "join" && intent === "member" && step < 4) && (
-          <label className="grid gap-1.5">
-            <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
-              Password
-            </span>
-            <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
-              <Lock className="h-4 w-4 text-baba-slate/40" />
-              <input
-                required
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                autoComplete={mode === "join" ? "new-password" : "current-password"}
-                minLength={6}
-                className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
-                placeholder={mode === "join" ? "Make a password (6 or more)" : "Your password"}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword((v) => !v)}
-                className="shrink-0 text-baba-slate/40 transition-colors hover:text-baba-slate/70"
-                aria-label={showPassword ? "Hide password" : "Show password"}
-                tabIndex={-1}
-              >
-                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </button>
-            </div>
-            {mode === "join" && <PasswordStrength password={password} />}
-          </label>
-          )}
-
-          {mode === "join" && (intent === "partner" || (intent === "member" && step === 4)) && (
-            <>
+                <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
+                  <User className="h-4 w-4 text-baba-slate/40" />
+                  <input
+                    required
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    readOnly={!!googleSetup}
+                    className={`w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none ${googleSetup ? "cursor-not-allowed opacity-70" : ""}`}
+                    placeholder={
+                      mode === "join" && intent === "partner"
+                        ? "Your name or organisation name"
+                        : "e.g. Jane Wanjiru"
+                    }
+                  />
+                  {googleSetup && <Lock className="h-4 w-4 shrink-0 text-baba-copper" />}
+                </div>
+              </label>
+              <label className="grid gap-1.5">
+                <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
+                  Phone Number <span className="font-normal normal-case text-baba-slate/50">(required)</span>
+                </span>
+                <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
+                  <Phone className="h-4 w-4 text-baba-slate/40" />
+                  <input
+                    required
+                    type="tel"
+                    inputMode="tel"
+                    value={phone}
+                    onChange={(e) => {
+                      setPhone(e.target.value);
+                      setCountryFromPhone(e.target.value);
+                    }}
+                    className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
+                    placeholder="e.g. +254 712 345 678"
+                  />
+                </div>
+              </label>
+              <label className="grid gap-1.5">
+                <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">Password</span>
+                <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
+                  <Lock className="h-4 w-4 text-baba-slate/40" />
+                  <input
+                    required
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    autoComplete="new-password"
+                    minLength={6}
+                    className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
+                    placeholder="Make a password (6 or more)"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((v) => !v)}
+                    className="shrink-0 text-baba-slate/40 transition-colors hover:text-baba-slate/70"
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    tabIndex={-1}
+                  >
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+                <PasswordStrength password={password} />
+              </label>
               <label className="grid gap-1.5">
                 <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
                   Type Password Again
@@ -975,22 +1226,14 @@ function AuthPage() {
                   </span>
                 )}
               </label>
-            </>
-          )}
-
-          {mode === "join" && (intent === "partner" || (intent === "member" && step === 4)) && (
-            <>
               <label className="grid gap-1.5">
                 <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
-                  Email{" "}
-                  <span className="font-normal normal-case text-baba-slate/50">
-                    {intent === "partner" ? "(required)" : "(optional)"}
-                  </span>
+                  Email <span className="font-normal normal-case text-baba-slate/50">(required)</span>
                 </span>
                 <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
                   <Mail className="h-4 w-4 text-baba-slate/40" />
                   <input
-                    required={intent === "partner"}
+                    required
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -999,19 +1242,40 @@ function AuthPage() {
                   />
                 </div>
                 <span className="text-[0.7rem] text-baba-slate/50">
-                  {intent === "partner"
-                    ? "We use this to reach you — that is all."
-                    : "Add an email if you want a welcome message and help if you forget your password."}
+                  We use this to reach you — that is all.
                 </span>
               </label>
             </>
           )}
 
-          {mode === "join" && intent === "member" && step === 2 && (
+          {mode === "signin" && (
+            <label className="grid gap-1.5">
+              <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
+                Username, email, name or ID number
+              </span>
+              <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
+                <User className="h-4 w-4 text-baba-slate/40" />
+                <input
+                  required
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  autoComplete="username"
+                  className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
+                  placeholder="e.g. janewanjiru@gmail.com"
+                />
+              </div>
+              <span className="text-[0.7rem] text-baba-slate/50">
+                Any one works: your username, your email, your full name, or your National ID number.
+                Your name is also a username — if you chose it as yours.
+              </span>
+            </label>
+          )}
+
+          {mode === "signin" && askForId && (
             <label className="grid gap-1.5">
               <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
                 National Identification No{" "}
-                <span className="font-normal normal-case text-baba-slate/50">(optional)</span>
+                <span className="font-normal normal-case text-baba-slate/50">(only to tell you apart)</span>
               </span>
               <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
                 <IdCard className="h-4 w-4 text-baba-slate/40" />
@@ -1020,12 +1284,39 @@ function AuthPage() {
                   value={idNumber}
                   onChange={(e) => setIdNumber(e.target.value)}
                   className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
-                  placeholder="Your National Identification No (optional)"
+                  placeholder="Your National Identification No"
                 />
               </div>
-              <span className="text-[0.7rem] text-baba-slate/50">
-                Optional — you can add it later in your profile.
+            </label>
+          )}
+
+          {mode === "signin" && (
+            <label className="grid gap-1.5">
+              <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
+                Password
               </span>
+              <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
+                <Lock className="h-4 w-4 text-baba-slate/40" />
+                <input
+                  required
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  autoComplete="current-password"
+                  minLength={6}
+                  className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
+                  placeholder="Your password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  className="shrink-0 text-baba-slate/40 transition-colors hover:text-baba-slate/70"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  tabIndex={-1}
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
             </label>
           )}
 
@@ -1036,12 +1327,12 @@ function AuthPage() {
             </p>
           )}
 
-          {mode === "join" && intent === "member" ? (
+          {mode === "join" && intent === "member" && step < 6 ? (
             <div className="mt-2 flex items-center justify-between gap-3">
               {step > 1 ? (
                 <button
                   type="button"
-                  onClick={() => setStep(googleSetup && step === 5 ? 3 : step - 1)}
+                  onClick={() => setStep(step - 1)}
                   className="inline-flex items-center gap-1 rounded-lg border border-baba-blue/15 px-4 py-2.5 text-sm font-semibold text-baba-slate/70 transition-colors hover:border-baba-blue/40"
                 >
                   <ArrowLeft className="h-4 w-4" /> Back
@@ -1059,13 +1350,14 @@ function AuthPage() {
                 {step < 5 && <ArrowRight className="h-4 w-4" />}
               </button>
             </div>
-          ) : (
+          ) : mode === "join" && intent === "member" && step === 6 ? null : (
             <button
               type="submit"
               disabled={loading}
               className="mt-2 flex items-center justify-center gap-2 rounded-lg baba-cta py-2.5 text-sm font-semibold text-white transition-colors hover:bg-baba-blue-dark disabled:opacity-60"
             >
               {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+
               {mode === "join" ? "Partner with us" : "Log In"}
             </button>
           )}
@@ -1095,26 +1387,30 @@ function AuthPage() {
           </button>
         </p>
 
-        <div className="mt-6 flex items-center gap-3 text-xs text-baba-slate/50">
-          <span className="h-px flex-1 bg-baba-blue/10" />
-          or
-          <span className="h-px flex-1 bg-baba-blue/10" />
-        </div>
+        {mode === "join" && (
+          <>
+            <div className="mt-6 flex items-center gap-3 text-xs text-baba-slate/50">
+              <span className="h-px flex-1 bg-baba-blue/10" />
+              or
+              <span className="h-px flex-1 bg-baba-blue/10" />
+            </div>
 
-        <button
-          type="button"
-          onClick={signInWithGoogle}
-          disabled={loading}
-          className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg border border-baba-blue/20 bg-card px-4 py-2.5 text-sm font-semibold text-baba-slate transition-colors hover:bg-baba-blue/5 disabled:opacity-60"
-        >
-          <svg className="h-4 w-4" viewBox="0 0 24 24" aria-hidden="true">
-            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1z"/>
-            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23z"/>
-            <path fill="#FBBC05" d="M5.84 14.1a6.6 6.6 0 0 1 0-4.2V7.06H2.18a11 11 0 0 0 0 9.88l3.66-2.84z"/>
-            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15A11 11 0 0 0 2.18 7.06l3.66 2.84C6.71 7.31 9.14 5.38 12 5.38z"/>
-          </svg>
-          {mode === "join" ? "Join with Google" : "Log in with Google"}
-        </button>
+            <button
+              type="button"
+              onClick={signInWithGoogle}
+              disabled={loading}
+              className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg border border-baba-blue/20 bg-card px-4 py-2.5 text-sm font-semibold text-baba-slate transition-colors hover:bg-baba-blue/5 disabled:opacity-60"
+            >
+              <svg className="h-4 w-4" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1z"/>
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23z"/>
+                <path fill="#FBBC05" d="M5.84 14.1a6.6 6.6 0 0 1 0-4.2V7.06H2.18a11 11 0 0 0 0 9.88l3.66-2.84z"/>
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15A11 11 0 0 0 2.18 7.06l3.66 2.84C6.71 7.31 9.14 5.38 12 5.38z"/>
+              </svg>
+              {mode === "join" ? "Join with Google" : "Log in with Google"}
+            </button>
+          </>
+        )}
         <p className="mt-4 text-center text-xs text-baba-slate/50">
           <Link to="/" className="hover:underline">
             Back to home

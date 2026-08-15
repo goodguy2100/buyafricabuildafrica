@@ -112,6 +112,32 @@ export const lookupLoginEmail = createServerFn({ method: "POST" })
   });
 
 /**
+ * Whether a username is still free. Case-insensitive exact match.
+ * Shown live on the sign-up account step — "username has been taken"
+ * when a name is already claimed by someone else.
+ */
+export const checkUsernameAvailable = createServerFn({ method: "POST" })
+  .inputValidator((input) =>
+    z
+      .object({ username: z.string().min(2).max(60) })
+      .parse(input),
+  )
+  .handler(async ({ data }): Promise<{ available: boolean }> => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const u = data.username.trim().toLowerCase();
+    if (!u) return { available: false };
+    // Escape LIKE metacharacters — must stay an exact (case-insensitive) match.
+    const pattern = u.replace(/([\\%_])/g, "\\$1");
+    const { data: profs } = await supabaseAdmin
+      .from("profiles")
+      .select("id")
+      .ilike("username", pattern)
+      .limit(1);
+    const taken = (profs ?? []).length > 0;
+    return { available: !taken };
+  });
+
+/**
  * Resolve a member's real email from their National ID. Used by the
  * "No email — help me" flow so a help request carries a mailable address
  * instead of a synthetic "@baba.local" one.
