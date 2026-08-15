@@ -85,6 +85,7 @@ function deriveRole(keys: string[]): RoleValue {
 }
 
 const EDUCATION_OPTIONS = [
+  "Never went to school",
   "Primary school",
   "Secondary school",
   "Certificate",
@@ -137,7 +138,6 @@ function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [reviewPassword, setReviewPassword] = useState("");
   const [selected, setSelected] = useState<string[]>([]);
   const [otherProfession, setOtherProfession] = useState("");
   const [education, setEducation] = useState("");
@@ -150,11 +150,10 @@ function AuthPage() {
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [loading, setLoading] = useState(false);
-  // member join wizard: 1 account, 2 what you do, 3 about you, 4 your work, 5 review, 6 welcome
+  // member join wizard: 1 name, 2 what you do, 3 about you, 4 your work, 5 review + account, 6 welcome
   const [step, setStep] = useState(1);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [showReviewPassword, setShowReviewPassword] = useState(false);
   // Fresh Google sign-in: the auth account exists but the member setup was
   // never finished — walk the whole wizard with the Google name locked.
   const [googleSetup, setGoogleSetup] = useState<{ email: string; lockedName: string } | null>(null);
@@ -220,6 +219,22 @@ function AuthPage() {
         setLocation((prev) => ({ ...prev, country: prev.country || country }));
         return;
       }
+    }
+  };
+
+  /** Country picked first → auto-fill the phone dial code (e.g. Kenya → +254). */
+  const COUNTRY_TO_DIAL: Record<string, string> = {};
+  for (const [dial, country] of Object.entries(DIAL_TO_COUNTRY)) {
+    COUNTRY_TO_DIAL[country] = dial;
+  }
+  const applyDialFromCountry = (country: string) => {
+    const dial = COUNTRY_TO_DIAL[country];
+    if (!dial) return;
+    const cur = phone.trim();
+    if (!cur || !cur.startsWith("+")) {
+      setPhone(dial + " ");
+    } else if (!cur.startsWith(dial)) {
+      setPhone(dial + " " + cur.replace(/^\+\d{1,4}/, "").trim());
     }
   };
 
@@ -359,7 +374,7 @@ function AuthPage() {
         setIntent("member");
         setFullName(gName);
         setEmail(session.user.email ?? "");
-        setStep(2); // Google members have no account step — start at "What do you do?"
+        setStep(2); // Google members have no name step — start at "What do you do?"
         return;
       }
       navigate({ to: redirectTo() });
@@ -371,15 +386,6 @@ function AuthPage() {
   const validateStep = (s: number): string | null => {
     if (s === 1) {
       if (!firstName.trim() || !lastName.trim()) return "Please type your first and last name.";
-      const u = username.trim();
-      if (u.length < 2) return "Please type a username — your name, or something unique to you.";
-      if (usernameState === "taken") return "That username has been taken — try adding a middle name or a number.";
-      if (!password || password.length < 6) {
-        return "Please type your password (6 letters or numbers or more).";
-      }
-      if (password !== confirmPassword) {
-        return "The two passwords are not the same. Please type them again.";
-      }
     }
     if (s === 2) {
       if (selected.length === 0) return "Please pick what you do.";
@@ -396,8 +402,14 @@ function AuthPage() {
       }
     }
     if (s === 5 && !googleSetup) {
-      if (reviewPassword !== password) {
-        return "Type your password again to confirm everything before it saves.";
+      const u = username.trim();
+      if (u.length < 2) return "Please type a username — your name, or something unique to you.";
+      if (usernameState === "taken") return "That username has been taken — try adding a middle name or a number.";
+      if (!password || password.length < 6) {
+        return "Please type your password (6 letters or numbers or more).";
+      }
+      if (password !== confirmPassword) {
+        return "The two passwords are not the same. Please type them again.";
       }
     }
     return null;
@@ -448,7 +460,7 @@ function AuthPage() {
     if (mode === "signin") {
       if (!username.trim() && !name) return setError("Please type your username, email, name or ID number.");
     } else if (!name) {
-      return setError("Please type your full name.");
+      return setError("Please type your first and last name.");
     }
     if (mode === "join") {
       if (!phone.trim()) return setError("Please type your phone number.");
@@ -474,9 +486,6 @@ function AuthPage() {
       }
       if (pwd !== confirmPassword) {
         return setError("The two passwords are not the same. Please type them again.");
-      }
-      if (reviewPassword !== pwd) {
-        return setError("Type your password again to confirm everything before it saves.");
       }
     }
     if (mode === "join" && intent === "partner") {
@@ -633,8 +642,8 @@ function AuthPage() {
   };
 
   const wizardStepLabels = googleSetup
-    ? { 2: "What You Do", 3: "About You", 4: "Your Work", 5: "Check & Confirm", 6: "Welcome" }
-    : { 1: "Your Account", 2: "What You Do", 3: "About You", 4: "Your Work", 5: "Check & Confirm", 6: "Welcome" };
+    ? { 2: "What You Do", 3: "About You", 4: "Your Work", 5: "Check & Account", 6: "Welcome" }
+    : { 1: "Your Name", 2: "What You Do", 3: "About You", 4: "Your Work", 5: "Check & Account", 6: "Welcome" };
   const wizardDots = googleSetup ? [2, 3, 4, 5, 6] : [1, 2, 3, 4, 5, 6];
 
   return (
@@ -651,7 +660,7 @@ function AuthPage() {
           <p className="mt-2 text-baba-slate/70">
             {mode === "join"
               ? intent === "member"
-                ? "First your account — then a couple of quick questions about your work."
+                ? "A few quick questions — your account is created at the very end."
                 : "Tell us who you are and what you want to do with us — we are all ears."
               : "Log in with your username, email, name, or ID number — and your password."}
           </p>
@@ -702,9 +711,9 @@ function AuthPage() {
           {mode === "join" && intent === "member" && !googleSetup && step === 1 && (
             <div className="rounded-2xl border border-baba-blue/10 bg-card p-6">
               <div className="mb-4 text-center">
-                <h2 className="font-display text-xl font-bold text-baba-slate">Your account</h2>
+                <h2 className="font-display text-xl font-bold text-baba-slate">Your name</h2>
                 <p className="mt-1 text-sm text-baba-slate/60">
-                  Your name, a username that is yours, and a password you can handle.
+                  What should we call you? First and last name is all we need.
                 </p>
               </div>
               <div className="grid gap-4">
@@ -735,95 +744,6 @@ function AuthPage() {
                       placeholder="e.g. Wanjiru"
                     />
                   </div>
-                </label>
-                <label className="grid gap-1.5">
-                  <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">Username</span>
-                  <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
-                    <AtSign className="h-4 w-4 text-baba-slate/40" />
-                    <input
-                      required
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      autoComplete="username"
-                      className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
-                      placeholder="e.g. JaneWanjiru or jane.wanjiru"
-                    />
-                  </div>
-                  {usernameState === "checking" && (
-                    <span className="flex items-center gap-1 text-xs text-baba-slate/50">
-                      <Loader2 className="h-3 w-3 animate-spin" /> Checking…
-                    </span>
-                  )}
-                  {usernameState === "available" && (
-                    <span className="flex items-center gap-1 text-xs font-medium text-emerald-600">
-                      <Check className="h-3 w-3" /> {username.trim()} is yours — good choice.
-                    </span>
-                  )}
-                  {usernameState === "taken" && (
-                    <span className="text-xs font-medium text-destructive">
-                      Username has been taken — that name is already claimed by someone else.
-                      Try adding a middle name or a number.
-                    </span>
-                  )}
-                  <span className="text-[0.7rem] text-baba-slate/50">
-                    Your name works as a username too. If it clashes with someone else's, we will tell you
-                    here — just make it your own.
-                  </span>
-                </label>
-                <label className="grid gap-1.5">
-                  <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">Password</span>
-                  <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
-                    <Lock className="h-4 w-4 text-baba-slate/40" />
-                    <input
-                      required
-                      type={showPassword ? "text" : "password"}
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      autoComplete="new-password"
-                      minLength={6}
-                      className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
-                      placeholder="Make a password (6 or more)"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword((v) => !v)}
-                      className="shrink-0 text-baba-slate/40 transition-colors hover:text-baba-slate/70"
-                      aria-label={showPassword ? "Hide password" : "Show password"}
-                      tabIndex={-1}
-                    >
-                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                    </button>
-                  </div>
-                  <PasswordStrength password={password} />
-                </label>
-                <label className="grid gap-1.5">
-                  <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">Type Password Again</span>
-                  <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
-                    <Lock className="h-4 w-4 text-baba-slate/40" />
-                    <input
-                      required
-                      type={showConfirmPassword ? "text" : "password"}
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      autoComplete="new-password"
-                      className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
-                      placeholder="Type the same password"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowConfirmPassword((v) => !v)}
-                      className="shrink-0 text-baba-slate/40 transition-colors hover:text-baba-slate/70"
-                      aria-label={showConfirmPassword ? "Hide password" : "Show password"}
-                      tabIndex={-1}
-                    >
-                      {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                    </button>
-                  </div>
-                  {confirmPassword && confirmPassword !== password && (
-                    <span className="text-[0.7rem] text-red-500">
-                      The two passwords are not the same.
-                    </span>
-                  )}
                 </label>
               </div>
             </div>
@@ -893,6 +813,23 @@ function AuthPage() {
               )}
               <div className="grid gap-4">
                 <label className="grid gap-1.5">
+                  <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-baba-slate/70">
+                    <MapPin className="h-3.5 w-3.5" /> Where are you?
+                  </span>
+                  <LocationPicker
+                    value={location}
+                    onChange={(v) => {
+                      setLocation(v);
+                      if (v.country && v.country !== location.country) {
+                        applyDialFromCountry(v.country);
+                      }
+                    }}
+                  />
+                  <span className="text-[0.7rem] text-baba-slate/50">
+                    Pick your country first — the dial code is added to your phone for you.
+                  </span>
+                </label>
+                <label className="grid gap-1.5">
                   <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
                     Phone Number <span className="font-normal normal-case text-baba-slate/50">(required)</span>
                   </span>
@@ -911,15 +848,6 @@ function AuthPage() {
                       placeholder="e.g. +254 712 345 678"
                     />
                   </div>
-                </label>
-                <label className="grid gap-1.5">
-                  <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-baba-slate/70">
-                    <MapPin className="h-3.5 w-3.5" /> Where are you?
-                  </span>
-                  <LocationPicker value={location} onChange={setLocation} />
-                  <span className="text-[0.7rem] text-baba-slate/50">
-                    Pick your country and town, then type your area (e.g. Westlands, South B).
-                  </span>
                 </label>
                 <label className="grid gap-1.5">
                   <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
@@ -1028,7 +956,6 @@ function AuthPage() {
               </div>
               <div className="grid gap-3 text-sm">
                 <ReviewRow label="Full name" value={memberFullName || fullName.trim()} />
-                {username.trim() && <ReviewRow label="Username" value={username.trim()} />}
                 <ReviewRow label="Phone" value={phone.trim()} />
                 {idNumber.trim() && <ReviewRow label="ID number" value={idNumber.trim()} />}
                 <ReviewRow
@@ -1053,40 +980,105 @@ function AuthPage() {
                 )}
               </div>
               {!googleSetup && (
-                <label className="mt-4 grid gap-1.5">
-                  <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
-                    Type your password again to confirm
-                  </span>
-                  <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
-                    <Lock className="h-4 w-4 text-baba-slate/40" />
-                    <input
-                      required
-                      type={showReviewPassword ? "text" : "password"}
-                      value={reviewPassword}
-                      onChange={(e) => setReviewPassword(e.target.value)}
-                      autoComplete="new-password"
-                      className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
-                      placeholder="Type your password again"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowReviewPassword((v) => !v)}
-                      className="shrink-0 text-baba-slate/40 transition-colors hover:text-baba-slate/70"
-                      aria-label={showReviewPassword ? "Hide password" : "Show password"}
-                      tabIndex={-1}
-                    >
-                      {showReviewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                    </button>
+                <div className="mt-5 grid gap-4 border-t border-baba-blue/10 pt-5">
+                  <div>
+                    <p className="text-center text-xs font-bold uppercase tracking-wide text-baba-slate/60">
+                      Now your account — username and password
+                    </p>
+                    <p className="mt-1 text-center text-[0.7rem] text-baba-slate/50">
+                      This is the last step. Your name is already saved — just make your login.
+                    </p>
                   </div>
-                  <span className="text-[0.7rem] text-baba-slate/50">
-                    We never show your password on this page — you type it again, so only you confirm it.
-                  </span>
-                  {reviewPassword && reviewPassword !== password && (
-                    <span className="text-[0.7rem] text-red-500">
-                      That is not the password you chose. Type it again.
+                  <label className="grid gap-1.5">
+                    <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">Username</span>
+                    <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
+                      <AtSign className="h-4 w-4 text-baba-slate/40" />
+                      <input
+                        required
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        autoComplete="username"
+                        className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
+                        placeholder="e.g. JaneWanjiru or jane.wanjiru"
+                      />
+                    </div>
+                    {usernameState === "checking" && (
+                      <span className="flex items-center gap-1 text-xs text-baba-slate/50">
+                        <Loader2 className="h-3 w-3 animate-spin" /> Checking…
+                      </span>
+                    )}
+                    {usernameState === "available" && (
+                      <span className="flex items-center gap-1 text-xs font-medium text-emerald-600">
+                        <Check className="h-3 w-3" /> {username.trim()} is yours — good choice.
+                      </span>
+                    )}
+                    {usernameState === "taken" && (
+                      <span className="text-xs font-medium text-destructive">
+                        Username has been taken — that name is already claimed by someone else.
+                        Try adding a middle name or a number.
+                      </span>
+                    )}
+                    <span className="text-[0.7rem] text-baba-slate/50">
+                      Your name works as a username too. If it clashes with someone else's, we will tell you
+                      here — just make it your own.
                     </span>
-                  )}
-                </label>
+                  </label>
+                  <label className="grid gap-1.5">
+                    <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">Password</span>
+                    <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
+                      <Lock className="h-4 w-4 text-baba-slate/40" />
+                      <input
+                        required
+                        type={showPassword ? "text" : "password"}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        autoComplete="new-password"
+                        minLength={6}
+                        className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
+                        placeholder="Make a password (6 or more)"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword((v) => !v)}
+                        className="shrink-0 text-baba-slate/40 transition-colors hover:text-baba-slate/70"
+                        aria-label={showPassword ? "Hide password" : "Show password"}
+                        tabIndex={-1}
+                      >
+                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </button>
+                    </div>
+                    <PasswordStrength password={password} />
+                  </label>
+                  <label className="grid gap-1.5">
+                    <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">Type Password Again</span>
+                    <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
+                      <Lock className="h-4 w-4 text-baba-slate/40" />
+                      <input
+                        required
+                        type={showConfirmPassword ? "text" : "password"}
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        autoComplete="new-password"
+                        className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
+                        placeholder="Type the same password"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword((v) => !v)}
+                        className="shrink-0 text-baba-slate/40 transition-colors hover:text-baba-slate/70"
+                        aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                        tabIndex={-1}
+                      >
+                        {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </button>
+                    </div>
+                    {confirmPassword && confirmPassword !== password && (
+                      <span className="text-[0.7rem] text-red-500">
+                        The two passwords are not the same.
+                      </span>
+                    )}
+                  </label>
+                </div>
               )}
               <div className="mt-4 flex items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800">
                 <Check className="h-4 w-4" /> All good — tap Join us below!
@@ -1153,7 +1145,7 @@ function AuthPage() {
               </label>
               <label className="grid gap-1.5">
                 <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
-                  {mode === "join" && intent === "partner" ? "Your Name / Organisation Name" : "Full name"}
+                  Your Name / Organisation Name
                 </span>
                 <div className="flex items-center gap-2 rounded-lg border border-input bg-card px-3.5 focus-within:border-baba-blue">
                   <User className="h-4 w-4 text-baba-slate/40" />
@@ -1161,15 +1153,9 @@ function AuthPage() {
                     required
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    readOnly={!!googleSetup}
-                    className={`w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none ${googleSetup ? "cursor-not-allowed opacity-70" : ""}`}
-                    placeholder={
-                      mode === "join" && intent === "partner"
-                        ? "Your name or organisation name"
-                        : "e.g. Jane Wanjiru"
-                    }
+                    className="w-full bg-transparent py-2.5 text-sm text-baba-slate focus:outline-none"
+                    placeholder="Your name or organisation name"
                   />
-                  {googleSetup && <Lock className="h-4 w-4 shrink-0 text-baba-copper" />}
                 </div>
               </label>
               <label className="grid gap-1.5">
