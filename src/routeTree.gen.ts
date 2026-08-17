@@ -15,6 +15,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as EventsRouteImport } from './routes/events'
+import { Route as FirstLoginRouteImport } from './routes/first-login'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as ImpactRouteImport } from './routes/impact'
 import { Route as McpRouteImport } from './routes/mcp'
@@ -27,6 +28,7 @@ import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedPartnerRouteImport } from './routes/_authenticated/partner'
 import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
 import { Route as NewsIndexRouteImport } from './routes/news.index'
 import { Route as NewsSlugRouteImport } from './routes/news.$slug'
@@ -68,6 +70,11 @@ const ContactRoute = ContactRouteImport.update({
 const EventsRoute = EventsRouteImport.update({
   id: '/events',
   path: '/events',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FirstLoginRoute = FirstLoginRouteImport.update({
+  id: '/first-login',
+  path: '/first-login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
@@ -130,6 +137,11 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedPartnerRoute = AuthenticatedPartnerRouteImport.update({
+  id: '/partner',
+  path: '/partner',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const EmailUnsubscribeRoute = EmailUnsubscribeRouteImport.update({
@@ -208,6 +220,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/events': typeof EventsRoute
+  '/first-login': typeof FirstLoginRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/impact': typeof ImpactRoute
   '/mcp': typeof McpRoute
@@ -220,6 +233,7 @@ export interface FileRoutesByFullPath {
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/partner': typeof AuthenticatedPartnerRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/news/$slug': typeof NewsSlugRoute
   '/news/': typeof NewsIndexRoute
@@ -240,6 +254,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/events': typeof EventsRoute
+  '/first-login': typeof FirstLoginRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/impact': typeof ImpactRoute
   '/mcp': typeof McpRoute
@@ -252,6 +267,7 @@ export interface FileRoutesByTo {
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/partner': typeof AuthenticatedPartnerRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/news/$slug': typeof NewsSlugRoute
   '/news': typeof NewsIndexRoute
@@ -274,6 +290,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/events': typeof EventsRoute
+  '/first-login': typeof FirstLoginRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/impact': typeof ImpactRoute
   '/mcp': typeof McpRoute
@@ -286,6 +303,7 @@ export interface FileRoutesById {
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/partner': typeof AuthenticatedPartnerRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/news/$slug': typeof NewsSlugRoute
   '/news/': typeof NewsIndexRoute
@@ -308,6 +326,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/events'
+    | '/first-login'
     | '/forgot-password'
     | '/impact'
     | '/mcp'
@@ -320,6 +339,7 @@ export interface FileRouteTypes {
     | '/.well-known/oauth-protected-resource'
     | '/admin'
     | '/dashboard'
+    | '/partner'
     | '/email/unsubscribe'
     | '/news/$slug'
     | '/news/'
@@ -340,6 +360,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/events'
+    | '/first-login'
     | '/forgot-password'
     | '/impact'
     | '/mcp'
@@ -352,6 +373,7 @@ export interface FileRouteTypes {
     | '/.well-known/oauth-protected-resource'
     | '/admin'
     | '/dashboard'
+    | '/partner'
     | '/email/unsubscribe'
     | '/news/$slug'
     | '/news'
@@ -373,6 +395,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/events'
+    | '/first-login'
     | '/forgot-password'
     | '/impact'
     | '/mcp'
@@ -385,6 +408,7 @@ export interface FileRouteTypes {
     | '/.well-known/oauth-protected-resource'
     | '/_authenticated/admin'
     | '/_authenticated/dashboard'
+    | '/_authenticated/partner'
     | '/email/unsubscribe'
     | '/news/$slug'
     | '/news/'
@@ -407,6 +431,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
   EventsRoute: typeof EventsRoute
+  FirstLoginRoute: typeof FirstLoginRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   ImpactRoute: typeof ImpactRoute
   McpRoute: typeof McpRoute
@@ -474,6 +499,13 @@ declare module '@tanstack/react-router' {
       path: '/events'
       fullPath: '/events'
       preLoaderRoute: typeof EventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/first-login': {
+      id: '/first-login'
+      path: '/first-login'
+      fullPath: '/first-login'
+      preLoaderRoute: typeof FirstLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/forgot-password': {
@@ -558,6 +590,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/partner': {
+      id: '/_authenticated/partner'
+      path: '/partner'
+      fullPath: '/partner'
+      preLoaderRoute: typeof AuthenticatedPartnerRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/email/unsubscribe': {
@@ -657,11 +696,13 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedPartnerRoute: typeof AuthenticatedPartnerRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedPartnerRoute: AuthenticatedPartnerRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -674,6 +715,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
   EventsRoute: EventsRoute,
+  FirstLoginRoute: FirstLoginRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   ImpactRoute: ImpactRoute,
   McpRoute: McpRoute,

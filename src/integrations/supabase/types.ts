@@ -521,6 +521,7 @@ export type Database = {
       }
       registrations: {
         Row: {
+          account_status: string
           area: string | null
           artisan_type: string | null
           business_license: string | null
@@ -534,6 +535,7 @@ export type Database = {
           email: string | null
           employment_status: string | null
           field_of_study: string | null
+          first_login: boolean
           full_name: string | null
           id: string
           industries: string[]
@@ -544,8 +546,10 @@ export type Database = {
           national_id: string | null
           occupation: string | null
           partner_message: string | null
+          partner_org_id: string | null
           phone: string | null
           professions: string[]
+          profile_complete: boolean
           projects: string | null
           professional_experience: string | null
           role: string
@@ -557,10 +561,14 @@ export type Database = {
           user_role: string | null
           username: string | null
           verification_fee_paid: boolean
+          verification_method: string | null
           verified: boolean
+          verified_at: string | null
+          verified_by: string | null
           years_experience: string | null
         }
         Insert: {
+          account_status?: string
           area?: string | null
           artisan_type?: string | null
           business_license?: string | null
@@ -574,6 +582,7 @@ export type Database = {
           email?: string | null
           employment_status?: string | null
           field_of_study?: string | null
+          first_login?: boolean
           full_name?: string | null
           id?: string
           industries?: string[]
@@ -584,8 +593,10 @@ export type Database = {
           national_id?: string | null
           occupation?: string | null
           partner_message?: string | null
+          partner_org_id?: string | null
           phone?: string | null
           professions?: string[]
+          profile_complete?: boolean
           projects?: string | null
           professional_experience?: string | null
           role: string
@@ -597,10 +608,14 @@ export type Database = {
           user_role?: string | null
           username?: string | null
           verification_fee_paid?: boolean
+          verification_method?: string | null
           verified?: boolean
+          verified_at?: string | null
+          verified_by?: string | null
           years_experience?: string | null
         }
         Update: {
+          account_status?: string
           area?: string | null
           artisan_type?: string | null
           business_license?: string | null
@@ -614,6 +629,7 @@ export type Database = {
           email?: string | null
           employment_status?: string | null
           field_of_study?: string | null
+          first_login?: boolean
           full_name?: string | null
           id?: string
           industries?: string[]
@@ -624,8 +640,10 @@ export type Database = {
           national_id?: string | null
           occupation?: string | null
           partner_message?: string | null
+          partner_org_id?: string | null
           phone?: string | null
           professions?: string[]
+          profile_complete?: boolean
           projects?: string | null
           professional_experience?: string | null
           role?: string
@@ -637,7 +655,10 @@ export type Database = {
           user_role?: string | null
           username?: string | null
           verification_fee_paid?: boolean
+          verification_method?: string | null
           verified?: boolean
+          verified_at?: string | null
+          verified_by?: string | null
           years_experience?: string | null
         }
         Relationships: []
@@ -790,6 +811,93 @@ export type Database = {
         }
         Relationships: []
       }
+      partner_orgs: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          org_name: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          org_name: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          org_name?: string
+        }
+        Relationships: []
+      }
+      partner_admins: {
+        Row: {
+          can_add_other_admins: boolean
+          created_at: string
+          id: string
+          partner_org_id: string
+          user_id: string
+        }
+        Insert: {
+          can_add_other_admins?: boolean
+          created_at?: string
+          id?: string
+          partner_org_id: string
+          user_id: string
+        }
+        Update: {
+          can_add_other_admins?: boolean
+          created_at?: string
+          id?: string
+          partner_org_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      bulk_import_logs: {
+        Row: {
+          created_at: string
+          created_count: number
+          duplicate_count: number
+          error_count: number
+          errors: Json
+          id: string
+          imported_by: string | null
+          incomplete_count: number
+          partner_org_id: string | null
+          profile_complete_count: number
+          total_rows: number
+        }
+        Insert: {
+          created_at?: string
+          created_count?: number
+          duplicate_count?: number
+          error_count?: number
+          errors?: Json
+          id?: string
+          imported_by?: string | null
+          incomplete_count?: number
+          partner_org_id?: string | null
+          profile_complete_count?: number
+          total_rows?: number
+        }
+        Update: {
+          created_at?: string
+          created_count?: number
+          duplicate_count?: number
+          error_count?: number
+          errors?: Json
+          id?: string
+          imported_by?: string | null
+          incomplete_count?: number
+          partner_org_id?: string | null
+          profile_complete_count?: number
+          total_rows?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -827,7 +935,7 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "user"
+      app_role: "admin" | "partner_admin" | "user"                        
     }
     CompositeTypes: {
       [_ in never]: never
@@ -955,7 +1063,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "user"],
+      app_role: ["admin", "partner_admin", "user"],
     },
   },
 } as const

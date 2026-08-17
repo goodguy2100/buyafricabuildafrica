@@ -1,7 +1,7 @@
 import { createFileRoute, useRouter, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import {
   Loader2,
   UserCircle,
@@ -35,6 +35,7 @@ import {
   type RegistrationRow,
 } from "@/lib/registrations.functions";
 import { ROLE_LABELS } from "@/lib/roles";
+import { getMyAccess } from "@/lib/partner.functions";
 import type { RoleValue } from "@/lib/registrations.functions";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
@@ -85,11 +86,21 @@ const TABS: { id: Tab; label: string; icon: typeof UserCircle }[] = [
 function DashboardPage() {
   const profileFn = useServerFn(getMyProfile);
   const regsFn = useServerFn(getMyRegistrations);
+  const accessFn = useServerFn(getMyAccess);
   const router = useRouter();
   const queryClient = useQueryClient();
 
   const profileQuery = useQuery({ queryKey: ["my-profile"], queryFn: () => profileFn() });
   const regsQuery = useQuery({ queryKey: ["my-registrations"], queryFn: () => regsFn() });
+  const accessQuery = useQuery({ queryKey: ["my-access"], queryFn: () => accessFn() });
+
+  // Provisional (bulk-imported) accounts must finish first-login setup first.
+  useEffect(() => {
+    const reg = regsQuery.data?.[0];
+    if (reg && reg.account_status === "provisional" && reg.first_login) {
+      router.navigate({ to: "/first-login", replace: true });
+    }
+  }, [regsQuery.data, router]);
 
   const [tab, setTab] = useState<Tab>("profile");
   const [navOpen, setNavOpen] = useState(false);
@@ -163,6 +174,17 @@ function DashboardPage() {
               >
                 <LogOut className="h-4 w-4" /> Logout
               </button>
+              {accessQuery.data?.isPartnerAdmin && (
+                <button
+                  onClick={() => {
+                    router.navigate({ to: "/partner" });
+                    setNavOpen(false);
+                  }}
+                  className="mt-1 flex items-center gap-2.5 rounded-lg bg-baba-blue/10 px-3.5 py-2.5 text-sm font-semibold text-baba-blue transition-colors hover:bg-baba-blue/15"
+                >
+                  <ShieldCheck className="h-4 w-4" /> Partner Portal
+                </button>
+              )}
             </nav>
           </aside>
 

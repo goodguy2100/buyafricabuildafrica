@@ -55,6 +55,9 @@ const SupportSection = lazy(() =>
 const SettingsSection = lazy(() =>
   import("@/components/admin/SettingsSection").then((m) => ({ default: m.SettingsSection })),
 );
+const PartnersSection = lazy(() =>
+  import("@/components/admin/PartnersSection").then((m) => ({ default: m.PartnersSection })),
+);
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated/admin")({
@@ -85,6 +88,7 @@ const NAV = [
   { key: "overview", label: "Overview", icon: LayoutDashboard },
   { key: "members", label: "Members", icon: Users },
   { key: "organizations", label: "Organizations", icon: Building2 },
+  { key: "partners", label: "Partners", icon: Building2 },
   { key: "payments", label: "Payments", icon: DollarSign },
   { key: "opportunities", label: "Opportunities", icon: Briefcase },
   { key: "events", label: "Events", icon: CalendarDays },
@@ -206,6 +210,7 @@ function AdminPage() {
           {tab === "overview" && <OverviewSection />}
           {tab === "members" && <MembersSection />}
           {tab === "organizations" && <OrganizationsSection />}
+          {tab === "partners" && <PartnersSection />}
           {tab === "payments" && <PaymentsSection />}
           {tab === "opportunities" && <OpportunitiesSection />}
           {tab === "events" && <OpportunitiesSection />}

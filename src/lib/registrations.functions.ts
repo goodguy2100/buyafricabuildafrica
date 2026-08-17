@@ -58,6 +58,14 @@ export interface RegistrationRow {
   partner_message: string | null;
   created_at: string;
   updated_at: string;
+  // Partner bulk-import fields
+  account_status: string;
+  profile_complete: boolean;
+  first_login: boolean;
+  partner_org_id: string | null;
+  verified_at: string | null;
+  verified_by: string | null;
+  verification_method: string | null;
 }
 
 export interface AdminRegistrationRow extends RegistrationRow {
