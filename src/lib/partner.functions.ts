@@ -485,19 +485,26 @@ export const addPartnerAdmin = createServerFn({ method: "POST" })
       .maybeSingle();
     if (existing.data) throw new Error("That person is already a partner admin.");
 
-    const { error: paErr } = await supabase.from("partner_admins").insert({
+    // Role-grant + org-link are written with the service role so they are
+    // atomic and never blocked by RLS (the caller's permissions were already
+    // checked above — this is a trusted server-side operation).
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error: paErr } = await supabaseAdmin.from("partner_admins").insert({
       user_id: profile.id,
       partner_org_id: orgId,
       can_add_other_admins: canAdd,
     });
     if (paErr) throw new Error(paErr.message);
 
-    // Also grant the partner_admin role so the access checks line up.
-    const { error: roleErr } = await supabase.from("user_roles").insert({
+    const { error: roleErr } = await supabaseAdmin.from("user_roles").insert({
       user_id: profile.id,
       role: "partner_admin",
     });
-    if (roleErr && !roleErr.message.includes("duplicate")) throw new Error(roleErr.message);
+    if (roleErr && !roleErr.message.includes("duplicate")) {
+      // Roll back the org link so a retry works cleanly.
+      await supabaseAdmin.from("partner_admins").delete().eq("user_id", profile.id);
+      throw new Error(roleErr.message);
+    }
 
     return { ok: true };
   });

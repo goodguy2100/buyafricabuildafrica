@@ -833,7 +833,9 @@ export const addAdminByEmail = createServerFn({ method: "POST" })
       .maybeSingle();
     if (pErr) throw new Error(pErr.message);
     if (!profile) throw new Error("No member found with that email. They must sign up first.");
-    const { error } = await supabase
+    // Service role: user_roles has no per-row RLS grant for the app path.
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin
       .from("user_roles")
       .insert({ user_id: profile.id, role: "admin" });
     if (error && !error.message.includes("duplicate")) throw new Error(error.message);
