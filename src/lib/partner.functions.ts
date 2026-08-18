@@ -119,10 +119,12 @@ function cleanDigits(v: string): string {
   return v.replace(/[^0-9]/g, "");
 }
 
-/** Normalise a Kenyan phone: 07xx… → +2547xx…, 2547xx… → +2547xx… */
+/** Normalise a Kenyan phone: 07xx… → +2547xx…, 2547xx… → +2547xx….
+ *  Tolerates "0712… / 0799…" style entries (keeps the first number). */
 function normalizePhone(raw: string): string {
-  const d = cleanDigits(raw);
-  if (d.length < 9) return raw.trim(); // caller validates length after this
+  const first = raw.split(/[/\,]/)[0];
+  const d = cleanDigits(first);
+  if (d.length < 9) return first.trim(); // caller validates length after this
   let body = d;
   if (body.startsWith("0")) body = body.slice(1);
   if (!body.startsWith("254")) body = `254${body}`;
