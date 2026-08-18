@@ -21,6 +21,7 @@ import {
   GraduationCap,
   Check,
   Bell,
+  ArrowRight,
 } from "lucide-react";
 import { NotificationsTab } from "@/components/NotificationsTab";
 import { MyEventsTab } from "@/components/MyEventsTab";
@@ -233,6 +234,31 @@ function DashboardPage() {
                 )}
               </button>
             </div>
+
+            {/* Partner Portal — one tap straight to adding members, no /partner needed */}
+            {accessQuery.data?.isPartnerAdmin && (
+              <button
+                onClick={() => router.navigate({ to: "/partner" })}
+                className="mb-6 flex w-full items-center justify-between gap-4 rounded-2xl border-2 border-baba-blue/20 bg-gradient-to-r from-baba-blue/10 via-baba-blue/5 to-baba-copper/10 p-5 text-left transition-colors hover:border-baba-blue/50"
+              >
+                <span className="flex items-center gap-3">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-baba-blue text-white">
+                    <ShieldCheck className="h-6 w-6" />
+                  </span>
+                  <span>
+                    <span className="block font-display text-base font-extrabold text-baba-slate">
+                      Partner Portal
+                    </span>
+                    <span className="block text-sm text-baba-slate/60">
+                      Add your members and track their verification
+                    </span>
+                  </span>
+                </span>
+                <span className="flex shrink-0 items-center gap-1 rounded-lg baba-cta px-4 py-2.5 text-sm font-semibold text-white">
+                  Open <ArrowRight className="h-4 w-4" />
+                </span>
+              </button>
+            )}
 
             {tab === "profile" && (
               <ProfileTab profile={profile} role={role} reg={registrations[0] ?? null} />

@@ -1,7 +1,8 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import type { RegistrationRow } from "@/lib/registrations.functions";
+import type { RegistrationRow, RoleValue } from "@/lib/registrations.functions";
+import { PROFESSIONS } from "@/lib/wizard-options";
 
 // ---------------------------------------------------------------------------
 // Partner bulk registration, provisional accounts & scoped partner admins.
@@ -91,6 +92,11 @@ export const importRowSchema = z.object({
   occupation: z.string().max(200).optional(),
   education_level: z.string().max(120).optional(),
   employment_status: z.string().max(120).optional(),
+  // Optional details from the same list the member wizard uses.
+  profession: z.string().max(120).optional(), // PROFESSIONS key
+  profession_other: z.string().max(200).optional(), // free text when profession === "other"
+  years_experience: z.string().max(60).optional(),
+  temporary_password: z.string().max(128).optional(), // blank → national ID
 });
 export type ImportRow = z.infer<typeof importRowSchema>;
 
@@ -121,6 +127,17 @@ function normalizePhone(raw: string): string {
   if (body.startsWith("0")) body = body.slice(1);
   if (!body.startsWith("254")) body = `254${body}`;
   return `+${body}`;
+}
+
+/** Map a trade slug to the values the DB check constraint accepts. */
+const ALLOWED_TRADES = [
+  "plumber", "electrician", "mason", "carpenter",
+  "painter", "welder", "tiler", "gypsum_installer", "other",
+];
+function normalizeTrade(v: string | null | undefined): string | null {
+  const s = (v ?? "").trim().toLowerCase().replace(/\s+/g, "_");
+  if (!s) return null;
+  return ALLOWED_TRADES.includes(s) ? s : "other";
 }
 
 /**
@@ -172,9 +189,32 @@ export const bulkImportRegistrations = createServerFn({ method: "POST" })
       const name = row.name.trim();
       const idDigits = cleanDigits(row.national_id);
       const phone = normalizePhone(row.phone);
-      const occupation = row.occupation?.trim() || null;
       const education = row.education_level?.trim() || null;
       const employment = row.employment_status?.trim() || null;
+      const yearsExperience = row.years_experience?.trim() || null;
+      const tempPassword = row.temporary_password?.trim();
+
+      // Optional profession (same list as the member wizard): the partner can
+      // leave it blank and the member picks it at first login instead.
+      let occupation = row.occupation?.trim() || null;
+      let role: RoleValue | undefined;
+      let artisanType: string | null = null;
+      let professionsArr: string[] = [];
+      if (row.profession) {
+        const p = PROFESSIONS.find((x) => x.key === row.profession);
+        if (p) {
+          occupation =
+            p.key === "other" && row.profession_other?.trim()
+              ? row.profession_other.trim()
+              : p.label;
+          role = p.role;
+          artisanType = p.trade ? normalizeTrade(p.trade) : null;
+          professionsArr = [occupation];
+        } else {
+          occupation = row.profession;
+          professionsArr = [row.profession];
+        }
+      }
 
       if (name.length < 2) {
         fail("Name too short");
@@ -188,6 +228,10 @@ export const bulkImportRegistrations = createServerFn({ method: "POST" })
         fail("Phone number too short");
         continue;
       }
+      if (tempPassword && tempPassword.length < 6) {
+        fail("Temporary password must be at least 6 characters");
+        continue;
+      }
       if (seenInBatch.has(idDigits)) {
         fail("Duplicate ID within this batch");
         continue;
@@ -195,6 +239,9 @@ export const bulkImportRegistrations = createServerFn({ method: "POST" })
       seenInBatch.add(idDigits);
 
       const authEmail = `id${idDigits}@baba.local`;
+      // Temporary password: partner's choice if they typed one, otherwise the
+      // member's national ID (the member changes it at first login).
+      const authPassword = tempPassword && tempPassword.length >= 6 ? tempPassword : idDigits;
 
       // Skip anyone already registered (checked by national ID).
       const { data: existingReg } = await supabaseAdmin
@@ -211,7 +258,7 @@ export const bulkImportRegistrations = createServerFn({ method: "POST" })
       // synthetic address; password = national ID as the temporary password).
       const { data: createdUser, error: createErr } = await supabaseAdmin.auth.admin.createUser({
         email: authEmail,
-        password: idDigits,
+        password: authPassword,
         email_confirm: true,
         user_metadata: {
           full_name: name,
@@ -237,8 +284,8 @@ export const bulkImportRegistrations = createServerFn({ method: "POST" })
 
       const { error: regErr } = await supabaseAdmin.from("registrations").insert({
         user_id: createdUser.user.id,
-        role: "individual",
-        user_role: "individual",
+        role: role ?? "individual",
+        user_role: role ?? "individual",
         data: {
           fullName: name,
           nationalId: idDigits,
@@ -246,12 +293,17 @@ export const bulkImportRegistrations = createServerFn({ method: "POST" })
           occupation: occupation ?? null,
           education: education ?? null,
           employmentStatus: employment ?? null,
+          yearsField: yearsExperience,
+          profession: row.profession?.trim() ?? null,
           imported: true,
         },
         full_name: name,
         national_id: idDigits,
         phone,
         occupation,
+        artisan_type: artisanType,
+        professions: professionsArr,
+        years_experience: yearsExperience,
         education_level: education,
         employment_status: employment,
         account_status: "provisional",
@@ -563,6 +615,10 @@ export const listPartnerUsers = createServerFn({ method: "GET" })
     let orgFilter: string | null = isAdmin ? (data.partner_org_id ?? null) : null;
     if (!isAdmin) {
       if (!paRes.data?.partner_org_id) throw new Error("Forbidden: partner admin access required");
+      orgFilter = paRes.data.partner_org_id;
+    } else if (!orgFilter && paRes.data?.partner_org_id) {
+      // Super admin browsing their OWN partner portal: default to their own
+      // org instead of dumping every member on the platform.
       orgFilter = paRes.data.partner_org_id;
     }
 

@@ -13,6 +13,9 @@ import {
   XCircle,
   LogOut,
   Plus,
+  UserPlus,
+  Trash2,
+  ChevronDown,
 } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,6 +29,12 @@ import {
   type BulkImportResult,
 } from "@/lib/partner.functions";
 import type { RegistrationRow } from "@/lib/registrations.functions";
+import {
+  PROFESSIONS,
+  EDUCATION_OPTIONS,
+  EMPLOYMENT_OPTIONS,
+  YEARS_OPTIONS,
+} from "@/lib/wizard-options";
 
 export const Route = createFileRoute("/_authenticated/partner")({
   ssr: false,
@@ -88,7 +97,17 @@ function PartnerPortal() {
 
   const accessQuery = useQuery({ queryKey: ["partner-access"], queryFn: () => accessFn() });
   const summaryQuery = useQuery({ queryKey: ["partner-summary"], queryFn: () => summaryFn() });
-  const usersQuery = useQuery({ queryKey: ["partner-users"], queryFn: () => usersFn({}) });
+  // Always scoped to the caller's own org — even when they're a super admin.
+  // The server also defaults admins with their own org to that org, so this
+  // stays correct even on the very first render.
+  const usersQuery = useQuery({
+    queryKey: ["partner-users", accessQuery.data?.partnerOrgId ?? "me"],
+    queryFn: () =>
+      usersFn({
+        data: { partner_org_id: accessQuery.data?.partnerOrgId ?? undefined },
+      }),
+    enabled: !!accessQuery.data,
+  });
 
   const [tab, setTab] = useState<Tab>("overview");
   const [importText, setImportText] = useState("");
@@ -97,16 +116,67 @@ function PartnerPortal() {
   const [importProgress, setImportProgress] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
+  // Simple one-person-at-a-time form (the boomer-friendly path).
+  const emptyDraft = {
+    name: "",
+    national_id: "",
+    phone: "",
+    profession: "",
+    profession_other: "",
+    education_level: "",
+    employment_status: "",
+    years_experience: "",
+    temporary_password: "",
+  };
+  const [draft, setDraft] = useState(emptyDraft);
+  const [memberList, setMemberList] = useState<ImportRow[]>([]);
+  const [draftError, setDraftError] = useState("");
+  const [showPaste, setShowPaste] = useState(false);
+
   const [newAdminEmail, setNewAdminEmail] = useState("");
   const [newAdminMsg, setNewAdminMsg] = useState("");
 
   const parsed = useMemo(() => (importText.trim() ? parseImportText(importText) : []), [importText]);
 
+  // Everything queued: typed one-by-one + any pasted rows.
+  const rowsToImport = useMemo(() => [...memberList, ...parsed], [memberList, parsed]);
+
+  const addMemberToList = () => {
+    setDraftError("");
+    const name = draft.name.trim();
+    const idDigits = draft.national_id.replace(/[^0-9]/g, "");
+    const phoneDigits = draft.phone.replace(/[^0-9]/g, "");
+    if (name.length < 2) return setDraftError("Please type their full name.");
+    if (idDigits.length < 6) return setDraftError("The ID number looks too short — type the full number.");
+    if (phoneDigits.length < 9) return setDraftError("The phone number looks too short — e.g. 0712 345 678.");
+    if (draft.profession === "other" && !draft.profession_other.trim()) {
+      return setDraftError("They picked “Other” — type what they do.");
+    }
+    if (draft.temporary_password.trim() && draft.temporary_password.trim().length < 6) {
+      return setDraftError("The temporary password must be 6 characters or more.");
+    }
+    setMemberList((prev) => [
+      ...prev,
+      {
+        name,
+        national_id: idDigits,
+        phone: draft.phone.trim(),
+        profession: draft.profession || undefined,
+        profession_other: draft.profession === "other" ? draft.profession_other.trim() : undefined,
+        education_level: draft.education_level || undefined,
+        employment_status: draft.employment_status || undefined,
+        years_experience: draft.years_experience || undefined,
+        temporary_password: draft.temporary_password.trim() || undefined,
+      },
+    ]);
+    setDraft(emptyDraft);
+  };
+
   const importMutation = useMutation({
     mutationFn: async () => {
       setImportResult(null);
-      const all = parsed;
-      if (all.length === 0) throw new Error("No valid rows found. Each line needs: Name, ID Number, Phone.");
+      const all = rowsToImport;
+      if (all.length === 0) throw new Error("No people added yet. Add a member below or paste a list.");
       // Send in batches of 100 so each request stays fast.
       const aggregate: BulkImportResult = {
         total: all.length,
@@ -135,6 +205,7 @@ function PartnerPortal() {
       setImportProgress(null);
       setImportText("");
       setFileName(null);
+      setMemberList([]);
       queryClient.invalidateQueries({ queryKey: ["partner-summary"] });
       queryClient.invalidateQueries({ queryKey: ["partner-users"] });
     },
@@ -311,107 +382,284 @@ function PartnerPortal() {
         {tab === "import" && (
           <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
             <div className="rounded-2xl border border-baba-blue/10 bg-card p-6">
-              <h2 className="font-display text-xl font-bold text-baba-slate">Bulk register your list</h2>
+              <h2 className="font-display text-xl font-bold text-baba-slate">Add your members</h2>
               <p className="mt-1 text-sm text-baba-slate/60">
-                Each person gets an account with their <span className="font-semibold">ID number as a temporary
-                password</span>. They confirm their identity and set their own password at first login.
+                One person at a time — only their <span className="font-semibold">name, ID and phone</span> are
+                needed. Everything else is optional; they confirm their details at first login.
               </p>
 
-              <div className="mt-4 grid gap-3">
+              {/* simple form */}
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
                 <label className="grid gap-1.5">
                   <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
-                    Paste your list
+                    Full name <span className="text-baba-copper-dark">*</span>
                   </span>
-                  <textarea
-                    rows={10}
-                    value={importText}
-                    onChange={(e) => setImportText(e.target.value)}
-                    placeholder={"Jane Wanjiru, 12345678, 0712345678, Plumber, Certificate, Employed\nJohn Otieno, 87654321, 0729876543"}
+                  <input
+                    value={draft.name}
+                    onChange={(e) => setDraft({ ...draft, name: e.target.value })}
+                    placeholder="e.g. Jane Wanjiru"
+                    className="w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
+                  />
+                </label>
+                <label className="grid gap-1.5">
+                  <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
+                    National ID No. <span className="text-baba-copper-dark">*</span>
+                  </span>
+                  <input
+                    inputMode="numeric"
+                    value={draft.national_id}
+                    onChange={(e) => setDraft({ ...draft, national_id: e.target.value })}
+                    placeholder="e.g. 12345678"
+                    className="w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
+                  />
+                </label>
+                <label className="grid gap-1.5 sm:col-span-2">
+                  <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
+                    Phone number <span className="text-baba-copper-dark">*</span>
+                  </span>
+                  <input
+                    type="tel"
+                    inputMode="tel"
+                    value={draft.phone}
+                    onChange={(e) => setDraft({ ...draft, phone: e.target.value })}
+                    placeholder="e.g. 0712 345 678"
+                    className="w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
+                  />
+                </label>
+
+                <label className="grid gap-1.5 sm:col-span-2">
+                  <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">
+                    What do they do? <span className="font-normal normal-case text-baba-slate/50">(optional — they can choose at first login)</span>
+                  </span>
+                  <select
+                    value={draft.profession}
+                    onChange={(e) => setDraft({ ...draft, profession: e.target.value })}
+                    className="w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
+                  >
+                    <option value="">Not sure — leave blank</option>
+                    {PROFESSIONS.map((p) => (
+                      <option key={p.key} value={p.key}>{p.label.replace(/^I am an? /, "").replace(/^I do something else.*/, "Something else (type it)")}</option>
+                    ))}
+                  </select>
+                </label>
+                {draft.profession === "other" && (
+                  <label className="grid gap-1.5 sm:col-span-2">
+                    <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">Their work</span>
+                    <input
+                      value={draft.profession_other}
+                      onChange={(e) => setDraft({ ...draft, profession_other: e.target.value })}
+                      placeholder="e.g. Tailor"
+                      className="w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
+                    />
+                  </label>
+                )}
+                <label className="grid gap-1.5">
+                  <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">Level of education</span>
+                  <select
+                    value={draft.education_level}
+                    onChange={(e) => setDraft({ ...draft, education_level: e.target.value })}
+                    className="w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
+                  >
+                    <option value="">Not sure — leave blank</option>
+                    {EDUCATION_OPTIONS.map((o) => (
+                      <option key={o} value={o}>{o}</option>
+                    ))}
+                  </select>
+                </label>
+                <label className="grid gap-1.5">
+                  <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">How do they work?</span>
+                  <select
+                    value={draft.employment_status}
+                    onChange={(e) => setDraft({ ...draft, employment_status: e.target.value })}
+                    className="w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
+                  >
+                    <option value="">Not sure — leave blank</option>
+                    {EMPLOYMENT_OPTIONS.map((o) => (
+                      <option key={o} value={o}>{o}</option>
+                    ))}
+                  </select>
+                </label>
+                <label className="grid gap-1.5">
+                  <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">Years of experience</span>
+                  <select
+                    value={draft.years_experience}
+                    onChange={(e) => setDraft({ ...draft, years_experience: e.target.value })}
+                    className="w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
+                  >
+                    <option value="">Not sure — leave blank</option>
+                    {YEARS_OPTIONS.map((o) => (
+                      <option key={o} value={o}>{o}</option>
+                    ))}
+                  </select>
+                </label>
+                <label className="grid gap-1.5">
+                  <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">Temporary password</span>
+                  <input
+                    value={draft.temporary_password}
+                    onChange={(e) => setDraft({ ...draft, temporary_password: e.target.value })}
+                    placeholder="Leave blank = their ID number"
                     className="w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
                   />
                   <span className="text-[0.7rem] text-baba-slate/50">
-                    One person per line: <span className="font-semibold">Name, ID Number, Phone</span> — plus
-                    optional: occupation, education, employment. A file works too (button below).
+                    Blank means they first log in with their ID number. They set their own password at first login.
                   </span>
                 </label>
-
-                <input
-                  ref={fileRef}
-                  type="file"
-                  accept=".csv,.txt"
-                  className="hidden"
-                  onChange={(e) => {
-                    const f = e.target.files?.[0];
-                    if (!f) return;
-                    setFileName(f.name);
-                    const reader = new FileReader();
-                    reader.onload = () => setImportText(String(reader.result ?? ""));
-                    reader.readAsText(f);
-                  }}
-                />
-                <button
-                  type="button"
-                  onClick={() => fileRef.current?.click()}
-                  className="inline-flex items-center justify-center gap-2 rounded-lg border border-baba-blue/20 px-4 py-2.5 text-sm font-semibold text-baba-slate transition-colors hover:bg-baba-blue/5"
-                >
-                  <FileUp className="h-4 w-4" /> {fileName ? `Loaded: ${fileName}` : "…or upload a CSV / text file"}
-                </button>
-
-                {importText.trim() && (
-                  <div className="rounded-xl border border-baba-blue/10 bg-baba-blue/5 px-4 py-3 text-sm">
-                    <span className="font-bold text-baba-blue">{parsed.length}</span>{" "}
-                    <span className="text-baba-slate/70">
-                      valid row{parsed.length === 1 ? "" : "s"} ready
-                      {parsed.length > 0 && parsed.length !== importText.trim().split(/\r?\n/).filter(Boolean).length
-                        ? " (some lines need Name, ID and Phone)"
-                        : ""}
-                    </span>
-                  </div>
-                )}
-
-                {importProgress && (
-                  <p className="flex items-center gap-2 text-sm font-semibold text-baba-blue">
-                    <Loader2 className="h-4 w-4 animate-spin" /> {importProgress}
-                  </p>
-                )}
-
-                {importResult && (
-                  <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900">
-                    <p className="font-bold">Import finished</p>
-                    <ul className="mt-1 grid gap-0.5 text-emerald-800">
-                      <li>✅ {importResult.created} account{importResult.created === 1 ? "" : "s"} created ({importResult.profileComplete} complete profiles, {importResult.incomplete} need details at first login)</li>
-                      {importResult.duplicates > 0 && <li>⏭️ {importResult.duplicates} skipped — already registered</li>}
-                      {importResult.errors > 0 && (
-                        <li>
-                          ⚠️ {importResult.errors} error{importResult.errors === 1 ? "" : "s"}
-                          {importResult.errorRows.slice(0, 10).map((e) => (
-                            <span key={e.row} className="block pl-4 text-xs text-red-700">
-                              Row {e.row}: {e.reason}
-                            </span>
-                          ))}
-                        </li>
-                      )}
-                    </ul>
-                  </div>
-                )}
-
-                <button
-                  type="button"
-                  disabled={parsed.length === 0 || importMutation.isPending}
-                  onClick={() => importMutation.mutate()}
-                  className="inline-flex items-center justify-center gap-2 rounded-lg baba-cta px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-baba-blue-dark disabled:opacity-60"
-                >
-                  {importMutation.isPending ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin" /> Importing…
-                    </>
-                  ) : (
-                    <>
-                      <FileUp className="h-4 w-4" /> Register {parsed.length || ""} people
-                    </>
-                  )}
-                </button>
               </div>
+
+              {draftError && <p className="mt-3 text-sm font-medium text-destructive">{draftError}</p>}
+
+              <button
+                type="button"
+                onClick={addMemberToList}
+                className="mt-4 inline-flex items-center justify-center gap-2 rounded-lg baba-cta px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-baba-blue-dark"
+              >
+                <Plus className="h-4 w-4" /> Add to list
+              </button>
+
+              {/* pending list */}
+              {memberList.length > 0 && (
+                <div className="mt-5 rounded-xl border border-baba-blue/10 bg-baba-blue/5">
+                  <div className="flex items-center justify-between px-4 py-2.5">
+                    <p className="text-sm font-bold text-baba-slate">
+                      {memberList.length} person{memberList.length === 1 ? "" : "s"} on your list
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setMemberList([])}
+                      className="text-xs font-semibold text-baba-slate/50 hover:text-red-500"
+                    >
+                      Clear all
+                    </button>
+                  </div>
+                  <ul className="grid gap-1.5 border-t border-baba-blue/10 px-4 py-3">
+                    {memberList.map((m, i) => (
+                      <li key={i} className="flex items-center justify-between gap-3 rounded-lg bg-card px-3 py-2 text-sm">
+                        <span className="min-w-0">
+                          <span className="block truncate font-semibold text-baba-slate">{m.name}</span>
+                          <span className="block truncate text-xs text-baba-slate/60">
+                            ID {m.national_id} · {m.phone}
+                            {m.temporary_password ? " · custom password" : ""}
+                          </span>
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => setMemberList((prev) => prev.filter((_, j) => j !== i))}
+                          className="shrink-0 text-baba-slate/40 transition-colors hover:text-red-500"
+                          aria-label={`Remove ${m.name}`}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* paste / upload — advanced option */}
+              <button
+                type="button"
+                onClick={() => setShowPaste((v) => !v)}
+                className="mt-4 flex items-center gap-1.5 text-sm font-semibold text-baba-blue hover:underline"
+              >
+                <ChevronDown className={`h-4 w-4 transition-transform ${showPaste ? "rotate-180" : ""}`} />
+                Have a long list? Paste it instead
+              </button>
+
+              {showPaste && (
+                <div className="mt-3 grid gap-3">
+                  <label className="grid gap-1.5">
+                    <span className="text-xs font-bold uppercase tracking-wide text-baba-slate/70">Paste your list</span>
+                    <textarea
+                      rows={7}
+                      value={importText}
+                      onChange={(e) => setImportText(e.target.value)}
+                      placeholder={"Jane Wanjiru, 12345678, 0712345678\nJohn Otieno, 87654321, 0729876543"}
+                      className="w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-baba-slate focus:border-baba-blue focus:outline-none"
+                    />
+                    <span className="text-[0.7rem] text-baba-slate/50">
+                      One person per line: <span className="font-semibold">Name, ID Number, Phone</span>. A file
+                      works too (button below).
+                    </span>
+                  </label>
+
+                  <input
+                    ref={fileRef}
+                    type="file"
+                    accept=".csv,.txt"
+                    className="hidden"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      if (!f) return;
+                      setFileName(f.name);
+                      const reader = new FileReader();
+                      reader.onload = () => setImportText(String(reader.result ?? ""));
+                      reader.readAsText(f);
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => fileRef.current?.click()}
+                    className="inline-flex items-center justify-center gap-2 rounded-lg border border-baba-blue/20 px-4 py-2.5 text-sm font-semibold text-baba-slate transition-colors hover:bg-baba-blue/5"
+                  >
+                    <FileUp className="h-4 w-4" /> {fileName ? `Loaded: ${fileName}` : "…or upload a CSV / text file"}
+                  </button>
+                </div>
+              )}
+
+              {(importText.trim() || memberList.length > 0) && (
+                <div className="mt-4 rounded-xl border border-baba-blue/10 bg-baba-blue/5 px-4 py-3 text-sm">
+                  <span className="font-bold text-baba-blue">{rowsToImport.length}</span>{" "}
+                  <span className="text-baba-slate/70">
+                    person{rowsToImport.length === 1 ? "" : "s"} ready to register
+                    {parsed.length > 0 && parsed.length !== importText.trim().split(/\r?\n/).filter(Boolean).length
+                      ? " (some pasted lines are missing Name, ID or Phone)"
+                      : ""}
+                  </span>
+                </div>
+              )}
+
+              {importProgress && (
+                <p className="mt-3 flex items-center gap-2 text-sm font-semibold text-baba-blue">
+                  <Loader2 className="h-4 w-4 animate-spin" /> {importProgress}
+                </p>
+              )}
+
+              {importResult && (
+                <div className="mt-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900">
+                  <p className="font-bold">Import finished</p>
+                  <ul className="mt-1 grid gap-0.5 text-emerald-800">
+                    <li>✅ {importResult.created} account{importResult.created === 1 ? "" : "s"} created ({importResult.profileComplete} complete profiles, {importResult.incomplete} need details at first login)</li>
+                    {importResult.duplicates > 0 && <li>⏭️ {importResult.duplicates} skipped — already registered</li>}
+                    {importResult.errors > 0 && (
+                      <li>
+                        ⚠️ {importResult.errors} error{importResult.errors === 1 ? "" : "s"}
+                        {importResult.errorRows.slice(0, 10).map((e) => (
+                          <span key={e.row} className="block pl-4 text-xs text-red-700">
+                            Row {e.row}: {e.reason}
+                          </span>
+                        ))}
+                      </li>
+                    )}
+                  </ul>
+                </div>
+              )}
+
+              <button
+                type="button"
+                disabled={rowsToImport.length === 0 || importMutation.isPending}
+                onClick={() => importMutation.mutate()}
+                className="mt-4 inline-flex items-center justify-center gap-2 rounded-lg baba-cta px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-baba-blue-dark disabled:opacity-60"
+              >
+                {importMutation.isPending ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" /> Registering…
+                  </>
+                ) : (
+                  <>
+                    <UserPlus className="h-4 w-4" /> Register {rowsToImport.length || ""} people
+                  </>
+                )}
+              </button>
             </div>
 
             <div className="grid gap-4 self-start">
